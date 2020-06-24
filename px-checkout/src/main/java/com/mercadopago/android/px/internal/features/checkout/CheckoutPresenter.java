@@ -325,7 +325,6 @@ public class CheckoutPresenter extends BasePresenter<Checkout.View> implements C
     public void onChangePaymentMethod() {
         state.paymentMethodEdited = true;
         userSelectionRepository.reset();
-        paymentSettingRepository.clearToken();
         getView().transitionOut();
 
         new OnChangePaymentMethodDriver(internalConfiguration, state, paymentRepository)

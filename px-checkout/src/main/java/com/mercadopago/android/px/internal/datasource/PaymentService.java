@@ -157,7 +157,6 @@ public class PaymentService implements PaymentRepository {
         final Token token = paymentSettingRepository.getToken();
         final Card card = userSelectionRepository.getCard();
         final PaymentMethod paymentMethod = userSelectionRepository.getPaymentMethod();
-        paymentSettingRepository.clearToken();
         return new PaymentRecovery(statusDetail, token, card, paymentMethod);
     }
 

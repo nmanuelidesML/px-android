@@ -122,7 +122,6 @@ internal class RemediesViewModel(
 
     private fun startPayment(callback: PayButton.OnEnqueueResolvedCallback) {
         RemedyEvent(getRemedyTrackData(RemedyType.PAYMENT_METHOD_SUGGESTION)).track()
-        paymentSettingRepository.clearToken()
         remediesModel.retryPayment?.cvvModel?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 val tokenCreationWrapper = TokenCreationWrapper.Builder(cardTokenRepository, escManagerBehaviour)

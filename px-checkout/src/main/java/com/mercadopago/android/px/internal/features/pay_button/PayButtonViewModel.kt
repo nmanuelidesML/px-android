@@ -78,6 +78,7 @@ internal class PayButtonViewModel(
     }
 
     override fun preparePayment() {
+        paymentSettingRepository.clearToken()
         paymentConfiguration = null
         confirmTrackerData = null
         if (connectionHelper.checkConnection()) {
