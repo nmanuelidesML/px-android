@@ -15,6 +15,7 @@
         android:hint="@string/hint_locale"
         android:inputType="text"
         android:maxLines="1"
+        android:imeOptions="actionNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -26,6 +27,7 @@
         android:hint="@string/hint_public_key"
         android:inputType="text"
         android:maxLines="1"
+        android:imeOptions="actionNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/localeInput"/>
@@ -37,6 +39,7 @@
         android:hint="@string/hint_preference_id"
         android:inputType="text"
         android:maxLines="1"
+        android:imeOptions="actionNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/publicKeyInput"/>
@@ -48,6 +51,7 @@
         android:hint="@string/hint_access_token"
         android:inputType="text"
         android:maxLines="1"
+        android:imeOptions="actionDone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/preferenceIdInput"/>

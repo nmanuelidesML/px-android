@@ -9,12 +9,14 @@
     </string-array>
 
     <string-array name="public_key">
+        <item>[MLA0] APP_USR-2681ea61-10af-4bf6-a73d-e426d6b07e2c</item>
         <item>[MLA] APP_USR-88bd636f-ef87-441d-a018-def0c3a3741a</item>
         <item>[MLB] APP_USR-f3f035a2-d343-4a6f-bd3b-fc3c3cb72416</item>
         <item>[MLM] APP_USR-d9695498-2b96-4a3b-86a6-150dae0ea2f0</item>
     </string-array>
 
     <string-array name="preference_ids">
+        <item>[MLA0] 243962506-0bb62e22-5c7b-425e-a0a6-c22d0f4758a9</item>
         <item>[MLA] 566676612-3bbb117b-1f3f-49c9-915d-565a785837d0</item>
         <item>[MLB] 245099733-8771f469-d68e-4863-b8cb-9402e22c6bb2</item>
         <item>[MLM] 567133841-61886dbf-f47c-45d2-b32c-915c82f55790</item>
