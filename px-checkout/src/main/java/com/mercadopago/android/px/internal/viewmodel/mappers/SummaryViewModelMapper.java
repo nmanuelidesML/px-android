@@ -23,7 +23,7 @@ import com.mercadopago.android.px.model.internal.SummaryInfo;
 import java.util.List;
 
 public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod, SummaryView.Model,
-    SummaryViewModelMapper.SummaryKey> {
+    SummaryViewModelMapper.Key> {
 
     @NonNull private final Currency currency;
     @NonNull private final DiscountRepository discountRepository;
@@ -51,14 +51,14 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
     }
 
     @Override
-    protected SummaryKey getKey(
+    protected Key getKey(
         @NonNull final ExpressPaymentMethod expressPaymentMethod) {
         final PaymentTypeChargeRule chargeRule =
             chargeRepository.getChargeRule(expressPaymentMethod.getPaymentTypeId());
         final AmountConfiguration amountConfiguration = getAmountConfiguration(expressPaymentMethod);
         final boolean hasSplit = amountConfiguration != null && amountConfiguration.allowSplit();
 
-        return new SummaryKey(discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()),
+        return new Key(discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()),
             chargeRule, hasSplit);
     }
 
@@ -91,12 +91,12 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
         return new SummaryView.Model(elementDescriptorModel, summaryDetailList, totalRow);
     }
 
-    static final class SummaryKey {
+    static final class Key {
         private final DiscountConfigurationModel discountConfigurationModel;
         private final PaymentTypeChargeRule paymentTypeChargeRule;
         private final boolean hasSplit;
 
-        SummaryKey(@NonNull final DiscountConfigurationModel discountConfigurationModel,
+        Key(@NonNull final DiscountConfigurationModel discountConfigurationModel,
             final PaymentTypeChargeRule paymentTypeChargeRule, final boolean hasSplit) {
             this.discountConfigurationModel = discountConfigurationModel;
             this.paymentTypeChargeRule = ChargeRuleHelper.isHighlightCharge(paymentTypeChargeRule) ? null : paymentTypeChargeRule;
