@@ -35,9 +35,9 @@ public class AmountDescriptorView extends ConstraintLayout {
 
     private MPTextView descriptor;
     private MPTextView brief;
-    private View descriptor_container;
+    private View descriptorContainer;
     private MPTextView amount;
-    private ImageView icon_descriptor;
+    private ImageView iconDescriptor;
     private boolean rightLabelSemiBold;
     private boolean leftLabelSemiBold;
 
@@ -68,17 +68,17 @@ public class AmountDescriptorView extends ConstraintLayout {
 
     private void init() {
         inflate(getContext(), R.layout.px_view_amount_descriptor, this);
-        descriptor_container = findViewById(R.id.descriptor_container);
-        descriptor = descriptor_container.findViewById(R.id.descriptor);
-        brief = descriptor_container.findViewById(R.id.brief);
+        descriptorContainer = findViewById(R.id.descriptor_container);
+        descriptor = descriptorContainer.findViewById(R.id.descriptor);
+        brief = descriptorContainer.findViewById(R.id.brief);
         amount = findViewById(R.id.amount);
-        icon_descriptor = findViewById(R.id.icon_descriptor);
+        iconDescriptor = findViewById(R.id.icon_descriptor);
     }
 
     public void animateEnter() {
         final Animation slideLeft = AnimationUtils.loadAnimation(getContext(), R.anim.px_summary_slide_left_in);
         final Animation slideRight = AnimationUtils.loadAnimation(getContext(), R.anim.px_summary_slide_right_in);
-        descriptor_container.startAnimation(slideRight);
+        descriptorContainer.startAnimation(slideRight);
         amount.startAnimation(slideLeft);
     }
 
@@ -125,7 +125,7 @@ public class AmountDescriptorView extends ConstraintLayout {
         amount.setText(discountOverview.getAmount());
 
         if (TextUtil.isNotEmpty(discountOverview.getUrl())) {
-            PicassoDiskLoader.get(getContext()).load(discountOverview.getUrl()).into(icon_descriptor);
+            PicassoDiskLoader.get(getContext()).load(discountOverview.getUrl()).into(iconDescriptor);
         }
     }
 
@@ -188,14 +188,14 @@ public class AmountDescriptorView extends ConstraintLayout {
     private void updateDrawable(@Nullable final IDetailDrawable detailDrawable,
         @Nullable final IDetailColor detailColor) {
         if (detailDrawable != null) {
-            icon_descriptor.setVisibility(VISIBLE);
-            icon_descriptor.setImageDrawable(detailDrawable.getDrawable(getContext()));
+            iconDescriptor.setVisibility(VISIBLE);
+            iconDescriptor.setImageDrawable(detailDrawable.getDrawable(getContext()));
         } else {
-            icon_descriptor.setVisibility(INVISIBLE);
+            iconDescriptor.setVisibility(INVISIBLE);
         }
 
         if (detailColor != null) {
-            icon_descriptor.setColorFilter(detailColor.getColor(getContext()));
+            iconDescriptor.setColorFilter(detailColor.getColor(getContext()));
         }
     }
 

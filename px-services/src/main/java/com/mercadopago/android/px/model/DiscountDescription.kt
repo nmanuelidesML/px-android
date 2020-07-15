@@ -1,8 +1,8 @@
 package com.mercadopago.android.px.model
 
 import android.os.Parcel
-import android.os.Parcelable
 import com.mercadopago.android.px.internal.util.KParcelable
+import com.mercadopago.android.px.internal.util.parcelableCreator
 import com.mercadopago.android.px.model.internal.Text
 
 data class DiscountDescription(
@@ -31,10 +31,8 @@ data class DiscountDescription(
         parcel.writeParcelable(legalTerms, flags)
     }
 
-    override fun describeContents() = 0
-
-    companion object CREATOR : Parcelable.Creator<DiscountDescription> {
-        override fun createFromParcel(parcel: Parcel) = DiscountDescription(parcel)
-        override fun newArray(size: Int) = arrayOfNulls<DiscountDescription?>(size)
+    companion object {
+        @JvmField
+        val CREATOR = parcelableCreator(::DiscountDescription)
     }
 }

@@ -27,6 +27,7 @@ public interface CheckoutService {
 
 //"https://run.mocky.io/v3/22ecd520-fe81-4f79-b42f-5e4723415b14/" varios descuentos hdpi
 //"https://run.mocky.io/v3/5351208f-213d-4ef0-afd2-7729b92144da/" varios descuentos con split hdpi
+//"https://run.mocky.io/v3/c6f8cc8b-65bd-4f9e-b9d2-690a446766c7/" varios descuentos xxhdpi
 
     @POST(ENVIRONMENT + "/px_mobile/" + CHECKOUT_VERSION + "/checkout")
     MPCall<InitResponse> checkout(
