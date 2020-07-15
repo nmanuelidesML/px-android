@@ -117,8 +117,7 @@ public class AmountDescriptorView extends ConstraintLayout {
         ViewUtils
             .loadTextListOrGone(descriptor, discountOverview.getDescription(), descriptorColor.getColor(getContext()));
 
-        if (!hasSplit || !ViewUtils.isDeviceScreenSize(getContext(), Configuration.SCREENLAYOUT_SIZE_NORMAL,
-            Configuration.SCREENLAYOUT_SIZE_SMALL)) {
+        if (!hasSplit || ViewUtils.isScreenSize(getContext(), Configuration.SCREENLAYOUT_SIZE_LARGE)) {
             ViewUtils.loadTextListOrGone(brief, discountOverview.getBrief(), briefColor.getColor(getContext()));
         }
 

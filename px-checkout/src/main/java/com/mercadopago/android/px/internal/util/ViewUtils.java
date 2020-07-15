@@ -411,16 +411,7 @@ public final class ViewUtils {
         }
     }
 
-    public static boolean isDeviceScreenSize(@NonNull final Context context, final int... screenLayoutSize) {
-        final int screenLayout = context.getResources().getConfiguration().screenLayout;
-        final int sizeValue = (screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
-
-        for (int screenSizeValue: screenLayoutSize) {
-            if (screenSizeValue == sizeValue) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean isScreenSize(@NonNull final Context context, final int screenLayoutSize) {
+        return context.getResources().getConfiguration().isLayoutSizeAtLeast(screenLayoutSize);
     }
 }
