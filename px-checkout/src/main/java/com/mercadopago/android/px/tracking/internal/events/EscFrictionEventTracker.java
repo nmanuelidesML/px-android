@@ -4,13 +4,14 @@ import android.support.annotation.NonNull;
 import com.mercadopago.android.px.internal.util.ApiUtil;
 import com.mercadopago.android.px.model.Cause;
 import com.mercadopago.android.px.model.exceptions.ApiException;
+import com.mercadopago.android.px.tracking.internal.TrackWrapper;
 import com.mercadopago.android.px.tracking.internal.model.EscData;
 import java.util.List;
 
 public final class EscFrictionEventTracker extends FrictionEventTracker {
     private static final String PATH = "/px_checkout/create_esc_token";
 
-    public static EventTracker create(@NonNull final String cardId, @NonNull final CharSequence esc,
+    public static TrackWrapper create(@NonNull final String cardId, @NonNull final CharSequence esc,
         @NonNull final ApiException apiException) {
         return FrictionEventTracker.with(PATH, getFrictionIdFromApiException(apiException),
             FrictionEventTracker.Style.NON_SCREEN, EscData.with(cardId, esc, apiException).toMap());

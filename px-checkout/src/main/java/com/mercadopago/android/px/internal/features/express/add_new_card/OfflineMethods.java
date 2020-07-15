@@ -9,8 +9,6 @@ public interface OfflineMethods {
 
     interface OffMethodsView extends MvpView, PayButton.Handler {
 
-        boolean isExploding();
-
         void updateTotalView(@NonNull final AmountLocalized amountLocalized);
 
         void onSlideSheet(final float offset);
@@ -24,6 +22,6 @@ public interface OfflineMethods {
 
         void selectMethod(@NonNull final OfflineMethodItem selectedItem);
 
-        void trackAbort();
+        void onBack();
     }
 }

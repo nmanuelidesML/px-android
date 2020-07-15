@@ -14,6 +14,7 @@ import com.mercadopago.android.px.internal.viewmodel.PaymentModel
 import com.mercadopago.android.px.model.Card
 import com.mercadopago.android.px.model.PayerCost
 import com.mercadopago.android.px.model.PaymentData
+import com.mercadopago.android.px.model.PaymentRecovery
 import com.mercadopago.android.px.model.internal.InitResponse
 import com.mercadopago.android.px.model.internal.PaymentConfiguration
 import com.mercadopago.android.px.model.internal.remedies.RemedyPaymentMethod
@@ -27,7 +28,7 @@ import kotlinx.coroutines.withContext
 internal class RemediesViewModel(
     private val remediesModel: RemediesModel,
     private val previousPaymentModel: PaymentModel,
-    private val paymentRepository: PaymentRepository,
+    paymentRepository: PaymentRepository,
     private val paymentSettingRepository: PaymentSettingRepository,
     private val cardTokenRepository: CardTokenRepository,
     private val escManagerBehaviour: ESCManagerBehaviour,
@@ -35,6 +36,7 @@ internal class RemediesViewModel(
     private val amountConfigurationRepository: AmountConfigurationRepository
 ) : BaseViewModel(), Remedies.ViewModel {
 
+    private var paymentRecovery = paymentRepository.createPaymentRecovery()
     val remedyState: MutableLiveData<RemedyState> = MutableLiveData()
     private val isSilverBullet = remediesModel.retryPayment?.isAnotherMethod == true
     private var cvv = ""
@@ -142,7 +144,7 @@ internal class RemediesViewModel(
 
     private fun startCvvRecovery(callback: PayButton.OnEnqueueResolvedCallback) {
         CoroutineScope(Dispatchers.IO).launch {
-            CVVRecoveryWrapper(cardTokenRepository, escManagerBehaviour, paymentRepository.createPaymentRecovery())
+            CVVRecoveryWrapper(cardTokenRepository, escManagerBehaviour, paymentRecovery)
                 .recoverWithCVV(cvv)?.let {
                     paymentSettingRepository.configure(it)
                     withContext(Dispatchers.Main) {
@@ -173,11 +175,13 @@ internal class RemediesViewModel(
     override fun recoverFromBundle(bundle: Bundle) {
         super.recoverFromBundle(bundle)
         cvv = bundle.getString(EXTRA_CVV, "")
+        paymentRecovery = bundle.getSerializable(EXTRA_PAYMENT_RECOVERY) as PaymentRecovery
     }
 
     override fun storeInBundle(bundle: Bundle) {
         super.storeInBundle(bundle)
         bundle.putString(EXTRA_CVV, cvv)
+        bundle.putSerializable(EXTRA_PAYMENT_RECOVERY, paymentRecovery)
     }
 
     private fun getRemedyTrackData(type: RemedyType) = previousPaymentModel.payment!!.let {
@@ -200,5 +204,6 @@ internal class RemediesViewModel(
 
     companion object {
         private const val EXTRA_CVV = "extra_cvv"
+        private const val EXTRA_PAYMENT_RECOVERY = "payment_recovery"
     }
 }

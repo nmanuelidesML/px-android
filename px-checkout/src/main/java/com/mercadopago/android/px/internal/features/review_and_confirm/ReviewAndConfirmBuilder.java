@@ -16,6 +16,7 @@ import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
 import com.mercadopago.android.px.internal.util.TextUtil;
+import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.model.Issuer;
@@ -47,6 +48,7 @@ public class ReviewAndConfirmBuilder {
         final Site site = paymentSettings.getSite();
         final Currency currency = paymentSettings.getCurrency();
         final Token token = paymentSettings.getToken();
+        final Card card =  userSelectionRepository.getCard();
         final AmountRepository amountRepository = session.getAmountRepository();
         final PaymentMethod paymentMethod = userSelectionRepository.getPaymentMethod();
         final CheckoutPreference checkoutPreference = paymentSettings.getCheckoutPreference();
@@ -70,8 +72,11 @@ public class ReviewAndConfirmBuilder {
                 resources.getString(R.string.px_discount_terms_and_conditions_linked_message),
                 LineSeparatorType.BOTTOM_LINE_SEPARATOR) : null;
 
-        final ReviewAndConfirmViewModel
-            reviewAndConfirmViewModel = new ReviewAndConfirmViewModel(paymentMethod, token, issuer, hasExtraPaymentMethods);
+        final String lastFourDigits = card != null ? card.getLastFourDigits() :
+            token != null ? token.getLastFourDigits() : TextUtil.EMPTY;
+
+        final ReviewAndConfirmViewModel reviewAndConfirmViewModel =
+            new ReviewAndConfirmViewModel(paymentMethod, lastFourDigits, issuer, hasExtraPaymentMethods);
 
         final PayerCost payerCost = userSelectionRepository.getPayerCost();
         final SummaryModel summaryModel =

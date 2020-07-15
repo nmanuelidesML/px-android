@@ -1,22 +1,14 @@
 package com.mercadopago.android.px.tracking.internal.events
 
+import com.mercadopago.android.px.tracking.internal.TrackFactory
+import com.mercadopago.android.px.tracking.internal.TrackWrapper
 import com.mercadopago.android.px.tracking.internal.model.TargetBehaviourTrackData
-import com.mercadopago.android.px.tracking.internal.views.ViewTracker
 
-class TargetBehaviourEvent(private val data: TargetBehaviourTrackData) : EventTracker() {
-    private var eventPath: String? = null
+class TargetBehaviourEvent(viewTrack: TrackWrapper, data: TargetBehaviourTrackData) : TrackWrapper() {
 
-    override fun getEventPath(): String {
-        check(eventPath != null) {
-            "event path should not be null"
-        }
-        return eventPath!!
-    }
+    private val track = TrackFactory.withEvent(getPath(viewTrack)).addData(data.toMap()).build()
 
-    override fun getEventData(): MutableMap<String, Any> = data.toMap()
+    private fun getPath(viewTracker: TrackWrapper) = "${viewTracker.getTrack()?.path}/target_behaviour"
 
-    override fun trackFromView(viewTracker: ViewTracker) {
-        eventPath = "${viewTracker.viewPath}/target_behaviour"
-        track()
-    }
+    override fun getTrack() = track
 }

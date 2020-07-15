@@ -26,11 +26,14 @@ import com.mercadopago.android.px.model.Action;
 import com.mercadopago.android.px.model.IPaymentDescriptor;
 import com.mercadopago.android.px.model.Instruction;
 import com.mercadopago.android.px.model.exceptions.ApiException;
+import com.mercadopago.android.px.model.internal.CongratsResponse;
 import com.mercadopago.android.px.services.Callback;
 import com.mercadopago.android.px.tracking.internal.events.AbortEvent;
 import com.mercadopago.android.px.tracking.internal.events.ChangePaymentMethodEvent;
+import com.mercadopago.android.px.tracking.internal.events.CongratsSuccessDeepLink;
 import com.mercadopago.android.px.tracking.internal.events.ContinueEvent;
 import com.mercadopago.android.px.tracking.internal.events.CrossSellingEvent;
+import com.mercadopago.android.px.tracking.internal.events.DeepLinkType;
 import com.mercadopago.android.px.tracking.internal.events.DiscountItemEvent;
 import com.mercadopago.android.px.tracking.internal.events.DownloadAppEvent;
 import com.mercadopago.android.px.tracking.internal.events.ScoreEvent;
@@ -52,7 +55,7 @@ import java.util.List;
 
     /* default */ PaymentResultPresenter(@NonNull final PaymentSettingRepository paymentSettings,
         @NonNull final InstructionsRepository instructionsRepository, @NonNull final PaymentModel paymentModel,
-        @NonNull final FlowBehaviour flowBehaviour) {
+        @NonNull final FlowBehaviour flowBehaviour, final boolean isMP) {
         this.paymentModel = paymentModel;
         this.instructionsRepository = instructionsRepository;
         this.flowBehaviour = flowBehaviour;
@@ -60,7 +63,7 @@ import java.util.List;
         screenConfiguration =
             paymentSettings.getAdvancedConfiguration().getPaymentResultScreenConfiguration();
         resultViewTrack =
-            new ResultViewTrack(paymentModel, screenConfiguration, paymentSettings);
+            new ResultViewTrack(paymentModel, screenConfiguration, paymentSettings, isMP);
     }
 
     @Override
@@ -165,7 +168,7 @@ import java.util.List;
             new ContinueEvent(resultViewTrack).track();
             getView().finishWithResult(MercadoPagoCheckout.PAYMENT_RESULT_CODE);
         } else if (action instanceof ChangePaymentMethodAction) {
-            ChangePaymentMethodEvent.with(resultViewTrack).track();
+            new ChangePaymentMethodEvent(resultViewTrack).track();
             getView().changePaymentMethod();
         } else if (action instanceof RecoverPaymentAction) {
             getView().recoverPayment();
@@ -218,6 +221,16 @@ import java.util.List;
     public void onClickDiscountItem(final int index, @Nullable final String deepLink, @Nullable final String trackId) {
         new DiscountItemEvent(resultViewTrack, index, trackId).track();
         if (deepLink != null) {
+            getView().launchDeepLink(deepLink);
+        }
+    }
+
+    @Override
+    public void onClickMoneySplit() {
+        final CongratsResponse.MoneySplit moneySplit = paymentModel.getCongratsResponse().getMoneySplit();
+        final String deepLink;
+        if (moneySplit != null && (deepLink = moneySplit.getAction().getTarget()) != null) {
+            new CongratsSuccessDeepLink(DeepLinkType.MONEY_SPLIT_TYPE, deepLink).track();
             getView().launchDeepLink(deepLink);
         }
     }

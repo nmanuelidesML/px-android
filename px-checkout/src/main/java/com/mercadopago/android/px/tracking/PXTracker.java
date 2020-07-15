@@ -2,6 +2,10 @@ package com.mercadopago.android.px.tracking;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.mercadopago.android.px.addons.internal.TrackingDefaultBehaviour;
+import com.mercadopago.android.px.addons.model.Track;
+import com.mercadopago.android.px.addons.tracking.Tracker;
+import com.mercadopago.android.px.addons.tracking.TrackerWrapper;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.tracking.internal.MPTracker;
 import java.util.HashMap;
@@ -22,7 +26,20 @@ public final class PXTracker {
      */
     @Deprecated
     public static void setListener(@Nullable final PXEventListener listener) {
-        MPTracker.getInstance().setTracksListener(listener);
+        if (listener != null) {
+            TrackingDefaultBehaviour.INSTANCE.setTrackWrapper(new TrackerWrapper() {
+                @NonNull
+                @Override
+                public Tracker getTracker() {
+                    return Tracker.CUSTOM;
+                }
+
+                @Override
+                public void send(@NonNull final Track track) {
+                    listener.onScreenLaunched(track.getPath(), new HashMap<>());
+                }
+            });
+        }
     }
 
     /**
@@ -31,7 +48,7 @@ public final class PXTracker {
      * @param listener your listener.
      */
     public static void setListener(@Nullable final PXTrackingListener listener) {
-        setListener(listener, new HashMap<String, Object>(), null);
+        setListener(listener, new HashMap<>(), null);
     }
 
     /**
@@ -40,9 +57,29 @@ public final class PXTracker {
      * @param listener your listener.
      */
     public static void setListener(@Nullable final PXTrackingListener listener,
-        @NonNull final Map<String, ? extends Object> flowDetail, @Nullable final String flowName) {
-        MPTracker.getInstance().setPXTrackingListener(listener);
+        @NonNull final Map<String, ?> flowDetail, @Nullable final String flowName) {
         MPTracker.getInstance().setFlowDetail(flowDetail);
         Session.getInstance().getNetworkModule().getFlowIdProvider().configure(flowName);
+        if (listener != null) {
+            TrackingDefaultBehaviour.INSTANCE.setTrackWrapper(new TrackerWrapper() {
+                @NonNull
+                @Override
+                public Tracker getTracker() {
+                    return Tracker.CUSTOM;
+                }
+
+                @Override
+                public void send(@NonNull final Track track) {
+                    switch (track.getType()) {
+                    case EVENT:
+                        listener.onEvent(track.getPath(), track.getData());
+                        break;
+                    case VIEW:
+                        listener.onView(track.getPath(), track.getData());
+                        break;
+                    }
+                }
+            });
+        }
     }
 }

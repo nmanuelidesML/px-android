@@ -1,3 +1,38 @@
+## VERSION 4.51.1
+_14_07_2020_
+* FIX - Re-added session check due to integrator's bad implementation of SplitPaymentProcessor
+* FIX - Re-added session check in fragment due to integrator's bad implementation of SplitPaymentProcessor
+* ENHANCEMENT - Improved friction tracking to differentiate new frictions
+
+## VERSION 4.50.4
+_13_07_2020_
+* FIX - Re-added session check in fragment due to integrator's bad implementation of SplitPaymentProcessor
+
+## VERSION 4.50.3
+_13_07_2020_
+* FIX - Re-added session check due to integrator's bad implementation of SplitPaymentProcessor
+
+## VERSION 4.51.0
+_08_07_2020_
+* FEATURE - Added tracking behaviour to customize tracking from application
+* FIX - fixed CongratsDeepLink track path
+
+## VERSION 4.50.2
+_01_07_2020_
+* FIX - No token in remedies after guessing card flow
+
+## VERSION 4.50.1
+_01_07_2020_
+* FIX - Last four digits ends with null
+* FIX - Prevent back when pay button is exploding
+* FIX - Cloning token when no token is present (remedies)
+* FIX - GSON Concurrent modification because bad cache handling
+
+## VERSION 4.50.0
+_25_06_2020_
+* FEATURE - Money split view in congrats
+* ENHANCEMENT - Remedies tracking changes
+
 ## VERSION 4.48.6
 _24_06_2020_
 * FIX - Avoid to ask for cvv preventively on groups flow

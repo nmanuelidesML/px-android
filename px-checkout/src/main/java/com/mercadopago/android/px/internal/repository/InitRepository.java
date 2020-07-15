@@ -15,7 +15,7 @@ public interface InitRepository {
 
     MPCall<InitResponse> refreshWithNewCard(@NonNull final String cardId);
 
-    void configure(@NonNull final InitResponse initResponse);
+    void lazyConfigure(@NonNull final InitResponse initResponse);
 
     void addOnChangedListener(@NonNull final OnChangedListener listener);
 

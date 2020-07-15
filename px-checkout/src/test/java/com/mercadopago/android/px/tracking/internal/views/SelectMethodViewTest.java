@@ -62,7 +62,7 @@ public class SelectMethodViewTest {
         final SelectMethodView selectMethodView =
             new SelectMethodView(paymentMethodSearch, cardsWithEsc, checkoutPreference, DISABLED_METHODS_QUANTITY);
 
-        assertEquals(EXPECTED_PATH, selectMethodView.getViewPath());
+        assertEquals(EXPECTED_PATH, selectMethodView.getTrack().getPath());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class SelectMethodViewTest {
         final SelectMethodView selectMethodView =
             new SelectMethodView(paymentMethodSearch, cardsWithEsc, checkoutPreference, DISABLED_METHODS_QUANTITY);
 
-        assertEquals(EXPECTED_ONE_CARD_SAVED_WITH_ESC, selectMethodView.getData().toString());
+        assertEquals(EXPECTED_ONE_CARD_SAVED_WITH_ESC, selectMethodView.getTrack().getData().toString());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class SelectMethodViewTest {
         final SelectMethodView selectMethodView =
             new SelectMethodView(paymentMethodSearch, cardsWithEsc, checkoutPreference, DISABLED_METHODS_QUANTITY);
 
-        assertEquals(EXPECTED_ONE_CARD_SAVED_NO_ESC, selectMethodView.getData().toString());
+        assertEquals(EXPECTED_ONE_CARD_SAVED_NO_ESC, selectMethodView.getTrack().getData().toString());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class SelectMethodViewTest {
         final SelectMethodView selectMethodView =
             new SelectMethodView(paymentMethodSearch, cardsWithEsc, checkoutPreference, DISABLED_METHODS_QUANTITY);
 
-        assertEquals(EXPECTED_JUST_ACCOUNT_MONEY, selectMethodView.getData().toString());
+        assertEquals(EXPECTED_JUST_ACCOUNT_MONEY, selectMethodView.getTrack().getData().toString());
     }
 
     @Test
@@ -113,6 +113,6 @@ public class SelectMethodViewTest {
         final SelectMethodView selectMethodView =
             new SelectMethodView(paymentMethodSearch, cardsWithEsc, checkoutPreference, DISABLED_METHODS_QUANTITY);
 
-        assertEquals(EXPECTED_JUST_ONE_GROUP, selectMethodView.getData().toString());
+        assertEquals(EXPECTED_JUST_ONE_GROUP, selectMethodView.getTrack().getData().toString());
     }
 }

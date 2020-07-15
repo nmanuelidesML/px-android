@@ -50,6 +50,7 @@ import static android.content.Intent.FLAG_ACTIVITY_FORWARD_RESULT;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_ACTION;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_CUSTOM_EXIT;
 import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.getSafeIntent;
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMP;
 
 public class PaymentResultActivity extends PXActivity<PaymentResultPresenter> implements
     PaymentResultContract.View, PayButton.Handler, RemediesFragment.Listener {
@@ -85,8 +86,7 @@ public class PaymentResultActivity extends PXActivity<PaymentResultPresenter> im
     }
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         setContentView(R.layout.px_activity_payment_result);
 
         footer = findViewById(R.id.remedies_footer);
@@ -114,7 +114,7 @@ public class PaymentResultActivity extends PXActivity<PaymentResultPresenter> im
         final Session session = Session.getInstance();
 
         return new PaymentResultPresenter(session.getConfigurationModule().getPaymentSettings(),
-            session.getInstructionsRepository(), paymentModel, BehaviourProvider.getFlowBehaviour());
+            session.getInstructionsRepository(), paymentModel, BehaviourProvider.getFlowBehaviour(), isMP(this));
     }
 
     @Override

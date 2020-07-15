@@ -20,6 +20,7 @@ import com.mercadopago.android.px.model.exceptions.ApiException;
 import com.mercadopago.android.px.model.exceptions.CardTokenException;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.tracking.internal.MPTracker;
+import com.mercadopago.android.px.tracking.internal.model.Reason;
 import com.mercadopago.android.px.utils.StubFailMpCall;
 import com.mercadopago.android.px.utils.StubSuccessMpCall;
 import java.util.UUID;
@@ -52,7 +53,8 @@ public class SecurityCodePresenterTest {
     @Mock private ESCManagerBehaviour escManagerBehaviour;
     @Mock private Card card;
     @Mock private PaymentRecovery paymentRecovery;
-    @Mock CardInfo cardInfo;
+    @Mock private CardInfo cardInfo;
+    @Mock private Reason reason;
 
     private Token stubToken;
     private PaymentMethod stubPaymentMethod;
@@ -365,6 +367,7 @@ public class SecurityCodePresenterTest {
         presenter.setPaymentRecovery(paymentRecovery);
         presenter.setPaymentMethod(stubPaymentMethod);
         presenter.setCardInfo(cardInfo);
+        presenter.setReason(reason);
 
         return presenter;
     }

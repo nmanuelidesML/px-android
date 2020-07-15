@@ -34,6 +34,8 @@
                     android:scheme="mercadopago"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.mercadopago.android.px.addons.MockFingerprintActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
     </application>
 
 </manifest>

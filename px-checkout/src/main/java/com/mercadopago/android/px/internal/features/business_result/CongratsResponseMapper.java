@@ -2,6 +2,7 @@ package com.mercadopago.android.px.internal.features.business_result;
 
 import android.support.annotation.NonNull;
 import com.mercadolibre.android.mlbusinesscomponents.common.MLBusinessSingleItem;
+import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardViewData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppView;
 import com.mercadolibre.android.mlbusinesscomponents.components.crossselling.MLBusinessCrossSellingBoxData;
@@ -40,6 +41,7 @@ public class CongratsResponseMapper extends Mapper<CongratsResponse, CongratsVie
         final CongratsResponse.Discount discount = congratsResponse.getDiscount();
         return new CongratsViewModel(getLoyaltyData(congratsResponse.getScore()),
             getDiscountBoxData(discount), getShowAllDiscount(discount), getDownloadAppData(discount),
+            getMoneySplitData(congratsResponse.getMoneySplit()),
             getCrossSellingBoxData(congratsResponse.getCrossSellings()), congratsResponse.getTopTextBox(),
             congratsResponse.getViewReceipt(), congratsResponse.hasCustomOrder());
     }
@@ -303,5 +305,10 @@ public class CongratsResponseMapper extends Mapper<CongratsResponse, CongratsVie
         }
 
         return crossSellingBoxData;
+    }
+
+    @Nullable
+    private MLBusinessActionCardViewData getMoneySplitData(@Nullable final CongratsResponse.MoneySplit moneySplit) {
+        return MLBusinessMapper.map(moneySplit);
     }
 }

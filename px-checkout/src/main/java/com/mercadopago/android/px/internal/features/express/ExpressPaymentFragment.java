@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import com.mercadolibre.android.cardform.internal.CardFormWithFragment;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.core.BackHandler;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
 import com.mercadopago.android.px.internal.di.ConfigurationModule;
 import com.mercadopago.android.px.internal.di.MapperProvider;
@@ -84,7 +85,7 @@ import static com.mercadopago.android.px.internal.features.express.slider.Paymen
 public class ExpressPaymentFragment extends Fragment implements ExpressPayment.View, ViewPager.OnPageChangeListener,
     InstallmentsAdapter.ItemListener, SplitPaymentHeaderAdapter.SplitListener,
     PaymentMethodFragment.DisabledDetailDialogLauncher, OtherPaymentMethodFragment.OnOtherPaymentMethodClickListener,
-    TitlePagerAdapter.InstallmentChanged, PayButton.Handler, GenericDialog.Listener {
+    TitlePagerAdapter.InstallmentChanged, PayButton.Handler, GenericDialog.Listener, BackHandler {
 
     private static final String TAG = ExpressPaymentFragment.class.getSimpleName();
     public static final String TAG_OFFLINE_METHODS_FRAGMENT = "TAG_OFFLINE_METHODS_FRAGMENT";
@@ -139,6 +140,15 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
     @Override
     public void onPostPaymentAction(@NonNull final PostPaymentAction postPaymentAction) {
         presenter.onPostPaymentAction(postPaymentAction);
+    }
+
+    @Override
+    public boolean handleBack() {
+        final boolean isExploding = payButtonFragment.isExploding();
+        if (!isExploding) {
+            presenter.onBack();
+        }
+        return isExploding;
     }
 
     public interface CallBack {
@@ -291,7 +301,6 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
                 @Override
                 public void onStateChanged(@NonNull final View view, final int state) {
                     if (manager != null && state == BottomSheetBehavior.STATE_HIDDEN) {
-                        presenter.trackAbort();
                         manager.popBackStackImmediate();
                     }
                 }
@@ -399,7 +408,9 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
         expandAndCollapseAnimation = null;
         slideDownAndFadeAnimation = null;
         slideUpAndFadeAnimation = null;
-        presenter.detachView();
+        if(presenter!=null) {
+            presenter.detachView();
+        }
         super.onDetach();
     }
 

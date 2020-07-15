@@ -30,6 +30,7 @@ import com.mercadopago.android.px.model.exceptions.MercadoPagoError
 import com.mercadopago.android.px.model.exceptions.NoConnectivityException
 import com.mercadopago.android.px.model.internal.PaymentConfiguration
 import com.mercadopago.android.px.internal.model.SecurityType
+import com.mercadopago.android.px.tracking.internal.events.BiometricsFrictionTracker
 import com.mercadopago.android.px.tracking.internal.events.ConfirmEvent
 import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker
 import com.mercadopago.android.px.tracking.internal.model.ConfirmData
@@ -108,9 +109,7 @@ internal class PayButtonViewModel(
             paymentSettingRepository.configure(if (securityRequested) SecurityType.SECOND_FACTOR else SecurityType.NONE)
             startPayment()
         } else {
-            FrictionEventTracker
-                .with(OneTapViewTracker.PATH_REVIEW_ONE_TAP_VIEW, FrictionEventTracker.Id.GENERIC,
-                    FrictionEventTracker.Style.CUSTOM_COMPONENT).track()
+            BiometricsFrictionTracker.track()
         }
     }
 

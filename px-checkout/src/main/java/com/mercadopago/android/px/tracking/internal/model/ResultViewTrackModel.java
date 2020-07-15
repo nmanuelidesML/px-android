@@ -15,6 +15,8 @@ import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.tracking.internal.mapper.FromDiscountItemToItemId;
 import java.math.BigDecimal;
 
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMP;
+
 public final class ResultViewTrackModel extends TrackingMapModel {
 
     private final String style;
@@ -35,6 +37,7 @@ public final class ResultViewTrackModel extends TrackingMapModel {
     private boolean hasBottomView;
     private boolean hasTopView;
     private boolean hasImportantView;
+    private boolean hasMoneySplitView;
 
     private enum Style {
         GENERIC("generic"),
@@ -49,18 +52,20 @@ public final class ResultViewTrackModel extends TrackingMapModel {
 
     public ResultViewTrackModel(@NonNull final PaymentModel paymentModel,
         @NonNull final PaymentResultScreenConfiguration screenConfiguration,
-        @NonNull final CheckoutPreference checkoutPreference, @NonNull final String currencyId) {
+        @NonNull final CheckoutPreference checkoutPreference, @NonNull final String currencyId, final boolean isMP) {
         this(Style.GENERIC, paymentModel, checkoutPreference, currencyId);
         hasBottomView = screenConfiguration.hasBottomFragment();
         hasTopView = screenConfiguration.hasTopFragment();
         hasImportantView = false;
+        hasMoneySplitView = isMP && paymentModel.getCongratsResponse().getMoneySplit() != null;
     }
 
     public ResultViewTrackModel(@NonNull final BusinessPaymentModel paymentModel,
-        @NonNull final CheckoutPreference checkoutPreference, @NonNull final String currencyId) {
+        @NonNull final CheckoutPreference checkoutPreference, @NonNull final String currencyId, final boolean isMP) {
         this(Style.CUSTOM, paymentModel, checkoutPreference, currencyId);
         hasBottomView = paymentModel.getPayment().hasBottomFragment();
         hasTopView = paymentModel.getPayment().hasTopFragment();
+        hasMoneySplitView = isMP && paymentModel.getCongratsResponse().getMoneySplit() != null;
     }
 
     private ResultViewTrackModel(@NonNull final Style style, @NonNull final PaymentModel paymentModel,

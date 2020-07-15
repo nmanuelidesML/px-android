@@ -5,8 +5,10 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.mercadopago.android.px.addons.ESCManagerBehaviour;
 import com.mercadopago.android.px.addons.FakeEscManagerBehaviourImpl;
 import com.mercadopago.android.px.addons.FakeLocaleBehaviourImpl;
+import com.mercadopago.android.px.addons.MockSecurityBehaviour;
 import com.mercadopago.android.px.addons.PXBehaviourConfigurer;
 import com.mercadopago.android.px.di.Dependencies;
 import com.mercadopago.android.px.internal.util.HttpClientUtil;
@@ -46,8 +48,10 @@ public class SampleApplication extends Application {
 
         Dependencies.getInstance().initialize(getApplicationContext());
 
+        final ESCManagerBehaviour escManagerBehaviour = new FakeEscManagerBehaviourImpl();
         new PXBehaviourConfigurer()
-            .with(new FakeEscManagerBehaviourImpl())
+            .with(new MockSecurityBehaviour(escManagerBehaviour))
+            .with(escManagerBehaviour)
             .with(FakeLocaleBehaviourImpl.INSTANCE)
             .configure();
     }

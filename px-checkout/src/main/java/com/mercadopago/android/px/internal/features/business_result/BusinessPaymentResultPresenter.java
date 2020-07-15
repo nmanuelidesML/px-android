@@ -12,10 +12,13 @@ import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.mappers.FlowBehaviourResultMapper;
 import com.mercadopago.android.px.model.Action;
 import com.mercadopago.android.px.model.ExitAction;
+import com.mercadopago.android.px.model.internal.CongratsResponse;
 import com.mercadopago.android.px.model.internal.PrimaryExitAction;
 import com.mercadopago.android.px.model.internal.SecondaryExitAction;
 import com.mercadopago.android.px.tracking.internal.events.AbortEvent;
+import com.mercadopago.android.px.tracking.internal.events.CongratsSuccessDeepLink;
 import com.mercadopago.android.px.tracking.internal.events.CrossSellingEvent;
+import com.mercadopago.android.px.tracking.internal.events.DeepLinkType;
 import com.mercadopago.android.px.tracking.internal.events.DiscountItemEvent;
 import com.mercadopago.android.px.tracking.internal.events.DownloadAppEvent;
 import com.mercadopago.android.px.tracking.internal.events.PrimaryActionEvent;
@@ -33,10 +36,10 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     private final FlowBehaviour flowBehaviour;
 
     /* default */ BusinessPaymentResultPresenter(@NonNull final PaymentSettingRepository paymentSettings,
-        @NonNull final BusinessPaymentModel model, @NonNull final FlowBehaviour flowBehaviour) {
+        @NonNull final BusinessPaymentModel model, @NonNull final FlowBehaviour flowBehaviour, final boolean isMP) {
         this.model = model;
         this.flowBehaviour = flowBehaviour;
-        viewTracker = new ResultViewTrack(model, paymentSettings);
+        viewTracker = new ResultViewTrack(model, paymentSettings, isMP);
     }
 
     @Override
@@ -103,9 +106,9 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     }
 
     @Override
-    public void onClickViewReceipt(@NonNull final String deeLink) {
+    public void onClickViewReceipt(@NonNull final String deepLink) {
         new ViewReceiptEvent(viewTracker).track();
-        getView().launchDeepLink(deeLink);
+        getView().launchDeepLink(deepLink);
     }
 
     @Override
@@ -120,6 +123,16 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     public void onClickDiscountItem(final int index, @Nullable final String deepLink, @Nullable final String trackId) {
         new DiscountItemEvent(viewTracker, index, trackId).track();
         if (deepLink != null) {
+            getView().launchDeepLink(deepLink);
+        }
+    }
+
+    @Override
+    public void onClickMoneySplit() {
+        final CongratsResponse.MoneySplit moneySplit = model.getCongratsResponse().getMoneySplit();
+        final String deepLink;
+        if (moneySplit != null && (deepLink = moneySplit.getAction().getTarget()) !=  null) {
+            new CongratsSuccessDeepLink(DeepLinkType.MONEY_SPLIT_TYPE, deepLink).track();
             getView().launchDeepLink(deepLink);
         }
     }

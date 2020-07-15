@@ -36,6 +36,7 @@ import com.mercadopago.android.px.model.exceptions.CardTokenException;
 import com.mercadopago.android.px.model.exceptions.InvalidFieldException;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker;
+import com.mercadopago.android.px.tracking.internal.events.GuessingCardFrictionTracker;
 import com.mercadopago.android.px.tracking.internal.views.CardHolderNameViewTracker;
 import com.mercadopago.android.px.tracking.internal.views.CardNumberViewTracker;
 import com.mercadopago.android.px.tracking.internal.views.CvvGuessingViewTracker;
@@ -324,10 +325,9 @@ public abstract class GuessingCardPresenter extends BasePresenter<GuessingCard.V
     }
 
     private void trackInvalidDocument() {
-        FrictionEventTracker.with(FrictionEventTracker.Id.INVALID_DOCUMENT,
+        new GuessingCardFrictionTracker(FrictionEventTracker.Id.INVALID_DOCUMENT,
             new IdentificationViewTracker(getPaymentMethod().getPaymentTypeId(),
-                getPaymentMethod().getId()), FrictionEventTracker.Style.CUSTOM_COMPONENT,
-            getPaymentMethod()).track();
+            getPaymentMethod().getId()), getPaymentMethod()).track();
     }
 
     @Override
@@ -365,11 +365,9 @@ public abstract class GuessingCardPresenter extends BasePresenter<GuessingCard.V
             getView().clearErrorView();
             return true;
         } else {
-
-            FrictionEventTracker.with(FrictionEventTracker.Id.INVALID_NAME,
+            new GuessingCardFrictionTracker(FrictionEventTracker.Id.INVALID_NAME,
                 new CardHolderNameViewTracker(getPaymentMethod().getPaymentTypeId(),
-                    getPaymentMethod().getId()), FrictionEventTracker.Style.CUSTOM_COMPONENT,
-                getPaymentMethod()).track();
+                    getPaymentMethod().getId()), getPaymentMethod()).track();
 
             getView().setInvalidEmptyNameErrorView();
             getView().setErrorCardholderName();
@@ -388,12 +386,9 @@ public abstract class GuessingCardPresenter extends BasePresenter<GuessingCard.V
             getView().clearErrorView();
             return true;
         } else {
-            FrictionEventTracker
-                .with(FrictionEventTracker.Id.INVALID_EXP_DATE,
-                    new ExpirationDateViewTracker(getPaymentMethod().getPaymentTypeId(), getPaymentMethod().getId()),
-                    FrictionEventTracker.Style.CUSTOM_COMPONENT,
-                    getPaymentMethod())
-                .track();
+            new GuessingCardFrictionTracker(FrictionEventTracker.Id.INVALID_EXP_DATE,
+                new ExpirationDateViewTracker(getPaymentMethod().getPaymentTypeId(), getPaymentMethod().getId()),
+                getPaymentMethod()).track();
             getView().setInvalidExpiryDateErrorView();
             getView().setErrorExpiryDate();
             return false;
@@ -679,11 +674,9 @@ public abstract class GuessingCardPresenter extends BasePresenter<GuessingCard.V
             getView().clearErrorView();
             return true;
         } catch (final CardTokenException e) {
-
-            FrictionEventTracker.with(FrictionEventTracker.Id.INVALID_CVV,
+            new GuessingCardFrictionTracker(FrictionEventTracker.Id.INVALID_CVV,
                 new CvvGuessingViewTracker(getPaymentMethod().getPaymentTypeId(),
-                    getPaymentMethod().getId()), FrictionEventTracker.Style.CUSTOM_COMPONENT, getPaymentMethod())
-                .track();
+                    getPaymentMethod().getId()), getPaymentMethod()).track();
 
             setCardSecurityCodeErrorView(e);
 
@@ -716,12 +709,8 @@ public abstract class GuessingCardPresenter extends BasePresenter<GuessingCard.V
             getView().clearErrorView();
             return true;
         } catch (final CardTokenException e) {
-
-            FrictionEventTracker
-                .with(FrictionEventTracker.Id.INVALID_CC_NUMBER,
-                    new CardNumberViewTracker(),
-                    FrictionEventTracker.Style.CUSTOM_COMPONENT,
-                    getPaymentMethod());
+            new GuessingCardFrictionTracker(FrictionEventTracker.Id.INVALID_CC_NUMBER,
+                    new CardNumberViewTracker(), getPaymentMethod()).track();
 
             getView().setErrorView(e);
             getView().setErrorCardNumber();

@@ -10,7 +10,7 @@ class Track(builder: Builder) {
     val applicationContext: String
     val type: Type
     val path: String
-    val data: Map<String, Any>
+    val data: Map<String, Any?>
     val experiments: List<Experiment>
 
     init {
@@ -40,7 +40,7 @@ class Track(builder: Builder) {
      */
     class Builder(tracker: Tracker, val applicationContext: String, val type: Type, val path: String) {
 
-        val data = mutableMapOf<String, Any>()
+        val data = mutableMapOf<String, Any?>()
         val experiments: MutableSet<Experiment> = mutableSetOf()
         var trackersMask = tracker.bit
 
@@ -67,6 +67,8 @@ class Track(builder: Builder) {
         /**
          * add the data to be tracked
          */
-        fun addData(data: Map<String, Any>) = apply { this.data.putAll(data) }
+        fun addData(data: Map<String, Any?>) = apply { this.data.putAll(data) }
+
+        fun build() = Track(this)
     }
 }

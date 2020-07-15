@@ -17,6 +17,7 @@ import com.mercadolibre.android.ui.widgets.MeliButton
 import com.mercadolibre.android.ui.widgets.MeliSnackbar
 import com.mercadopago.android.px.R
 import com.mercadopago.android.px.addons.BehaviourProvider
+import com.mercadopago.android.px.addons.internal.SecurityValidationHandler
 import com.mercadopago.android.px.addons.model.SecurityValidationData
 import com.mercadopago.android.px.internal.di.Session
 import com.mercadopago.android.px.internal.features.Constants
@@ -33,10 +34,11 @@ import com.mercadopago.android.px.internal.viewmodel.PostPaymentAction
 import com.mercadopago.android.px.model.Card
 import com.mercadopago.android.px.model.PaymentRecovery
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError
+import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker
 import com.mercadopago.android.px.tracking.internal.model.Reason
 import com.mercadopago.android.px.internal.viewmodel.PayButtonViewModel as ButtonConfig
 
-class PayButtonFragment : Fragment(), PayButton.View {
+class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler {
 
     private var buttonStatus = MeliButton.State.NORMAL
     private lateinit var button: MeliButton
@@ -136,12 +138,16 @@ class PayButtonFragment : Fragment(), PayButton.View {
         viewModel.hasFinishPaymentAnimation()
     }
 
+    override fun onSecurityValidated(isSuccess: Boolean, securityValidated: Boolean) {
+        viewModel.handleBiometricsResult(isSuccess, securityValidated)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQ_CODE_BIOMETRICS) {
             val securityRequested = data?.getBooleanExtra(
                 BehaviourProvider.getSecurityBehaviour().extraResultKey, false) ?: false
             enable()
-            viewModel.handleBiometricsResult(resultCode == Activity.RESULT_OK, securityRequested)
+            onSecurityValidated(resultCode == Activity.RESULT_OK, securityRequested)
         } else if (requestCode == REQ_CODE_SECURITY_CODE) {
             cancelLoading()
             if (resultCode == Activity.RESULT_OK) {
@@ -181,13 +187,18 @@ class PayButtonFragment : Fragment(), PayButton.View {
     private fun startLoadingButton(paymentTimeout: Int, buttonConfig: ButtonConfig) {
         context?.let {
             button.post {
-                val explodeParams = ExplodingFragment.getParams(button, buttonConfig.getButtonProgressText(it),
-                    paymentTimeout)
-                val explodingFragment = ExplodingFragment.newInstance(explodeParams)
-                childFragmentManager.beginTransaction()
-                    .add(R.id.exploding_frame, explodingFragment, ExplodingFragment.TAG)
-                    .commitNowAllowingStateLoss()
-                hideConfirmButton()
+                if (!isAdded) {
+                    FrictionEventTracker.with("/px_checkout/pay_button_loading", FrictionEventTracker.Id.GENERIC,
+                        FrictionEventTracker.Style.SCREEN, emptyMap<String, String>())
+                } else {
+                    val explodeParams = ExplodingFragment.getParams(button, buttonConfig.getButtonProgressText(it),
+                        paymentTimeout)
+                    val explodingFragment = ExplodingFragment.newInstance(explodeParams)
+                    childFragmentManager.beginTransaction()
+                        .add(R.id.exploding_frame, explodingFragment, ExplodingFragment.TAG)
+                        .commitNowAllowingStateLoss()
+                    hideConfirmButton()
+                }
             }
         }
     }

@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardView;
+import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardViewData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.dividingline.MLBusinessDividingLineView;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppView;
@@ -32,6 +34,7 @@ import com.mercadopago.android.px.model.internal.Action;
 import com.mercadopago.android.px.model.internal.Text;
 import java.util.List;
 
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMP;
 import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMPInstalled;
 
 public final class PaymentResultBody extends LinearLayout {
@@ -46,6 +49,8 @@ public final class PaymentResultBody extends LinearLayout {
         void onClickViewReceipt(@NonNull final String deeLink);
 
         void onClickTouchPoint(@Nullable String deepLink);
+
+        void onClickMoneySplit();
 
         @Override
         default void onClick(@Nullable final String deepLink) {
@@ -81,6 +86,7 @@ public final class PaymentResultBody extends LinearLayout {
         renderDiscounts(model.congratsViewModel.getDiscountBoxData(), listener);
         renderShowAllDiscounts(model.congratsViewModel.getShowAllDiscounts(), listener);
         renderDownload(model.congratsViewModel.getDownloadAppData(), listener);
+        renderMoneySplit(model.congratsViewModel.getActionCardViewData(), listener);
         renderCrossSellingBox(model.congratsViewModel.getCrossSellingBoxData(), listener);
         renderReceipt(model.receiptId);
         renderHelp(model.help);
@@ -143,6 +149,18 @@ public final class PaymentResultBody extends LinearLayout {
             discountBoxView.init(discountData.getDiscountBoxData(), onClickDiscountBox);
         } else {
             dividingView.setVisibility(GONE);
+        }
+    }
+
+    private void renderMoneySplit(@Nullable final MLBusinessActionCardViewData actionCardViewData,
+        @NonNull final Listener listener) {
+        final MLBusinessActionCardView moneySplitView = findViewById(R.id.money_split_view);
+        if (actionCardViewData != null && isMP(getContext())) {
+            moneySplitView.setVisibility(VISIBLE);
+            moneySplitView.init(actionCardViewData);
+            moneySplitView.setOnClickListener(v -> listener.onClickMoneySplit());
+        } else {
+            moneySplitView.setVisibility(GONE);
         }
     }
 

@@ -22,6 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +43,7 @@ public class OneTapViewTest {
     public void verifyPath() {
         assertEquals(EXPECTED_PATH,
             new OneTapViewTracker(Collections.EMPTY_LIST, checkoutPreference, discountModel, Collections.emptySet(),
-                Collections.emptySet(), DISABLED_METHODS_QUANTITY).getViewPath());
+                Collections.emptySet(), DISABLED_METHODS_QUANTITY).getTrack().getPath());
     }
 
     @Test
@@ -61,12 +62,11 @@ public class OneTapViewTest {
             new OneTapViewTracker(Collections.EMPTY_LIST, checkoutPreference, discountModel, Collections.emptySet(),
                 Collections.emptySet(), DISABLED_METHODS_QUANTITY);
         tracker.track();
-        final Map<String, Object> data = emptyOneTapData((long) tracker.getData().get("session_time"));
-        verify(listener).onView(EXPECTED_PATH, data);
+        verify(listener).onView(eq(EXPECTED_PATH), eq(expectedOneTapData()));
     }
 
     @NonNull
-    private Map<String, Object> emptyOneTapData(final long sessionTime) {
+    private Map<String, Object> expectedOneTapData() {
         final Map<String, Object> data = new HashMap<>();
         data.put("discount", JsonUtil.fromJson("{}", DiscountInfo.class).toMap());
         data.put("available_methods", Collections.EMPTY_LIST);
@@ -77,7 +77,7 @@ public class OneTapViewTest {
         data.put("preference_amount", null);
         data.put("session_id", null);
         data.put("flow_detail", Collections.EMPTY_MAP);
-        data.put("session_time", sessionTime);
+        data.put("session_time", 0L);
         data.put("checkout_type", "one_tap");
         data.put("security_enabled", false);
         data.put("experiments", "");

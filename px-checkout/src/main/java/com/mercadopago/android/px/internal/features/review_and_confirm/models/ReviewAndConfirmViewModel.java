@@ -2,6 +2,7 @@ package com.mercadopago.android.px.internal.features.review_and_confirm.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import com.mercadopago.android.px.model.Issuer;
 import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.Token;
@@ -16,10 +17,9 @@ public class ReviewAndConfirmViewModel implements Parcelable {
     public final String paymentMethodName;
     private final String paymentType;
     public final long issuerId;
-    private final String cardId;
 
     public ReviewAndConfirmViewModel(final PaymentMethod paymentMethod,
-        final Token token,
+        @NonNull final String lastFourDigits,
         final Issuer issuer,
         final boolean moreThanOnePaymentMethod) {
 
@@ -28,8 +28,7 @@ public class ReviewAndConfirmViewModel implements Parcelable {
         paymentType = paymentMethod.getPaymentTypeId();
         accreditationTime = paymentMethod.getAccreditationTime();
         //Token and issuer are not always available
-        lastFourDigits = token != null ? token.getLastFourDigits() : null;
-        cardId = token != null ? token.getCardId() : null;
+        this.lastFourDigits = lastFourDigits;
         issuerName = issuer != null ? issuer.getName() : null;
         issuerId = issuer != null ? issuer.getId() : 0L;
         this.moreThanOnePaymentMethod = moreThanOnePaymentMethod;
@@ -48,7 +47,6 @@ public class ReviewAndConfirmViewModel implements Parcelable {
         paymentMethodName = in.readString();
         paymentType = in.readString();
         issuerId = in.readLong();
-        cardId = in.readString();
     }
 
     public static final Creator<ReviewAndConfirmViewModel> CREATOR = new Creator<ReviewAndConfirmViewModel>() {
@@ -71,10 +69,6 @@ public class ReviewAndConfirmViewModel implements Parcelable {
         return paymentType;
     }
 
-    public String getCardId() {
-        return cardId;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -95,6 +89,5 @@ public class ReviewAndConfirmViewModel implements Parcelable {
         dest.writeString(paymentMethodName);
         dest.writeString(paymentType);
         dest.writeLong(issuerId);
-        dest.writeString(cardId);
     }
 }

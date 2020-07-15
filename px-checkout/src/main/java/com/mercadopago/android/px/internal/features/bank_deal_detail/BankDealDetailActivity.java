@@ -27,8 +27,7 @@ public class BankDealDetailActivity extends PXActivity<BankDealDetailPresenter> 
     private TextView logoName;
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         setContentView(R.layout.px_activity_bank_deal_detail);
         createPresenter();
         initializeControls();

@@ -71,6 +71,19 @@
         android:layout_marginLeft="@dimen/px_l_margin"
         android:layout_marginStart="@dimen/px_l_margin"/>
 
+    <com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardView
+        android:id="@+id/money_split_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="6dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardBackgroundColor="@color/ui_meli_white"
+        android:layout_marginTop="@dimen/px_m_margin"
+        android:layout_marginBottom="@dimen/px_m_margin"
+        android:layout_marginEnd="@dimen/px_l_margin"
+        android:layout_marginStart="@dimen/px_l_margin"/>
+
     <com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppView
         android:id="@+id/downloadView"
         android:layout_width="match_parent"

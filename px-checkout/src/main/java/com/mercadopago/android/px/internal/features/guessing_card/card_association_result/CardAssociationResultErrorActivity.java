@@ -28,8 +28,7 @@ public class CardAssociationResultErrorActivity extends PXActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         final Intent intent = getIntent();
         accessToken = intent.getStringExtra(PARAM_ACCESS_TOKEN);
 

@@ -1,12 +1,13 @@
 package com.mercadopago.android.px.tracking.internal.events
 
+import com.mercadopago.android.px.tracking.internal.TrackFactory
+import com.mercadopago.android.px.tracking.internal.TrackWrapper
 import com.mercadopago.android.px.tracking.internal.model.GenericDialogTrackData
 
-class GenericDialogOpenEvent(private val data: GenericDialogTrackData.Open) : EventTracker() {
+class GenericDialogOpenEvent(data: GenericDialogTrackData.Open) : TrackWrapper() {
 
-    override fun getEventPath(): String {
-        return "${BASE_PATH}/dialog/open"
-    }
+    private val track = TrackFactory.withEvent("${BASE_PATH}/dialog/open")
+        .addData(data.toMap()).build()
 
-    override fun getEventData(): MutableMap<String, Any> = data.toMap()
+    override fun getTrack() = track
 }

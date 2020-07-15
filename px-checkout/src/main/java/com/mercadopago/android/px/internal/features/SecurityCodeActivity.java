@@ -122,8 +122,7 @@ public class SecurityCodeActivity extends PXActivity<SecurityCodePresenter> impl
     }
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         final Session session = Session.getInstance();
         final PaymentSettingRepository paymentSettings = session.getConfigurationModule().getPaymentSettings();
         presenter = new SecurityCodePresenter(paymentSettings, session.getCardTokenRepository(),

@@ -27,7 +27,6 @@ import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.pay_button.PayButton;
 import com.mercadopago.android.px.internal.features.pay_button.PayButtonFragment;
 import com.mercadopago.android.px.internal.font.PxFont;
-import com.mercadopago.android.px.internal.util.FragmentUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.internal.viewmodel.AmountLocalized;
@@ -170,15 +169,11 @@ public class OfflineMethodsFragment extends BaseFragment<OfflineMethodsPresenter
 
     @Override
     public boolean handleBack() {
-        if (getFragmentManager() != null && !isExploding()) {
-            presenter.trackAbort();
+        final boolean isExploding = payButtonFragment.isExploding();
+        if (!isExploding) {
+            presenter.onBack();
         }
-        return !isExploding();
-    }
-
-    @Override
-    public boolean isExploding() {
-        return FragmentUtil.isFragmentVisible(getFragmentManager(), TAG_EXPLODING_FRAGMENT);
+        return isExploding;
     }
 
     interface OnMethodSelectedListener {

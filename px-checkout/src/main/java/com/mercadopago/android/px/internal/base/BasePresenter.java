@@ -3,11 +3,10 @@ package com.mercadopago.android.px.internal.base;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.mercadopago.android.px.tracking.internal.TrackWrapper;
 import com.mercadopago.android.px.tracking.internal.TrackingContract;
 import com.mercadopago.android.px.tracking.internal.events.AbortEvent;
 import com.mercadopago.android.px.tracking.internal.events.BackEvent;
-import com.mercadopago.android.px.tracking.internal.events.EventTracker;
-import com.mercadopago.android.px.tracking.internal.views.ViewTracker;
 import java.lang.ref.WeakReference;
 
 /**
@@ -17,11 +16,10 @@ import java.lang.ref.WeakReference;
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class BasePresenter<V extends MvpView> {
 
-    @Nullable private transient WeakReference<V> mView;
-    @Nullable /* default */ transient ViewTracker viewTracker;
+    @Nullable private WeakReference<V> mView;
+    @Nullable protected TrackWrapper viewTracker;
 
-    protected final transient TrackingContract tracker = new TrackingContract() {
-
+    protected final TrackingContract tracker = new TrackingContract() {
         @Override
         public void trackAbort() {
             if (viewTracker != null) {
@@ -35,16 +33,9 @@ public abstract class BasePresenter<V extends MvpView> {
                 new BackEvent(viewTracker).track();
             }
         }
-
-        @Override
-        public void trackEvent(@NonNull final EventTracker eventTracker) {
-            if (viewTracker != null) {
-                eventTracker.trackFromView(viewTracker);
-            }
-        }
     };
 
-    protected final void setCurrentViewTracker(@NonNull final ViewTracker viewTracker) {
+    protected final void setCurrentViewTracker(@NonNull final TrackWrapper viewTracker) {
         this.viewTracker = viewTracker;
         viewTracker.track();
     }

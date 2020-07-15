@@ -13,7 +13,7 @@ public interface TrackingBehaviour {
      * @deprecated use application context in class {@link com.mercadopago.android.px.addons.model.Track}
      */
     @Deprecated
-    void setApplicationContext(@NonNull final String applicationContext);
+    default void setApplicationContext(@NonNull final String applicationContext) { }
 
     /**
      * This method is called when a new view is shown to the user.
@@ -25,7 +25,7 @@ public interface TrackingBehaviour {
      * @deprecated use {@link #track(Track)} instead
      */
     @Deprecated
-    void onView(@NonNull final String path, @NonNull final Map<String, ?> data);
+    default void onView(@NonNull final String path, @NonNull final Map<String, ?> data) { }
 
     /**
      * This method is called when a new event is launched by the user.
@@ -38,14 +38,12 @@ public interface TrackingBehaviour {
      * @deprecated use {@link #track(Track)} instead
      */
     @Deprecated
-    void onEvent(@NonNull final String path, @NonNull final Map<String, ?> data);
+    default void onEvent(@NonNull final String path, @NonNull final Map<String, ?> data) { }
 
     /**
      * This method is called when a new track is meant to be tracked
      *
      * @param track with the data to track
      */
-    default void track(@NonNull final Track track) {
-
-    }
+    default void track(@NonNull final Track track) { }
 }

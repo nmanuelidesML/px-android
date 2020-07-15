@@ -89,14 +89,23 @@ public final class BehaviourProvider {
         return escManagerBehaviour;
     }
 
+    /**
+     * @deprecated use {@link #getTrackingBehaviour()} instead
+     */
+    @Deprecated
     @NonNull
     public static TrackingBehaviour getTrackingBehaviour(@NonNull final String applicationContext) {
         if (trackingBehaviour != null) {
             trackingBehaviour.setApplicationContext(applicationContext);
             return trackingBehaviour;
         } else {
-            return new TrackingDefaultBehaviour();
+            return TrackingDefaultBehaviour.INSTANCE;
         }
+    }
+
+    @NonNull
+    public static TrackingBehaviour getTrackingBehaviour() {
+        return trackingBehaviour != null ? trackingBehaviour : TrackingDefaultBehaviour.INSTANCE;
     }
 
     @NonNull

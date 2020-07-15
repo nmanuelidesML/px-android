@@ -45,7 +45,7 @@ public class ConfirmEventTest {
     @Test
     public void whenGetEventPathVerifyIsCorrect() {
         final ConfirmEvent event = getConfirmEvent(mock(PayerCost.class));
-        assertEquals(EXPECTED_PATH, event.getEventPath());
+        assertEquals(EXPECTED_PATH, event.getTrack().getPath());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ConfirmEventTest {
         when(am.getBalance()).thenReturn(BigDecimal.TEN);
         when(am.isInvested()).thenReturn(true);
         final ConfirmEvent event = getConfirmEvent(mock(PayerCost.class));
-        assertEquals(EXPECTED_JUST_AM, event.getEventData().toString());
+        assertEquals(EXPECTED_JUST_AM, event.getTrack().getData().toString());
     }
 
     @Test
@@ -80,6 +80,6 @@ public class ConfirmEventTest {
 
         final ConfirmEvent event = getConfirmEvent(payerCost);
 
-        assertEquals(EXPECTED_JUST_CARD, event.getEventData().toString());
+        assertEquals(EXPECTED_JUST_CARD, event.getTrack().getData().toString());
     }
 }

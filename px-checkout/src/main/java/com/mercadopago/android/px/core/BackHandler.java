@@ -4,7 +4,7 @@ public interface BackHandler {
 
     /**
      *
-     * @return return false if caller should not handle back
+     * @return returns true if back was handled, therefore, caller should not handle back itself
      */
     boolean handleBack();
 }

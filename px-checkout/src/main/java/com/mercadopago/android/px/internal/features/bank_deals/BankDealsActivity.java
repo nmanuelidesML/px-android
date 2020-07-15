@@ -37,8 +37,7 @@ public class BankDealsActivity extends PXActivity<BankDealsPresenter> implements
     protected Toolbar toolbar;
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         setContentView(R.layout.px_activity_bank_deals);
         initializeControls();
         createPresenter();

@@ -5,15 +5,15 @@ import com.mercadopago.android.px.addons.tracking.Tracker
 
 object TrackFactory {
 
-    private const val APPLICATION_CONTEXT = "PX"
+    private const val APPLICATION_CONTEXT = "px"
 
     @JvmStatic
     fun withView(path: String) =
         Track.Builder(Tracker.MELIDATA, APPLICATION_CONTEXT, Track.Type.VIEW, path)
-            .addTracker(Tracker.GOOGLE_ANALYTICS)
+            .addTrackers(listOf(Tracker.GOOGLE_ANALYTICS, Tracker.CUSTOM))
 
     @JvmStatic
     fun withEvent(path: String) =
         Track.Builder(Tracker.MELIDATA, APPLICATION_CONTEXT, Track.Type.EVENT, path)
-            .addTracker(Tracker.GOOGLE_ANALYTICS)
+            .addTrackers(listOf(Tracker.GOOGLE_ANALYTICS, Tracker.CUSTOM))
 }

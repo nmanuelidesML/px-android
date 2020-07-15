@@ -23,6 +23,7 @@ import com.mercadopago.android.px.internal.di.ConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.Constants;
 import com.mercadopago.android.px.internal.features.pay_button.PayButton;
+import com.mercadopago.android.px.internal.features.pay_button.PayButtonFragment;
 import com.mercadopago.android.px.internal.features.review_and_confirm.components.ReviewAndConfirmContainer;
 import com.mercadopago.android.px.internal.features.review_and_confirm.components.actions.CancelPaymentAction;
 import com.mercadopago.android.px.internal.features.review_and_confirm.components.actions.ChangePaymentMethodAction;
@@ -32,7 +33,6 @@ import com.mercadopago.android.px.internal.features.review_and_confirm.models.Su
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.TermsAndConditionsModel;
 import com.mercadopago.android.px.internal.font.FontHelper;
 import com.mercadopago.android.px.internal.font.PxFont;
-import com.mercadopago.android.px.internal.util.FragmentUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.view.ActionDispatcher;
 import com.mercadopago.android.px.internal.view.ComponentManager;
@@ -59,7 +59,8 @@ public final class ReviewAndConfirmActivity extends PXActivity<ReviewAndConfirmP
     private static final String EXTRA_ITEMS = "extra_items";
     private static final String EXTRA_DISCOUNT_TERMS_AND_CONDITIONS = "extra_discount_terms_and_conditions";
     private static final String TAG_DYNAMIC_DIALOG = "tag_dynamic_dialog";
-    private static final String TAG_EXPLODING_FRAGMENT = "TAG_EXPLODING_FRAGMENT";
+
+    private PayButtonFragment payButton;
 
     public static Intent getIntentForAction(@NonNull final Context context,
         @Nullable final TermsAndConditionsModel mercadoPagoTermsAndConditions,
@@ -81,9 +82,9 @@ public final class ReviewAndConfirmActivity extends PXActivity<ReviewAndConfirmP
     }
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         setContentView(R.layout.px_view_container_review_and_confirm);
+        payButton = (PayButtonFragment) getSupportFragmentManager().findFragmentById(R.id.pay_button);
         initializeViews();
         final Session session = Session.getInstance();
 
@@ -248,17 +249,13 @@ public final class ReviewAndConfirmActivity extends PXActivity<ReviewAndConfirmP
 
     @Override
     public void onBackPressed() {
-        if (isExploding()) {
+        if (payButton.isExploding()) {
             return;
         }
 
         presenter.onBackPressed();
         setResult(RESULT_CANCELED_RYC);
         super.onBackPressed();
-    }
-
-    private boolean isExploding() {
-        return FragmentUtil.isFragmentVisible(getSupportFragmentManager(), TAG_EXPLODING_FRAGMENT);
     }
 
     private void processCustomExit(final ExitAction action) {

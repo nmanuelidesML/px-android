@@ -27,6 +27,7 @@ import com.mercadopago.android.px.model.ExitAction;
 import static android.content.Intent.FLAG_ACTIVITY_FORWARD_RESULT;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_CUSTOM_EXIT;
 import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.getSafeIntent;
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMP;
 
 public class BusinessPaymentResultActivity extends PXActivity<BusinessPaymentResultPresenter>
     implements BusinessPaymentResultContract.View {
@@ -60,8 +61,7 @@ public class BusinessPaymentResultActivity extends PXActivity<BusinessPaymentRes
     }
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         setContentView(R.layout.px_activity_payment_result);
 
         presenter = createPresenter();
@@ -76,7 +76,7 @@ public class BusinessPaymentResultActivity extends PXActivity<BusinessPaymentRes
     private BusinessPaymentResultPresenter createPresenter() {
         final BusinessPaymentModel model = getIntent().getParcelableExtra(EXTRA_BUSINESS_PAYMENT_MODEL);
         return new BusinessPaymentResultPresenter(Session.getInstance().getConfigurationModule().getPaymentSettings(),
-            model, BehaviourProvider.getFlowBehaviour());
+            model, BehaviourProvider.getFlowBehaviour(), isMP(this));
     }
 
     @Override

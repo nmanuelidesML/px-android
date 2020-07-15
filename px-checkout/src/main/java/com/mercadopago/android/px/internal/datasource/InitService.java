@@ -63,11 +63,14 @@ public class InitService implements InitRepository {
     @NonNull
     @Override
     public MPCall<InitResponse> init() {
-        return initCache.isCached() ? initCache.get() : newCall();
+        return init(getPostResponse());
     }
 
-    @Override
-    public void configure(@NonNull final InitResponse initResponse) {
+    private MPCall<InitResponse> init(@NonNull final PostResponse postResponse) {
+        return initCache.isCached() ? initCache.get() : newCall(postResponse);
+    }
+
+    private void configure(@NonNull final InitResponse initResponse) {
         MPTracker.getInstance().hasExpressCheckout(initResponse.hasExpressCheckoutMetadata());
         if (initResponse.getCheckoutPreference() != null) {
             paymentSettingRepository.configure(initResponse.getCheckoutPreference());
@@ -81,13 +84,32 @@ public class InitService implements InitRepository {
             new ExpressMetadataToDisabledIdMapper().map(initResponse.getExpress()));
 
         MPTracker.getInstance().setExperiments(experimentsRepository.getExperiments());
+    }
 
-        initCache.put(initResponse);
-        notifyListeners(initResponse);
+    @Override
+    public void lazyConfigure(@NonNull final InitResponse initResponse) {
+        configure(initResponse);
+        getPostResponse().call(initResponse);
+    }
+
+    interface PostResponse {
+        void call(InitResponse initResponse);
+    }
+
+    /* default */ PostResponse getPostResponse() {
+        return initResponse -> {
+            initCache.put(initResponse);
+            notifyListeners(initResponse);
+        };
+    }
+
+    private PostResponse noPostResponse() {
+        return initResponse -> {
+        };
     }
 
     @NonNull
-    private MPCall<InitResponse> newCall() {
+    private MPCall<InitResponse> newCall(@NonNull final PostResponse postResponse) {
         return new MPCall<InitResponse>() {
 
             @Override
@@ -101,6 +123,7 @@ public class InitService implements InitRepository {
                     @Override
                     public void success(final InitResponse initResponse) {
                         configure(initResponse);
+                        postResponse.call(initResponse);
                         callback.success(initResponse);
                     }
 
@@ -148,7 +171,7 @@ public class InitService implements InitRepository {
 
     @Override
     public MPCall<InitResponse> refresh() {
-        return callback -> init().enqueue(getRefreshCallback(callback));
+        return callback -> init(noPostResponse()).enqueue(getRefreshCallback(callback));
     }
 
     @Override
@@ -165,8 +188,7 @@ public class InitService implements InitRepository {
             public void success(final InitResponse initResponse) {
                 new ExpressMetadataSorter(initResponse.getExpress(), disabledPaymentMethodMap).sort();
                 initCache.evict();
-                initCache.put(initResponse);
-                notifyListeners(initResponse);
+                getPostResponse().call(initResponse);
                 originalCallback.success(initResponse);
             }
 
@@ -181,7 +203,7 @@ public class InitService implements InitRepository {
     public MPCall<InitResponse> refreshWithNewCard(@NonNull final String cardId) {
         return callback -> {
             initCache.evict();
-            init().enqueue(getRefreshWithNewCardCallback(cardId, callback));
+            newCall(noPostResponse()).enqueue(getRefreshWithNewCardCallback(cardId, callback));
         };
     }
 
@@ -198,8 +220,7 @@ public class InitService implements InitRepository {
                         refreshRetriesAvailable = MAX_REFRESH_RETRIES;
                         new ExpressMetadataSorter(initResponse.getExpress(), disabledPaymentMethodMap)
                             .setPrioritizedCardId(cardId).sort();
-                        initCache.put(initResponse);
-                        notifyListeners(initResponse);
+                        getPostResponse().call(initResponse);
                         callback.success(initResponse);
                         return;
                     }

@@ -25,6 +25,7 @@ import com.mercadopago.android.px.model.Setting;
 import com.mercadopago.android.px.model.Token;
 import com.mercadopago.android.px.model.exceptions.CardTokenException;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
+import com.mercadopago.android.px.tracking.internal.events.CVVRecoveryFrictionTracker;
 import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker;
 import com.mercadopago.android.px.tracking.internal.model.Reason;
 import com.mercadopago.android.px.tracking.internal.views.CvvAskViewTracker;
@@ -229,11 +230,7 @@ public class SecurityCodePresenter extends BasePresenter<SecurityCodeActivityVie
                 createTokenWithoutESC();
             }
         } catch (final CardTokenException exception) {
-            FrictionEventTracker.with(FrictionEventTracker.Id.INVALID_CVV,
-                new CvvAskViewTracker(getCard(), getPaymentMethod().getPaymentTypeId(), reason),
-                FrictionEventTracker.Style.CUSTOM_COMPONENT,
-                getPaymentMethod()).track();
-
+            new CVVRecoveryFrictionTracker(getCard(), getPaymentMethod(), reason).track();
             getView().setErrorView(exception);
         }
     }

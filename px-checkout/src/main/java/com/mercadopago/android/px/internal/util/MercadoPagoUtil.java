@@ -102,7 +102,11 @@ public final class MercadoPagoUtil {
         }
     }
 
-    public static String getPlatform(final Context context) {
+    public static boolean isMP(@NonNull final Context context) {
+        return getPlatform(context).equals(PLATFORM_MP);
+    }
+
+    public static String getPlatform(@NonNull final Context context) {
         final String packageName = context.getApplicationInfo().packageName;
         return packageName.contains("com.mercadolibre") ? PLATFORM_ML : PLATFORM_MP;
     }

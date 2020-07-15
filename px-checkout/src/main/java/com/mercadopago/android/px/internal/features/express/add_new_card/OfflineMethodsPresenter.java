@@ -116,7 +116,7 @@ class OfflineMethodsPresenter extends BasePresenter<OfflineMethods.OffMethodsVie
             if (selectedItem.isAdditionalInfoNeeded() && payerCompliance.isCompliant()) {
                 completePayerInformation();
             } else if (selectedItem.isAdditionalInfoNeeded()) {
-                tracker.trackEvent(new KnowYourCustomerFlowEvent());
+                new KnowYourCustomerFlowEvent(viewTracker).track();
                 getView().startKnowYourCustomerFlow(payerCompliance.getTurnComplianceDeepLink());
                 return;
             }
@@ -146,7 +146,7 @@ class OfflineMethodsPresenter extends BasePresenter<OfflineMethods.OffMethodsVie
     }
 
     @Override
-    public void trackAbort() {
+    public void onBack() {
         tracker.trackAbort();
     }
 

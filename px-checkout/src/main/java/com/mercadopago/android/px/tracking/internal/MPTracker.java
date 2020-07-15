@@ -2,18 +2,16 @@ package com.mercadopago.android.px.tracking.internal;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.mercadopago.android.px.addons.BehaviourProvider;
+import com.mercadopago.android.px.addons.model.Track;
+import com.mercadopago.android.px.addons.model.internal.Experiment;
 import com.mercadopago.android.px.internal.core.FlowIdProvider;
 import com.mercadopago.android.px.internal.di.Session;
+import com.mercadopago.android.px.internal.util.Logger;
 import com.mercadopago.android.px.model.CheckoutType;
-import com.mercadopago.android.px.model.Event;
-import com.mercadopago.android.px.model.ScreenViewEvent;
-import com.mercadopago.android.px.addons.model.internal.Experiment;
-import com.mercadopago.android.px.tracking.PXEventListener;
-import com.mercadopago.android.px.tracking.PXTrackingListener;
 import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +20,7 @@ import static com.mercadopago.android.px.internal.util.TextUtil.isEmpty;
 
 public final class MPTracker {
 
+    private static final String TAG = "PXTracker";
     private static final String ATTR_EXTRA_INFO = "extra_info";
     private static final String ATTR_FLOW_DETAIL = "flow_detail";
     private static final String ATTR_FLOW_NAME = "flow";
@@ -32,11 +31,6 @@ public final class MPTracker {
     private static final String ATTR_EXPERIMENTS = "experiments";
 
     private static MPTracker trackerInstance;
-
-    @Deprecated
-    @Nullable private PXEventListener mPXEventListener;
-
-    @Nullable private PXTrackingListener pxTrackingListener;
 
     /**
      * Added in 4.3.0 version - temporal replacement for tracking additional params.
@@ -51,7 +45,7 @@ public final class MPTracker {
 
     private boolean securityEnabled;
 
-    @NonNull private List<Experiment> experiments = new ArrayList<>();
+    @NonNull private List<Experiment> experiments = Collections.emptyList();
 
     @NonNull private FlowIdProvider flowIdProvider = Session.getInstance().getNetworkModule().getFlowIdProvider();
 
@@ -64,27 +58,6 @@ public final class MPTracker {
             trackerInstance = new MPTracker();
         }
         return trackerInstance;
-    }
-
-    /**
-     * Set listener to track library's screens and events in the app.
-     *
-     * @param pxEventListener implementing the tracking methods
-     * @deprecated Deprecated due to new tracking implementation standards. Use {@link com.mercadopago.android.px.tracking.internal.MPTracker#setPXTrackingListener(PXTrackingListener)}
-     * instead.
-     */
-    @Deprecated
-    public void setTracksListener(@Nullable final PXEventListener pxEventListener) {
-        mPXEventListener = pxEventListener;
-    }
-
-    /**
-     * Set listener to track library's screens and events in the app.
-     *
-     * @param pxTrackingListener implementing the tracking methods
-     */
-    public void setPXTrackingListener(@Nullable final PXTrackingListener pxTrackingListener) {
-        this.pxTrackingListener = pxTrackingListener;
     }
 
     /**
@@ -123,55 +96,16 @@ public final class MPTracker {
         this.experiments = experiments;
     }
 
-    /**
-     * This method tracks a list of events in one request
-     *
-     * @param event Event to track
-     * @deprecated Old tracking listener.
-     */
-    @Deprecated
-    public void trackEvent(final Event event) {
-        if (event.getType().equals(Event.TYPE_SCREEN_VIEW)) {
-            final ScreenViewEvent screenViewEvent = (ScreenViewEvent) event;
-            trackOldView(screenViewEvent.getScreenId());
-            //New listener tracking compatible.
-            trackViewCompat(screenViewEvent.getScreenId());
-        }
-    }
-
-    private void trackViewCompat(@NonNull final String path) {
-        if (pxTrackingListener != null) {
-            final Map<String, Object> data = new HashMap<>();
-            addAdditionalFlowInfo(data);
-            pxTrackingListener.onView(path, data);
-        }
-    }
-
-    private void trackOldView(@NonNull final String screenName) {
-        if (mPXEventListener != null) {
-            mPXEventListener.onScreenLaunched(screenName, new HashMap<String, String>());
-        }
-    }
-
-    public void trackView(@NonNull final String path, @NonNull final Map<String, Object> data) {
-        addAdditionalFlowInfo(data);
-        if (pxTrackingListener != null) {
-            pxTrackingListener.onView(path, data);
-        }
-        //Old tracking Compatibility.
-        trackOldView(path);
-    }
-
-    public void trackEvent(@NonNull final String path, @NonNull final Map<String, Object> data) {
+    public void track(@NonNull final Track track) {
         // Event friction case needs to add flow detail in a different way. We ignore this case for now.
-        if (!FrictionEventTracker.PATH.equals(path)) {
-            addAdditionalFlowInfo(data);
+        if (!FrictionEventTracker.PATH.equals(track.getPath())) {
+            addAdditionalFlowInfo(track.getData());
         } else {
-            addAdditionalFlowIntoExtraInfo(data);
+            addAdditionalFlowIntoExtraInfo(track.getData());
         }
-        if (pxTrackingListener != null) {
-            pxTrackingListener.onEvent(path, data);
-        }
+        BehaviourProvider.getTrackingBehaviour().track(track);
+        Logger.debug(TAG, "Type: " + track.getType().name() + " - Path: " + track.getPath());
+        Logger.debug(TAG, track.getData());
     }
 
     private void addAdditionalFlowIntoExtraInfo(@NonNull final Map<String, Object> data) {

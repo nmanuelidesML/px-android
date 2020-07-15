@@ -29,6 +29,8 @@ public final class CongratsResponse implements Parcelable {
     @Nullable private final Score score;
     @SerializedName("discounts")
     @Nullable private final Discount discount;
+    @SerializedName("expense_split")
+    @Nullable private final MoneySplit moneySplit;
     @SerializedName("cross_selling")
     private final List<CrossSelling> crossSellings;
     private final Text topTextBox;
@@ -38,6 +40,7 @@ public final class CongratsResponse implements Parcelable {
     private CongratsResponse() {
         score = null;
         discount = null;
+        moneySplit = null;
         crossSellings = Collections.emptyList();
         topTextBox = Text.EMPTY;
         viewReceipt = null;
@@ -47,6 +50,7 @@ public final class CongratsResponse implements Parcelable {
     /* default */ CongratsResponse(final Parcel in) {
         score = in.readParcelable(Score.class.getClassLoader());
         discount = in.readParcelable(Discount.class.getClassLoader());
+        moneySplit = in.readParcelable(MoneySplit.class.getClassLoader());
         crossSellings = in.createTypedArrayList(CrossSelling.CREATOR);
         topTextBox = in.readParcelable(Text.class.getClassLoader());
         viewReceipt = in.readParcelable(Action.class.getClassLoader());
@@ -57,6 +61,7 @@ public final class CongratsResponse implements Parcelable {
     public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeParcelable(score, flags);
         dest.writeParcelable(discount, flags);
+        dest.writeParcelable(moneySplit, flags);
         dest.writeTypedList(crossSellings);
         dest.writeParcelable(topTextBox, flags);
         dest.writeParcelable(viewReceipt, flags);
@@ -76,6 +81,11 @@ public final class CongratsResponse implements Parcelable {
     @Nullable
     public Discount getDiscount() {
         return discount;
+    }
+
+    @Nullable
+    public MoneySplit getMoneySplit() {
+        return moneySplit;
     }
 
     @NonNull
@@ -552,5 +562,53 @@ public final class CongratsResponse implements Parcelable {
         public int getRight() {
             return right;
         }
+    }
+
+    public static final class MoneySplit implements Parcelable {
+        private final Text title;
+        private final Action action;
+        private final String imageUrl;
+
+        public Text getTitle() {
+            return title;
+        }
+
+        public Action getAction() {
+            return action;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        /* default */ MoneySplit(Parcel in) {
+            title = in.readParcelable(Text.class.getClassLoader());
+            action = in.readParcelable(Action.class.getClassLoader());
+            imageUrl = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeParcelable(title, flags);
+            dest.writeParcelable(action, flags);
+            dest.writeString(imageUrl);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<MoneySplit> CREATOR = new Creator<MoneySplit>() {
+            @Override
+            public MoneySplit createFromParcel(Parcel in) {
+                return new MoneySplit(in);
+            }
+
+            @Override
+            public MoneySplit[] newArray(int size) {
+                return new MoneySplit[size];
+            }
+        };
     }
 }

@@ -1,12 +1,13 @@
 package com.mercadopago.android.px.tracking.internal.events
 
+import com.mercadopago.android.px.tracking.internal.TrackFactory
+import com.mercadopago.android.px.tracking.internal.TrackWrapper
 import com.mercadopago.android.px.tracking.internal.model.GenericDialogTrackData
 
-class GenericDialogDismissEvent(private val data: GenericDialogTrackData.Dismiss) : EventTracker() {
+class GenericDialogDismissEvent(data: GenericDialogTrackData.Dismiss) : TrackWrapper() {
 
-    override fun getEventPath(): String {
-        return "${BASE_PATH}/dialog/dismiss"
-    }
+    private val track = TrackFactory.withEvent("${BASE_PATH}/dialog/dismiss")
+        .addData(data.toMap()).build()
 
-    override fun getEventData(): MutableMap<String, Any> = data.toMap()
+    override fun getTrack() = track
 }

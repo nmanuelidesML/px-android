@@ -56,7 +56,7 @@ import java.util.Set;
 
     @Override
     public void onChangePaymentMethod() {
-        ChangePaymentMethodEvent.create().track();
+        new ChangePaymentMethodEvent().track();
         doChangePaymentMethod();
     }
 

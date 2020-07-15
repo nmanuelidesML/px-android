@@ -84,6 +84,8 @@ public interface ExpressPayment {
 
         void cancel();
 
+        void onBack();
+
         void loadViewModel();
 
         void onInstallmentsRowPressed();

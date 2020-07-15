@@ -83,7 +83,7 @@ public final class MercadoPagoCheckout {
         final Session session = Session.getInstance();
         session.init(this);
         if (prefetch != null && prefetch.getInitResponse() != null) {
-            session.getInitRepository().configure(prefetch.getInitResponse());
+            session.getInitRepository().lazyConfigure(prefetch.getInitResponse());
         }
         PrefetchService.onCheckoutStarted();
 

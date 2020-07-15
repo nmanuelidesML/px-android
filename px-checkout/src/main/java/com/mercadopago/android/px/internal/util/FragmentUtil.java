@@ -76,7 +76,7 @@ public final class FragmentUtil {
     @Nullable
     public static Fragment getFragmentByTag(@NonNull final FragmentManager manager, @NonNull final String tag) {
         final Fragment fragment = manager.findFragmentByTag(tag);
-        if (fragment != null && fragment.isAdded() && fragment.isVisible()) {
+        if (fragment != null && fragment.isAdded() && fragment.getUserVisibleHint()) {
             return fragment;
         }
         return null;

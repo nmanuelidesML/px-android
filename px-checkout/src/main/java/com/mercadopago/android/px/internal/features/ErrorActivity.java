@@ -26,8 +26,7 @@ public class ErrorActivity extends PXActivity {
     private String message;
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreated(@Nullable final Bundle savedInstanceState) {
         animateErrorScreenLaunch();
         setContentView(R.layout.px_activity_error);
         error = (MercadoPagoError) getIntent().getSerializableExtra(EXTRA_ERROR);
@@ -48,7 +47,7 @@ public class ErrorActivity extends PXActivity {
         final ErrorViewTracker errorViewTracker = new ErrorViewTracker(errorMessage, error);
         errorViewTracker.track();
 
-        FrictionEventTracker.with(errorViewTracker.getViewPath(), FrictionEventTracker.Id.GENERIC,
+        FrictionEventTracker.with(FrictionEventTracker.Id.GENERIC, errorViewTracker,
             FrictionEventTracker.Style.SCREEN,
             error)
             .track();
