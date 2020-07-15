@@ -19,15 +19,6 @@ public interface CheckoutService {
 
     String CHECKOUT_VERSION = "v2";
     String ENVIRONMENT = BuildConfig.API_ENVIRONMENT_NEW;
-//"https://run.mocky.io/v3/8a4b5d87-8a03-4e82-8942-09dfadcb7cf5/" xxxhdpi
-//"https://run.mocky.io/v3/6df50412-affb-41b6-9357-62d87354bcc5/" xxhdpi
-//"https://run.mocky.io/v3/4c600568-5816-4891-9170-27dd7031dcdf/" varios descuentos
-//"https://run.mocky.io/v3/87e083ed-3f14-4784-a68f-2db0ed0fc952/" has_not_discount
-//"https://run.mocky.io/v3/bdcd2223-cd0c-429e-942d-9aca7a9a63a8/" grupos
-
-//"https://run.mocky.io/v3/22ecd520-fe81-4f79-b42f-5e4723415b14/" varios descuentos hdpi
-//"https://run.mocky.io/v3/5351208f-213d-4ef0-afd2-7729b92144da/" varios descuentos con split hdpi
-//"https://run.mocky.io/v3/c6f8cc8b-65bd-4f9e-b9d2-690a446766c7/" varios descuentos xxhdpi
 
     @POST(ENVIRONMENT + "/px_mobile/" + CHECKOUT_VERSION + "/checkout")
     MPCall<InitResponse> checkout(
