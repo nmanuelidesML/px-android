@@ -2,7 +2,6 @@ package com.mercadopago.android.px.internal.viewmodel.mappers;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import com.mercadopago.android.px.internal.repository.AmountConfigurationRepository;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.ChargeRepository;
@@ -24,7 +23,7 @@ import com.mercadopago.android.px.model.internal.SummaryInfo;
 import java.util.List;
 
 public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod, SummaryView.Model,
-    Pair<DiscountConfigurationModel, PaymentTypeChargeRule>> {
+    SummaryViewModelMapper.SummaryKey> {
 
     @NonNull private final Currency currency;
     @NonNull private final DiscountRepository discountRepository;
@@ -52,20 +51,27 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
     }
 
     @Override
-    protected Pair<DiscountConfigurationModel, PaymentTypeChargeRule> getKey(
+    protected SummaryKey getKey(
         @NonNull final ExpressPaymentMethod expressPaymentMethod) {
         final PaymentTypeChargeRule chargeRule =
             chargeRepository.getChargeRule(expressPaymentMethod.getPaymentTypeId());
-        return new Pair<>(discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()),
-            ChargeRuleHelper.isHighlightCharge(chargeRule) ? null : chargeRule);
+        final AmountConfiguration amountConfiguration = getAmountConfiguration(expressPaymentMethod);
+        final boolean hasSplit = amountConfiguration != null && amountConfiguration.allowSplit();
+
+        return new SummaryKey(discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()),
+            chargeRule, hasSplit);
     }
 
     @Override
     public SummaryView.Model map(@NonNull final ExpressPaymentMethod expressPaymentMethod) {
-        amountConfigurationRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId());
         return createModel(expressPaymentMethod.getPaymentTypeId(),
             discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()),
-            amountConfigurationRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()));
+            getAmountConfiguration(expressPaymentMethod));
+    }
+
+    @Nullable
+    private AmountConfiguration getAmountConfiguration(@NonNull final ExpressPaymentMethod expressPaymentMethod) {
+        return amountConfigurationRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId());
     }
 
     @NonNull
@@ -83,5 +89,18 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
             new SummaryViewDefaultColor());
 
         return new SummaryView.Model(elementDescriptorModel, summaryDetailList, totalRow);
+    }
+
+    static final class SummaryKey {
+        private final DiscountConfigurationModel discountConfigurationModel;
+        private final PaymentTypeChargeRule paymentTypeChargeRule;
+        private final boolean hasSplit;
+
+        SummaryKey(@NonNull final DiscountConfigurationModel discountConfigurationModel,
+            final PaymentTypeChargeRule paymentTypeChargeRule, final boolean hasSplit) {
+            this.discountConfigurationModel = discountConfigurationModel;
+            this.paymentTypeChargeRule = ChargeRuleHelper.isHighlightCharge(paymentTypeChargeRule) ? null : paymentTypeChargeRule;
+            this.hasSplit = hasSplit;
+        }
     }
 }

@@ -119,6 +119,8 @@ public class AmountDescriptorView extends ConstraintLayout {
 
         if (!hasSplit || ViewUtils.isScreenSize(getContext(), Configuration.SCREENLAYOUT_SIZE_LARGE)) {
             ViewUtils.loadTextListOrGone(brief, discountOverview.getBrief(), briefColor.getColor(getContext()));
+        } else {
+            brief.setVisibility(View.GONE);
         }
 
         amount.setText(discountOverview.getAmount());
