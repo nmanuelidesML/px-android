@@ -548,7 +548,7 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
     @Override
     public void showDiscountDetailDialog(@NonNull final Currency currency,
         @NonNull final DiscountConfigurationModel discountModel) {
-        DiscountDetailDialog.showDialog(getFragmentManager(), discountModel);
+        DiscountDetailDialog.showDialog(getChildFragmentManager(), discountModel);
     }
 
     @Override

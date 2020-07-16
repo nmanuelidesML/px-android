@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
@@ -117,7 +118,7 @@ public class AmountDescriptorView extends ConstraintLayout {
         ViewUtils
             .loadTextListOrGone(descriptor, discountOverview.getDescription(), descriptorColor.getColor(getContext()));
 
-        if (!hasSplit || ViewUtils.isScreenSize(getContext(), Configuration.SCREENLAYOUT_SIZE_LARGE)) {
+        if (!hasSplit || ViewUtils.isScreenSize(getContext(), DisplayMetrics.DENSITY_XHIGH)) {
             ViewUtils.loadTextListOrGone(brief, discountOverview.getBrief(), briefColor.getColor(getContext()));
         } else {
             brief.setVisibility(View.GONE);

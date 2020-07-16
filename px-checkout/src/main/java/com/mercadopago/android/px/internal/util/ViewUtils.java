@@ -26,6 +26,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -411,7 +412,10 @@ public final class ViewUtils {
         }
     }
 
-    public static boolean isScreenSize(@NonNull final Context context, final int screenLayoutSize) {
-        return context.getResources().getConfiguration().isLayoutSizeAtLeast(screenLayoutSize);
+    public static boolean isScreenSize(@NonNull final Context context, final int density) {
+            final float densityScale = 1.0f / DisplayMetrics.DENSITY_DEFAULT;
+            final float screenDensity = context.getResources().getDisplayMetrics().density / densityScale;
+
+            return screenDensity >= density;
     }
 }

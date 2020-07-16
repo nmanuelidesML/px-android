@@ -21,6 +21,7 @@ import com.mercadopago.android.px.model.commission.PaymentTypeChargeRule;
 import com.mercadopago.android.px.model.internal.ExpressPaymentMethod;
 import com.mercadopago.android.px.model.internal.SummaryInfo;
 import java.util.List;
+import java.util.Objects;
 
 public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod, SummaryView.Model,
     SummaryViewModelMapper.Key> {
@@ -94,13 +95,30 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
     static final class Key {
         private final DiscountConfigurationModel discountConfigurationModel;
         private final PaymentTypeChargeRule paymentTypeChargeRule;
-        private final boolean hasSplit;
+        private final Boolean hasSplit;
 
         Key(@NonNull final DiscountConfigurationModel discountConfigurationModel,
             final PaymentTypeChargeRule paymentTypeChargeRule, final boolean hasSplit) {
             this.discountConfigurationModel = discountConfigurationModel;
             this.paymentTypeChargeRule = ChargeRuleHelper.isHighlightCharge(paymentTypeChargeRule) ? null : paymentTypeChargeRule;
             this.hasSplit = hasSplit;
+        }
+
+        @Override
+        public int hashCode() {
+            return (discountConfigurationModel == null ? 0 : discountConfigurationModel.hashCode()) ^
+                (paymentTypeChargeRule == null ? 0 : paymentTypeChargeRule.hashCode()) ^
+                (hasSplit == null ? 0 : hasSplit.hashCode());
+        }
+
+        @Override
+        public boolean equals(@Nullable final Object obj) {
+            if (!(obj instanceof Key)) {
+                return false;
+            }
+            Key k = (Key) obj;
+            return Objects.equals(k.discountConfigurationModel, discountConfigurationModel) && Objects.equals(k.paymentTypeChargeRule, paymentTypeChargeRule)
+                && Objects.equals(k.hasSplit, hasSplit);
         }
     }
 }

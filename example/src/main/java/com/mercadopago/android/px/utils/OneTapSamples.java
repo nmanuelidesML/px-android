@@ -155,9 +155,9 @@ public final class OneTapSamples {
 
         PXTracker.setListener(TrackingSamples.INSTANCE.getTracker(), new HashMap<>(), "example_app");
 
-        return new MercadoPagoCheckout.Builder("APP_USR-ba2e6b8c-8b6d-4fc3-8a47-0ab241d0dba4", preference,
+        return new MercadoPagoCheckout.Builder(ONE_TAP_DIRECT_DISCOUNT_MERCHANT_PUBLIC_KEY, preference,
             paymentConfiguration)
-            .setPrivateKey("TEST-5445293614312113-111319-dcd61645e2b984411e2c7fca2da5fc65-489156643")
+            .setPrivateKey(ONE_TAP_PAYER_1_ACCESS_TOKEN)
             .setAdvancedConfiguration(new AdvancedConfiguration.Builder()
                 .setPaymentResultScreenConfiguration(new PaymentResultScreenConfiguration.Builder()
                     .setTopFragment(SampleDialog.class, null).build())
