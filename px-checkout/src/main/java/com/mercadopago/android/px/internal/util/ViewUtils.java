@@ -37,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mercadolibre.android.picassodiskcache.PicassoDiskLoader;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
 import com.mercadopago.android.px.internal.font.FontHelper;
 import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.view.MPTextView;
@@ -100,6 +101,17 @@ public final class ViewUtils {
         } else {
             view.setText(text);
             view.setVisibility(VISIBLE);
+            return true;
+        }
+    }
+
+    public static boolean loadOrHide(final int visibility, @Nullable final PaymentCongratsText text, @NonNull final MPTextView view) {
+        if (text == null || TextUtil.isEmpty(text.getMessage())) {
+            view.setVisibility(visibility);
+            return false;
+        } else {
+            view.setText(text);
+            view.setVisibility(View.VISIBLE);
             return true;
         }
     }
