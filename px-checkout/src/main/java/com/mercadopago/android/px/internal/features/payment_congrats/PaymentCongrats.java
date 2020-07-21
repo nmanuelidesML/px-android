@@ -291,7 +291,7 @@ public class PaymentCongrats implements Parcelable {
 
         public PaymentCongrats build() {
             if (exitActionPrimary == null && exitActionSecondary == null) {
-                throw new IllegalStateException("At least one button should be provided for BusinessPayment");
+                throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
             return new PaymentCongrats(this);
         }
@@ -408,7 +408,7 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * If value true is set on and the payment method is credit card then the
+         * If "shouldShowPaymentMethod" is set on true and the payment method is credit card then the
          * statementDescription will be shown on payment method view.
          *
          * @param statementDescription disclaimer text
@@ -426,7 +426,7 @@ public class PaymentCongrats implements Parcelable {
          * @param shouldShowPaymentMethod visibility mode, default value is "false"
          * @return builder
          */
-        public Builder withShoulPaymentMethod(final boolean shouldShowPaymentMethod) {
+        public Builder withShouldPaymentMethod(final boolean shouldShowPaymentMethod) {
             this.shouldShowPaymentMethod = shouldShowPaymentMethod;
             return this;
         }
@@ -437,7 +437,7 @@ public class PaymentCongrats implements Parcelable {
          * @param shouldShowReceipt if the receipt should be drawn, default value is "false"
          * @return builder
          */
-        public Builder withShouldShowReceipt(final Boolean shouldShowReceipt) {
+        public Builder withShouldShowReceipt(final boolean shouldShowReceipt) {
             this.shouldShowReceipt = shouldShowReceipt;
             return this;
         }
