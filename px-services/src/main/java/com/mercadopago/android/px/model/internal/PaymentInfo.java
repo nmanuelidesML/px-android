@@ -2,6 +2,8 @@ package com.mercadopago.android.px.model.internal;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PaymentInfo implements Parcelable {
 
@@ -16,19 +18,19 @@ public class PaymentInfo implements Parcelable {
             return new PaymentInfo[size];
         }
     };
-    public final String rawAmount;
-    public final String paymentMethodName;
-    public final String lastFourDigits;
-    public final String paymentMethodId;
+    @NonNull public final String rawAmount;
+    @NonNull public final String paymentMethodName;
+    @Nullable public final String lastFourDigits;
+    @NonNull public final String paymentMethodId;
 
-    public PaymentInfo(final Builder builder) {
+    protected PaymentInfo(final Builder builder) {
         rawAmount = builder.rawAmount;
         paymentMethodName = builder.paymentMethodName;
         lastFourDigits = builder.lastFourDigits;
         paymentMethodId = builder.paymentMethodId;
     }
 
-    protected PaymentInfo(Parcel in) {
+    protected PaymentInfo(final Parcel in) {
         rawAmount = in.readString();
         paymentMethodName = in.readString();
         lastFourDigits = in.readString();
