@@ -74,7 +74,7 @@ public class PaymentCongrats implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.congratsType.type);
+        dest.writeString(this.congratsType.name());
         dest.writeString(this.title);
         dest.writeString(this.subtitle);
         dest.writeString(this.imageUrl);
@@ -240,20 +240,17 @@ public class PaymentCongrats implements Parcelable {
         REJECTED("REJECTED"),
         PENDING("PENDING");
 
-        public final String type;
-
-        CongratsType(final String type) {
-            this.type = type;
-        }
+        CongratsType(final String type) { }
 
         public static CongratsType fromName(final String text) {
-            for (final CongratsType s : CongratsType.values()) {
-                if (s.type.equalsIgnoreCase(text)) {
-                    return s;
+            for (final CongratsType congratsType : CongratsType.values()) {
+                if (congratsType.name().equalsIgnoreCase(text)) {
+                    return congratsType;
                 }
             }
-            throw new IllegalStateException("Invalid decorator");
+            throw new IllegalStateException("Invalid congratsType");
         }
+
     }
 
     public static class Builder {
