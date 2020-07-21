@@ -297,7 +297,7 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * Set ups the congrats type (green, red, orange)
+         * Sets up the congrats type (green, red, orange)
          *
          * @param congratsType enum with type atribute
          * @return builder
@@ -308,7 +308,7 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * Title show in the congrats's header
+         * Title shown in the congrats's header
          *
          * @param title congrats's title
          * @return builder
@@ -330,7 +330,7 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * Set ups the image in congarts's header
+         * Sets up the image in congarts's header
          *
          * @param imageUrl url for the header's image
          * @return builder
@@ -408,7 +408,7 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * If "shouldShowPaymentMethod" is set on true and the payment method is credit card then the
+         * If "shouldShowPaymentMethod" is set to true and the payment method is credit card then the
          * statementDescription will be shown on payment method view.
          *
          * @param statementDescription disclaimer text
