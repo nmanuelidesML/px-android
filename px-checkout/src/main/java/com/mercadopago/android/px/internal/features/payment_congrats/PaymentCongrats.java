@@ -18,20 +18,21 @@ public class PaymentCongrats implements Parcelable {
     @NonNull private final CongratsType congratsType;
     @NonNull private final String title;
     @Nullable private final String subtitle;
-    @NonNull private final String imageUrl; //*
-    @NonNull private final String status; //*
+    @NonNull private final String imageUrl;
     @Nullable private final String help;
+    private final int iconId;
+    @Nullable private final String statementDescription;
+    private final boolean shouldShowPaymentMethod;
 
+    //Receipt data
     @Nullable private final String receiptId;
     @Nullable private final List<String> receiptIdList;
+    private final boolean shouldShowReceipt;
 
     // Exit Buttons
-    @Nullable private final ExitAction exitActionPrimary; //*
+    @Nullable private final ExitAction exitActionPrimary;
     @Nullable private final ExitAction exitActionSecondary;
-    @Nullable private final String statementDescription;
 
-    @Nullable private final Boolean shouldShowPaymentMethod;
-    @Nullable private final Boolean shouldShowReceipt;
 
     // custom views for integrators
     @Nullable private final ExternalFragment topFragment;
@@ -48,8 +49,8 @@ public class PaymentCongrats implements Parcelable {
         title = builder.title;
         subtitle = builder.subtitle;
         imageUrl = builder.imageUrl;
-        status = builder.status;
         help = builder.help;
+        iconId = builder.iconId;
         receiptId = builder.receiptId;
         receiptIdList = builder.receiptIdList;
         exitActionPrimary = builder.exitActionPrimary;
@@ -65,6 +66,70 @@ public class PaymentCongrats implements Parcelable {
         currencySymbol = builder.currencySymbol;
         currencyThousandsSeparator = builder.currencyThousandsSeparator;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.congratsType.type);
+        dest.writeString(this.title);
+        dest.writeString(this.subtitle);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.help);
+        dest.writeInt(this.iconId);
+        dest.writeString(this.receiptId);
+        dest.writeStringList(this.receiptIdList);
+        dest.writeParcelable(this.exitActionPrimary, flags);
+        dest.writeParcelable(this.exitActionSecondary, flags);
+        dest.writeString(this.statementDescription);
+        dest.writeValue(this.shouldShowPaymentMethod);
+        dest.writeValue(this.shouldShowReceipt);
+        dest.writeParcelable(this.topFragment, flags);
+        dest.writeParcelable(this.bottomFragment, flags);
+        dest.writeParcelable(this.importantFragment, flags);
+        dest.writeInt(this.currencyDecimalPlaces);
+        dest.writeString(this.currencyDecimalSeparator);
+        dest.writeString(this.currencySymbol);
+        dest.writeString(this.currencyThousandsSeparator);
+    }
+
+    protected PaymentCongrats(Parcel in) {
+        this.congratsType = CongratsType.fromName(in.readString());
+        this.title = in.readString();
+        this.subtitle = in.readString();
+        this.imageUrl = in.readString();
+        this.help = in.readString();
+        this.iconId = in.readInt();
+        this.receiptId = in.readString();
+        this.receiptIdList = in.createStringArrayList();
+        this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
+        this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
+        this.statementDescription = in.readString();
+        this.shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.currencyDecimalPlaces = in.readInt();
+        this.currencyDecimalSeparator = in.readString();
+        this.currencySymbol = in.readString();
+        this.currencyThousandsSeparator = in.readString();
+    }
+
+    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
+        @Override
+        public PaymentCongrats createFromParcel(Parcel source) {
+            return new PaymentCongrats(source);
+        }
+
+        @Override
+        public PaymentCongrats[] newArray(int size) {
+            return new PaymentCongrats[size];
+        }
+    };
 
     @NotNull
     public String getTitle() {
@@ -165,6 +230,11 @@ public class PaymentCongrats implements Parcelable {
         return TextUtil.isNotEmpty(help);
     }
 
+    @NonNull
+    public CongratsType getCongratsType() {
+        return congratsType;
+    }
+
     public enum CongratsType {
         APPROVED("APPROVED"),
         REJECTED("REJECTED"),
@@ -186,78 +256,14 @@ public class PaymentCongrats implements Parcelable {
         }
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.congratsType.type);
-        dest.writeString(this.title);
-        dest.writeString(this.subtitle);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.status);
-        dest.writeString(this.help);
-        dest.writeString(this.receiptId);
-        dest.writeStringList(this.receiptIdList);
-        dest.writeParcelable(this.exitActionPrimary, flags);
-        dest.writeParcelable(this.exitActionSecondary, flags);
-        dest.writeString(this.statementDescription);
-        dest.writeValue(this.shouldShowPaymentMethod);
-        dest.writeValue(this.shouldShowReceipt);
-        dest.writeParcelable(this.topFragment, flags);
-        dest.writeParcelable(this.bottomFragment, flags);
-        dest.writeParcelable(this.importantFragment, flags);
-        dest.writeInt(this.currencyDecimalPlaces);
-        dest.writeString(this.currencyDecimalSeparator);
-        dest.writeString(this.currencySymbol);
-        dest.writeString(this.currencyThousandsSeparator);
-    }
-
-    protected PaymentCongrats(Parcel in) {
-        this.congratsType = CongratsType.fromName(in.readString());
-        this.title = in.readString();
-        this.subtitle = in.readString();
-        this.imageUrl = in.readString();
-        this.status = in.readString();
-        this.help = in.readString();
-        this.receiptId = in.readString();
-        this.receiptIdList = in.createStringArrayList();
-        this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
-        this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
-        this.statementDescription = in.readString();
-        this.shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.currencyDecimalPlaces = in.readInt();
-        this.currencyDecimalSeparator = in.readString();
-        this.currencySymbol = in.readString();
-        this.currencyThousandsSeparator = in.readString();
-    }
-
-    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
-        @Override
-        public PaymentCongrats createFromParcel(Parcel source) {
-            return new PaymentCongrats(source);
-        }
-
-        @Override
-        public PaymentCongrats[] newArray(int size) {
-            return new PaymentCongrats[size];
-        }
-    };
-
     public static class Builder {
         //Basic data
         /* default */ CongratsType congratsType;
         /* default */ String title;
         /* default */ String subtitle;
         /* default */ String imageUrl;
-        /* default */ String status;
         /* default */ String help;
+        /* default */ int iconId;
 
         /* default */ String receiptId;
         /* default */ List<String> receiptIdList;
@@ -268,8 +274,8 @@ public class PaymentCongrats implements Parcelable {
 
         /* default */ String statementDescription;
 
-        /* default */ Boolean shouldShowPaymentMethod = false;
-        /* default */ Boolean shouldShowReceipt = false;
+        /* default */ boolean shouldShowPaymentMethod = false;
+        /* default */ boolean shouldShowReceipt = false;
 
         // custom views for integrators
         /* default */ ExternalFragment topFragment;
@@ -290,103 +296,225 @@ public class PaymentCongrats implements Parcelable {
             return new PaymentCongrats(this);
         }
 
+        /**
+         * Set ups the congrats type (green, red, orange)
+         *
+         * @param congratsType enum with type atribute
+         * @return builder
+         */
         public Builder withCongratsType(final CongratsType congratsType) {
             this.congratsType = congratsType;
             return this;
         }
 
+        /**
+         * Title show in the congrats's header
+         *
+         * @param title congrats's title
+         * @return builder
+         */
         public Builder withTitle(final String title) {
             this.title = title;
             return this;
         }
 
+        /**
+         * When subtitle is set, then default subtitle will be replaced on the screen with it.
+         *
+         * @param subtitle subtitle text
+         * @return builder
+         */
         public Builder withSubtitle(final String subtitle) {
             this.subtitle = subtitle;
             return this;
         }
 
+        /**
+         * Set ups the image in congarts's header
+         *
+         * @param imageUrl url for the header's image
+         * @return builder
+         */
         public Builder withImageUrl(final String imageUrl) {
             this.imageUrl = imageUrl;
             return this;
         }
 
-        public Builder withStatus(final String status) {
-            this.status = status;
-            return this;
-        }
-
+        /**
+         * If value is set, then receipt view will appear.
+         *
+         * @param receiptId the receipt id to be shown.
+         * @return builder
+         */
         public Builder withReceipId(final String receiptId) {
             this.receiptId = receiptId;
             return this;
         }
 
+        /**
+         * @param receiptIdList The list of receipt ids
+         * @return builder
+         */
         public Builder withReceiptIdList(final List<String> receiptIdList) {
             this.receiptIdList = receiptIdList;
             return this;
         }
 
+        /**
+         * if help is set, then a small box with help instructions will appear
+         *
+         * @param help a help message
+         * @return builder
+         */
         public Builder withHelp(final String help) {
             this.help = help;
             return this;
         }
 
+        /**
+         *
+         * @param iconId header's icon
+         * @return builder
+         */
+        public Builder withIconId(final int iconId) {
+            this.iconId = iconId;
+            return this;
+        }
+
+        /**
+         * if Exit action is set, then a big primary button will appear and the click action will trigger a resCode that
+         * will be the same of the Exit action added.
+         *
+         * @param label text show in primary action
+         * @param resCode resCode in exit case
+         * @return builder
+         */
         public Builder withExitActionPrimary(final String label, final int resCode) {
             this.exitActionPrimary = new ExitAction(label, resCode);
             return this;
         }
 
+        /**
+         * if Exit action is set, then a big secondary button will appear and the click action will trigger a resCode that
+         * will be the same of the Exit action added.
+         *
+         * @param label text show in secondary action
+         * @param resCode resCode in exit case
+         * @return builder
+         */
         public Builder withExitActionSecondary(final String label, final int resCode) {
             this.exitActionSecondary = new ExitAction(label, resCode);
             return this;
         }
 
+        /**
+         * If value true is set on and the payment method is credit card then the
+         * statementDescription will be shown on payment method view.
+         *
+         * @param statementDescription disclaimer text
+         * @return builder
+         */
         public Builder withStatementDescription(final String statementDescription) {
             this.statementDescription = statementDescription;
             return this;
         }
 
-        public Builder withShoulPaymentMethod(final Boolean shouldShowPaymentMethod) {
+        /**
+         * If value true is set, then payment method box will appear with the amount value and payment method options
+         * that were selected by the user.
+         *
+         * @param shouldShowPaymentMethod visibility mode, default value is "false"
+         * @return builder
+         */
+        public Builder withShoulPaymentMethod(final boolean shouldShowPaymentMethod) {
             this.shouldShowPaymentMethod = shouldShowPaymentMethod;
             return this;
         }
 
+        /**
+         * Override the receipt drawing, without depending on the receipt id
+         *
+         * @param shouldShowReceipt if the receipt should be drawn, default value is "false"
+         * @return builder
+         */
         public Builder withShouldShowReceipt(final Boolean shouldShowReceipt) {
             this.shouldShowReceipt = shouldShowReceipt;
             return this;
         }
 
+        /**
+         * Custom fragment that will appear before payment method description inside Business result screen.
+         *
+         * @param zClass fragment class
+         * @param args args for fragment class
+         * @return builder
+         */
         public Builder withTopFragment(@NonNull final Class<? extends Fragment> zClass, @Nullable final Bundle args) {
             this.topFragment = new ExternalFragment(zClass, args);
             return this;
         }
 
+        /**
+         * Custom fragment that will appear after payment method description inside Business result screen.
+         *
+         * @param zClass fragment class
+         * @param args args for fragment class
+         * @return builder
+         */
         public Builder withBottomFragment(@NonNull final Class<? extends Fragment> zClass,
             @Nullable final Bundle args) {
             this.bottomFragment = new ExternalFragment(zClass, args);
             return this;
         }
 
+        /**
+         * Custom fragment that will appear at the top of all information inside Business result screen.
+         *
+         * @param zClass fragment class
+         * @param args args for fragment class
+         * @return builder
+         */
         public Builder withImportantFragment(@NonNull final Class<? extends Fragment> zClass,
             @Nullable final Bundle args) {
             this.importantFragment = new ExternalFragment(zClass, args);
             return this;
         }
 
+        /**
+         *
+         * @param decimalPlaces decimal places in the amount, default value is "2"
+         * @return
+         */
         public Builder withCurrencyDecimalPlaces(final int decimalPlaces) {
             this.currencyDecimalPlaces = decimalPlaces;
             return this;
         }
 
+        /**
+         *
+         * @param decimalSeparator decimal separator in the amout, default value is ","
+         * @return
+         */
         public Builder withCurrencyDecimalSeparator(final String decimalSeparator) {
             this.currencyDecimalSeparator = decimalSeparator;
             return this;
         }
 
+        /**
+         *
+         * @param symbol currency symbol in the amount, default value is "$"
+         * @return
+         */
         public Builder withCurrencySymbol(final String symbol) {
             this.currencySymbol = symbol;
             return this;
         }
 
+        /**
+         *
+         * @param thousandsSeparator thousands separator in the amount, default value is "."
+         * @return
+         */
         public Builder withCurrencyThousandsSeparator(final String thousandsSeparator) {
             this.currencyThousandsSeparator = thousandsSeparator;
             return this;
