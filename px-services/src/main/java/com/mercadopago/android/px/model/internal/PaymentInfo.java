@@ -57,9 +57,9 @@ public class PaymentInfo implements Parcelable {
         /* default */ String paymentMethodId;
 
         /**
-         * Instantiates a PayerInfo object
+         * Instantiates a PaymentInfo object
          *
-         * @return PayerInfo
+         * @return PaymentInfo
          */
         public PaymentInfo build() {
             return new PaymentInfo(this);
