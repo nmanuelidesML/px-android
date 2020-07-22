@@ -9,14 +9,21 @@ import android.support.v4.app.Fragment;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.ExitAction;
 import com.mercadopago.android.px.model.ExternalFragment;
-import com.mercadopago.android.px.model.internal.Action;
-import com.mercadopago.android.px.model.internal.CongratsResponse;
-import com.mercadopago.android.px.model.internal.PaymentCongratsResponse;
-import com.mercadopago.android.px.model.internal.Text;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class PaymentCongrats implements Parcelable {
+    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
+        @Override
+        public PaymentCongrats createFromParcel(final Parcel source) {
+            return new PaymentCongrats(source);
+        }
+
+        @Override
+        public PaymentCongrats[] newArray(final int size) {
+            return new PaymentCongrats[size];
+        }
+    };
     //Basic data
     @NonNull private final CongratsType congratsType;
     @NonNull private final String title;
@@ -26,29 +33,24 @@ public class PaymentCongrats implements Parcelable {
     private final int iconId;
     @Nullable private final String statementDescription;
     private final boolean shouldShowPaymentMethod;
-    @Nullable private PaymentCongratsResponse paymentCongratsResponse;
-    @Nullable private final CongratsResponse.Score score;
-    @Nullable private final CongratsResponse.Discount discount;
-    @Nullable private final CongratsResponse.CrossSelling crossSelling;
-    @Nullable private final CongratsResponse.MoneySplit moneySplit;
-    @Nullable private final Text topTextBox;
-    @Nullable private final Action viewReceipt;
-
+    @Nullable private final PaymentCongratsResponse.Score score;
+    @Nullable private final PaymentCongratsResponse.Discount discount;
+    @Nullable private final List<PaymentCongratsResponse.CrossSelling> crossSelling;
+    @Nullable private final PaymentCongratsResponse.MoneySplit moneySplit;
+    @Nullable private final PaymentCongratsResponse.Text topTextBox;
+    @Nullable private final PaymentCongratsResponse.Action viewReceipt;
     //Receipt data
     @Nullable private final String receiptId;
     private final boolean shouldShowReceipt;
-
     // Exit Buttons
     @Nullable private final ExitAction exitActionPrimary;
     @Nullable private final ExitAction exitActionSecondary;
-
-
     // custom views for integrators
     @Nullable private final ExternalFragment topFragment;
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
-
     @NonNull private final PaymentCongratsCurrency currency;
+    @Nullable private final PaymentCongratsResponse paymentCongratsResponse;
 
     private PaymentCongrats(final Builder builder) {
         congratsType = builder.congratsType;
@@ -73,6 +75,33 @@ public class PaymentCongrats implements Parcelable {
         moneySplit = builder.moneySplit;
         topTextBox = builder.topTextBox;
         viewReceipt = builder.viewReceipt;
+        paymentCongratsResponse = builder.paymentCongratsResponse;
+    }
+
+    protected PaymentCongrats(final Parcel in) {
+        this.congratsType = CongratsType.fromName(in.readString());
+        this.title = in.readString();
+        this.subtitle = in.readString();
+        this.imageUrl = in.readString();
+        this.help = in.readString();
+        this.iconId = in.readInt();
+        this.receiptId = in.readString();
+        this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
+        this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
+        this.statementDescription = in.readString();
+        this.shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
+        this.paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
+        this.score = in.readParcelable(PaymentCongratsResponse.Score.class.getClassLoader());
+        this.discount = in.readParcelable(PaymentCongratsResponse.Discount.class.getClassLoader());
+        this.crossSelling = in.readParcelable(PaymentCongratsResponse.CrossSelling.class.getClassLoader());
+        this.moneySplit = in.readParcelable(PaymentCongratsResponse.MoneySplit.class.getClassLoader());
+        this.topTextBox = in.readParcelable(PaymentCongratsResponse.Text.class.getClassLoader());
+        this.viewReceipt = in.readParcelable(PaymentCongratsResponse.Action.class.getClassLoader());
     }
 
     @Override
@@ -81,7 +110,7 @@ public class PaymentCongrats implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeString(this.congratsType.name());
         dest.writeString(this.title);
         dest.writeString(this.subtitle);
@@ -101,49 +130,11 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.paymentCongratsResponse, flags);
         dest.writeParcelable(this.score, flags);
         dest.writeParcelable(this.discount, flags);
-        dest.writeParcelable(this.crossSelling, flags);
+        dest.writeTypedList(crossSelling);
         dest.writeParcelable(this.moneySplit, flags);
         dest.writeParcelable(this.topTextBox, flags);
         dest.writeParcelable(this.viewReceipt, flags);
     }
-
-    protected PaymentCongrats(Parcel in) {
-        this.congratsType = CongratsType.fromName(in.readString());
-        this.title = in.readString();
-        this.subtitle = in.readString();
-        this.imageUrl = in.readString();
-        this.help = in.readString();
-        this.iconId = in.readInt();
-        this.receiptId = in.readString();
-        this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
-        this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
-        this.statementDescription = in.readString();
-        this.shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
-        this.paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
-        this.score = in.readParcelable(CongratsResponse.Score.class.getClassLoader());
-        this.discount = in.readParcelable(CongratsResponse.Discount.class.getClassLoader());
-        this.crossSelling = in.readParcelable(CongratsResponse.CrossSelling.class.getClassLoader());
-        this.moneySplit = in.readParcelable(CongratsResponse.MoneySplit.class.getClassLoader());
-        this.topTextBox = in.readParcelable(Text.class.getClassLoader());
-        this.viewReceipt = in.readParcelable(Action.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
-        @Override
-        public PaymentCongrats createFromParcel(Parcel source) {
-            return new PaymentCongrats(source);
-        }
-
-        @Override
-        public PaymentCongrats[] newArray(int size) {
-            return new PaymentCongrats[size];
-        }
-    };
 
     @NotNull
     public String getTitle() {
@@ -236,6 +227,36 @@ public class PaymentCongrats implements Parcelable {
         return congratsType;
     }
 
+    @Nullable
+    public PaymentCongratsResponse.Score getScore() {
+        return score;
+    }
+
+    @Nullable
+    public PaymentCongratsResponse.Discount getDiscount() {
+        return discount;
+    }
+
+    @Nullable
+    public List<PaymentCongratsResponse.CrossSelling> getCrossSelling() {
+        return crossSelling;
+    }
+
+    @Nullable
+    public PaymentCongratsResponse.MoneySplit getMoneySplit() {
+        return moneySplit;
+    }
+
+    @Nullable
+    public PaymentCongratsResponse.Text getTopTextBox() {
+        return topTextBox;
+    }
+
+    @Nullable
+    public PaymentCongratsResponse.Action getViewReceipt() {
+        return viewReceipt;
+    }
+
     public enum CongratsType {
         APPROVED,
         REJECTED,
@@ -249,7 +270,6 @@ public class PaymentCongrats implements Parcelable {
             }
             throw new IllegalStateException("Invalid congratsType");
         }
-
     }
 
     public static class Builder {
@@ -286,21 +306,26 @@ public class PaymentCongrats implements Parcelable {
         /* default */ PaymentCongratsResponse paymentCongratsResponse;
 
         // MLBusinessComponents
-        /* default */ CongratsResponse.Score score;
-        /* default */ CongratsResponse.Discount discount;
-        /* default */ CongratsResponse.CrossSelling crossSelling;
-        /* default */ CongratsResponse.MoneySplit moneySplit;
-        /* default */ Text topTextBox;
-        /* default */ Action viewReceipt;
+        /* default */ PaymentCongratsResponse.Score score;
+        /* default */ PaymentCongratsResponse.Discount discount;
+        /* default */ List<PaymentCongratsResponse.CrossSelling> crossSelling;
+        /* default */ PaymentCongratsResponse.MoneySplit moneySplit;
+        /* default */ PaymentCongratsResponse.Text topTextBox;
+        /* default */ PaymentCongratsResponse.Action viewReceipt;
+        /* default */ boolean customOrder = false;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public PaymentCongrats build() {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
-            currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator, currencyThousandsSeparator);
-            paymentCongratsResponse = new PaymentCongratsResponse()
+            currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
+                currencyThousandsSeparator);
+            paymentCongratsResponse =
+                new PaymentCongratsResponse(score, discount, moneySplit, crossSelling, topTextBox, viewReceipt,
+                    customOrder);
 
             return new PaymentCongrats(this);
         }
@@ -381,7 +406,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param iconId header's icon
          * @return builder
          */
@@ -404,8 +428,8 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * if Exit action is set, then a big secondary button will appear and the click action will trigger a resCode that
-         * will be the same of the Exit action added.
+         * if Exit action is set, then a big secondary button will appear and the click action will trigger a resCode
+         * that will be the same of the Exit action added.
          *
          * @param label text show in secondary action
          * @param resCode resCode in exit case
@@ -490,7 +514,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param decimalPlaces decimal places in the amount, default value is "2"
          * @return
          */
@@ -500,7 +523,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param decimalSeparator decimal separator in the amout, default value is ","
          * @return
          */
@@ -510,7 +532,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param symbol currency symbol in the amount, default value is "$"
          * @return
          */
@@ -520,7 +541,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param thousandsSeparator thousands separator in the amount, default value is "."
          * @return
          */
@@ -530,13 +550,61 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
-         * @param score an object containing the needed info to display user MLBusinessComponent
+         * @param score an object containing the needed info to display score MLBusinessComponent
          * @return builder with the added object
          */
-        public Builder withScore(final CongratsResponse.Score score) {
-            ExitAction action = new ExitAction()
+        public Builder withScore(final PaymentCongratsResponse.Score score) {
             this.score = score;
+            return this;
+        }
+
+        /**
+         * @param discount an object containing the needed info to display discount MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withDiscount(final PaymentCongratsResponse.Discount discount) {
+            this.discount = discount;
+            return this;
+        }
+
+        /**
+         * @param crossSelling a list of crossSelling objects containing the needed info to display the cross selling
+         * MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withCrossSelling(final List<PaymentCongratsResponse.CrossSelling> crossSelling) {
+            this.crossSelling = crossSelling;
+            return this;
+        }
+
+        /**
+         * @param moneySplit an object containing the needed info to display the money split MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withMoneySplit(final PaymentCongratsResponse.MoneySplit moneySplit) {
+            this.moneySplit = moneySplit;
+            return this;
+        }
+
+        //TODO  add accurate description since the name is not very descriptive
+
+        /**
+         * @param topTextBox
+         * @return builder with the added object
+         */
+        public Builder withTopTextBox(final PaymentCongratsResponse.Text topTextBox) {
+            this.topTextBox = topTextBox;
+            return this;
+        }
+
+        //TODO  add accurate description since the name is not very descriptive
+
+        /**
+         * @param viewReceipt
+         * @return builder with the added object
+         */
+        public Builder withViewReceipt(final PaymentCongratsResponse.Action viewReceipt) {
+            this.viewReceipt = viewReceipt;
             return this;
         }
     }
