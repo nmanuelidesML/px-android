@@ -39,10 +39,7 @@ public class PaymentCongrats implements Parcelable {
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
 
-    private final int currencyDecimalPlaces;
-    @NonNull private final String currencyDecimalSeparator;
-    @NonNull private final String currencySymbol;
-    @NonNull private final String currencyThousandsSeparator;
+    @NonNull private final PaymentCongratsCurrency currency;
 
     private PaymentCongrats(final Builder builder) {
         congratsType = builder.congratsType;
@@ -61,10 +58,7 @@ public class PaymentCongrats implements Parcelable {
         topFragment = builder.topFragment;
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
-        currencyDecimalPlaces = builder.currencyDecimalPlaces;
-        currencyDecimalSeparator = builder.currencyDecimalSeparator;
-        currencySymbol = builder.currencySymbol;
-        currencyThousandsSeparator = builder.currencyThousandsSeparator;
+        currency = builder.currency;
     }
 
     @Override
@@ -90,10 +84,7 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.topFragment, flags);
         dest.writeParcelable(this.bottomFragment, flags);
         dest.writeParcelable(this.importantFragment, flags);
-        dest.writeInt(this.currencyDecimalPlaces);
-        dest.writeString(this.currencyDecimalSeparator);
-        dest.writeString(this.currencySymbol);
-        dest.writeString(this.currencyThousandsSeparator);
+        dest.writeParcelable(this.currency, flags);
     }
 
     protected PaymentCongrats(Parcel in) {
@@ -113,10 +104,7 @@ public class PaymentCongrats implements Parcelable {
         this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.currencyDecimalPlaces = in.readInt();
-        this.currencyDecimalSeparator = in.readString();
-        this.currencySymbol = in.readString();
-        this.currencyThousandsSeparator = in.readString();
+        this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
@@ -195,23 +183,9 @@ public class PaymentCongrats implements Parcelable {
         return importantFragment;
     }
 
-    public int getCurrencyDecimalPlaces() {
-        return currencyDecimalPlaces;
-    }
-
-    @NonNull
-    public String getCurrencyDecimalSeparator() {
-        return currencyDecimalSeparator;
-    }
-
-    @NonNull
-    public String getCurrencySymbol() {
-        return currencySymbol;
-    }
-
-    @NonNull
-    public String getCurrencyThousandsSeparator() {
-        return currencyThousandsSeparator;
+    @NotNull
+    public PaymentCongratsCurrency getCurrency() {
+        return currency;
     }
 
     public Boolean hasTopFragment() {
@@ -280,9 +254,10 @@ public class PaymentCongrats implements Parcelable {
         /* default */ ExternalFragment importantFragment;
 
         /* default */ int currencyDecimalPlaces = 2;
-        /* default */ String currencyDecimalSeparator = ",";
+        /* default */ Character currencyDecimalSeparator = ',';
         /* default */ String currencySymbol = "$";
-        /* default */ String currencyThousandsSeparator = ".";
+        /* default */ Character currencyThousandsSeparator = '.';
+        /* default */ PaymentCongratsCurrency currency;
 
         public Builder() {}
 
@@ -290,6 +265,7 @@ public class PaymentCongrats implements Parcelable {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
+            this.currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator, currencyThousandsSeparator);
             return new PaymentCongrats(this);
         }
 
@@ -492,7 +468,7 @@ public class PaymentCongrats implements Parcelable {
          * @param decimalSeparator decimal separator in the amout, default value is ","
          * @return
          */
-        public Builder withCurrencyDecimalSeparator(final String decimalSeparator) {
+        public Builder withCurrencyDecimalSeparator(final Character decimalSeparator) {
             this.currencyDecimalSeparator = decimalSeparator;
             return this;
         }
@@ -512,7 +488,7 @@ public class PaymentCongrats implements Parcelable {
          * @param thousandsSeparator thousands separator in the amount, default value is "."
          * @return
          */
-        public Builder withCurrencyThousandsSeparator(final String thousandsSeparator) {
+        public Builder withCurrencyThousandsSeparator(final Character thousandsSeparator) {
             this.currencyThousandsSeparator = thousandsSeparator;
             return this;
         }
