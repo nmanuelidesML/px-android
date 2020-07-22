@@ -210,11 +210,9 @@ public class PaymentCongrats implements Parcelable {
     }
 
     public enum CongratsType {
-        APPROVED("APPROVED"),
-        REJECTED("REJECTED"),
-        PENDING("PENDING");
-
-        CongratsType(final String type) { }
+        APPROVED,
+        REJECTED,
+        PENDING;
 
         public static CongratsType fromName(final String text) {
             for (final CongratsType congratsType : CongratsType.values()) {
