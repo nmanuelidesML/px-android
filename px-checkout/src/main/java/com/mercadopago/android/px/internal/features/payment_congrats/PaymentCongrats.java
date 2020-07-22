@@ -26,7 +26,6 @@ public class PaymentCongrats implements Parcelable {
 
     //Receipt data
     @Nullable private final String receiptId;
-    @Nullable private final List<String> receiptIdList;
     private final boolean shouldShowReceipt;
 
     // Exit Buttons
@@ -49,7 +48,6 @@ public class PaymentCongrats implements Parcelable {
         help = builder.help;
         iconId = builder.iconId;
         receiptId = builder.receiptId;
-        receiptIdList = builder.receiptIdList;
         exitActionPrimary = builder.exitActionPrimary;
         exitActionSecondary = builder.exitActionSecondary;
         statementDescription = builder.statementDescription;
@@ -75,7 +73,6 @@ public class PaymentCongrats implements Parcelable {
         dest.writeString(this.help);
         dest.writeInt(this.iconId);
         dest.writeString(this.receiptId);
-        dest.writeStringList(this.receiptIdList);
         dest.writeParcelable(this.exitActionPrimary, flags);
         dest.writeParcelable(this.exitActionSecondary, flags);
         dest.writeString(this.statementDescription);
@@ -95,7 +92,6 @@ public class PaymentCongrats implements Parcelable {
         this.help = in.readString();
         this.iconId = in.readInt();
         this.receiptId = in.readString();
-        this.receiptIdList = in.createStringArrayList();
         this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
         this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
         this.statementDescription = in.readString();
@@ -139,8 +135,9 @@ public class PaymentCongrats implements Parcelable {
         return help;
     }
 
-    public String getReceipt() {
-        return ListUtil.isNotEmpty(receiptIdList) ? receiptIdList.get(0) : receiptId;
+    @org.jetbrains.annotations.Nullable
+    public String getReceiptId() {
+        return receiptId;
     }
 
     @Nullable
