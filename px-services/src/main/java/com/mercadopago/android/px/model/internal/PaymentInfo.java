@@ -66,7 +66,7 @@ public class PaymentInfo implements Parcelable {
         }
 
         /**
-         * Adds the of the payment method used to pay
+         * Adds the name of the payment method used to pay
          *
          * @param paymentMethodName the name of the payment method
          * @return Builder
