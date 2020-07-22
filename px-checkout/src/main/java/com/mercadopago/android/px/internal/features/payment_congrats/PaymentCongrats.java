@@ -9,7 +9,10 @@ import android.support.v4.app.Fragment;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.ExitAction;
 import com.mercadopago.android.px.model.ExternalFragment;
+import com.mercadopago.android.px.model.internal.Action;
+import com.mercadopago.android.px.model.internal.CongratsResponse;
 import com.mercadopago.android.px.model.internal.PaymentCongratsResponse;
+import com.mercadopago.android.px.model.internal.Text;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +27,12 @@ public class PaymentCongrats implements Parcelable {
     @Nullable private final String statementDescription;
     private final boolean shouldShowPaymentMethod;
     @Nullable private PaymentCongratsResponse paymentCongratsResponse;
+    @Nullable private final CongratsResponse.Score score;
+    @Nullable private final CongratsResponse.Discount discount;
+    @Nullable private final CongratsResponse.CrossSelling crossSelling;
+    @Nullable private final CongratsResponse.MoneySplit moneySplit;
+    @Nullable private final Text topTextBox;
+    @Nullable private final Action viewReceipt;
 
     //Receipt data
     @Nullable private final String receiptId;
@@ -58,6 +67,12 @@ public class PaymentCongrats implements Parcelable {
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
         currency = builder.currency;
+        score = builder.score;
+        discount = builder.discount;
+        crossSelling = builder.crossSelling;
+        moneySplit = builder.moneySplit;
+        topTextBox = builder.topTextBox;
+        viewReceipt = builder.viewReceipt;
     }
 
     @Override
@@ -84,6 +99,12 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.importantFragment, flags);
         dest.writeParcelable(this.currency, flags);
         dest.writeParcelable(this.paymentCongratsResponse, flags);
+        dest.writeParcelable(this.score, flags);
+        dest.writeParcelable(this.discount, flags);
+        dest.writeParcelable(this.crossSelling, flags);
+        dest.writeParcelable(this.moneySplit, flags);
+        dest.writeParcelable(this.topTextBox, flags);
+        dest.writeParcelable(this.viewReceipt, flags);
     }
 
     protected PaymentCongrats(Parcel in) {
@@ -104,6 +125,12 @@ public class PaymentCongrats implements Parcelable {
         this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
         this.paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
+        this.score = in.readParcelable(CongratsResponse.Score.class.getClassLoader());
+        this.discount = in.readParcelable(CongratsResponse.Discount.class.getClassLoader());
+        this.crossSelling = in.readParcelable(CongratsResponse.CrossSelling.class.getClassLoader());
+        this.moneySplit = in.readParcelable(CongratsResponse.MoneySplit.class.getClassLoader());
+        this.topTextBox = in.readParcelable(Text.class.getClassLoader());
+        this.viewReceipt = in.readParcelable(Action.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
@@ -256,6 +283,15 @@ public class PaymentCongrats implements Parcelable {
         /* default */ String currencySymbol = "$";
         /* default */ Character currencyThousandsSeparator = '.';
         /* default */ PaymentCongratsCurrency currency;
+        /* default */ PaymentCongratsResponse paymentCongratsResponse;
+
+        // MLBusinessComponents
+        /* default */ CongratsResponse.Score score;
+        /* default */ CongratsResponse.Discount discount;
+        /* default */ CongratsResponse.CrossSelling crossSelling;
+        /* default */ CongratsResponse.MoneySplit moneySplit;
+        /* default */ Text topTextBox;
+        /* default */ Action viewReceipt;
 
         public Builder() {}
 
@@ -263,7 +299,9 @@ public class PaymentCongrats implements Parcelable {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
-            this.currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator, currencyThousandsSeparator);
+            currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator, currencyThousandsSeparator);
+            paymentCongratsResponse = new PaymentCongratsResponse()
+
             return new PaymentCongrats(this);
         }
 
@@ -488,6 +526,17 @@ public class PaymentCongrats implements Parcelable {
          */
         public Builder withCurrencyThousandsSeparator(final Character thousandsSeparator) {
             this.currencyThousandsSeparator = thousandsSeparator;
+            return this;
+        }
+
+        /**
+         *
+         * @param score an object containing the needed info to display user MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withScore(final CongratsResponse.Score score) {
+            ExitAction action = new ExitAction()
+            this.score = score;
             return this;
         }
     }
