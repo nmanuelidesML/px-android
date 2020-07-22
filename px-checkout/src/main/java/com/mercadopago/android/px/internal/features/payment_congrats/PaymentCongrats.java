@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.ExitAction;
 import com.mercadopago.android.px.model.ExternalFragment;
+import com.mercadopago.android.px.model.internal.PaymentCongratsResponse;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,7 @@ public class PaymentCongrats implements Parcelable {
     private final int iconId;
     @Nullable private final String statementDescription;
     private final boolean shouldShowPaymentMethod;
+    @Nullable private PaymentCongratsResponse paymentCongratsResponse;
 
     //Receipt data
     @Nullable private final String receiptId;
@@ -81,6 +83,7 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.bottomFragment, flags);
         dest.writeParcelable(this.importantFragment, flags);
         dest.writeParcelable(this.currency, flags);
+        dest.writeParcelable(this.paymentCongratsResponse, flags);
     }
 
     protected PaymentCongrats(Parcel in) {
@@ -100,6 +103,7 @@ public class PaymentCongrats implements Parcelable {
         this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
+        this.paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
