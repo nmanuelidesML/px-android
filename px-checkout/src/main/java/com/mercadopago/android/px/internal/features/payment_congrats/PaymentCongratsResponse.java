@@ -30,7 +30,6 @@ public final class PaymentCongratsResponse implements Parcelable {
     @Nullable private final Discount discount;
     @Nullable private final MoneySplit moneySplit;
     private final List<CrossSelling> crossSellings;
-    private final Text topTextBox;
     private final Action viewReceipt;
     private final boolean customOrder;
 
@@ -38,13 +37,12 @@ public final class PaymentCongratsResponse implements Parcelable {
         @Nullable final Score score,
         @Nullable final Discount discount, @Nullable final
     MoneySplit moneySplit,
-        final List<CrossSelling> crossSellings, final Text topTextBox, final Action viewReceipt,
+        final List<CrossSelling> crossSellings, final Action viewReceipt,
         final boolean customOrder) {
         this.score = score;
         this.discount = discount;
         this.moneySplit = moneySplit;
         this.crossSellings = crossSellings;
-        this.topTextBox = topTextBox;
         this.viewReceipt = viewReceipt;
         this.customOrder = customOrder;
     }
@@ -54,7 +52,6 @@ public final class PaymentCongratsResponse implements Parcelable {
         discount = null;
         moneySplit = null;
         crossSellings = Collections.emptyList();
-        topTextBox = Text.EMPTY;
         viewReceipt = null;
         customOrder = false;
     }
@@ -64,7 +61,6 @@ public final class PaymentCongratsResponse implements Parcelable {
         discount = in.readParcelable(Discount.class.getClassLoader());
         moneySplit = in.readParcelable(MoneySplit.class.getClassLoader());
         crossSellings = in.createTypedArrayList(CrossSelling.CREATOR);
-        topTextBox = in.readParcelable(Text.class.getClassLoader());
         viewReceipt = in.readParcelable(Action.class.getClassLoader());
         customOrder = in.readInt() == 1;
     }
@@ -75,7 +71,6 @@ public final class PaymentCongratsResponse implements Parcelable {
         dest.writeParcelable(discount, flags);
         dest.writeParcelable(moneySplit, flags);
         dest.writeTypedList(crossSellings);
-        dest.writeParcelable(topTextBox, flags);
         dest.writeParcelable(viewReceipt, flags);
         dest.writeInt(customOrder ? 1 : 0);
     }
@@ -103,11 +98,6 @@ public final class PaymentCongratsResponse implements Parcelable {
     @NonNull
     public List<CrossSelling> getCrossSellings() {
         return crossSellings != null ? crossSellings : Collections.emptyList();
-    }
-
-    @NonNull
-    public Text getTopTextBox() {
-        return topTextBox != null ? topTextBox : Text.EMPTY;
     }
 
     @Nullable

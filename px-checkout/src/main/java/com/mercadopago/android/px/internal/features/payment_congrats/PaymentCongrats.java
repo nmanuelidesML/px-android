@@ -37,7 +37,6 @@ public class PaymentCongrats implements Parcelable {
     @Nullable private final PaymentCongratsResponse.Discount discount;
     @Nullable private final List<PaymentCongratsResponse.CrossSelling> crossSelling;
     @Nullable private final PaymentCongratsResponse.MoneySplit moneySplit;
-    @Nullable private final PaymentCongratsResponse.Text topTextBox;
     @Nullable private final PaymentCongratsResponse.Action viewReceipt;
     //Receipt data
     @Nullable private final String receiptId;
@@ -52,7 +51,7 @@ public class PaymentCongrats implements Parcelable {
     @NonNull private final PaymentCongratsCurrency currency;
     @Nullable private final PaymentCongratsResponse paymentCongratsResponse;
 
-    private PaymentCongrats(final Builder builder) {
+    /* default */ PaymentCongrats(final Builder builder) {
         congratsType = builder.congratsType;
         title = builder.title;
         subtitle = builder.subtitle;
@@ -73,7 +72,6 @@ public class PaymentCongrats implements Parcelable {
         discount = builder.discount;
         crossSelling = builder.crossSelling;
         moneySplit = builder.moneySplit;
-        topTextBox = builder.topTextBox;
         viewReceipt = builder.viewReceipt;
         paymentCongratsResponse = builder.paymentCongratsResponse;
     }
@@ -100,7 +98,6 @@ public class PaymentCongrats implements Parcelable {
         this.discount = in.readParcelable(PaymentCongratsResponse.Discount.class.getClassLoader());
         this.crossSelling = in.readParcelable(PaymentCongratsResponse.CrossSelling.class.getClassLoader());
         this.moneySplit = in.readParcelable(PaymentCongratsResponse.MoneySplit.class.getClassLoader());
-        this.topTextBox = in.readParcelable(PaymentCongratsResponse.Text.class.getClassLoader());
         this.viewReceipt = in.readParcelable(PaymentCongratsResponse.Action.class.getClassLoader());
     }
 
@@ -132,7 +129,6 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.discount, flags);
         dest.writeTypedList(crossSelling);
         dest.writeParcelable(this.moneySplit, flags);
-        dest.writeParcelable(this.topTextBox, flags);
         dest.writeParcelable(this.viewReceipt, flags);
     }
 
@@ -248,11 +244,6 @@ public class PaymentCongrats implements Parcelable {
     }
 
     @Nullable
-    public PaymentCongratsResponse.Text getTopTextBox() {
-        return topTextBox;
-    }
-
-    @Nullable
     public PaymentCongratsResponse.Action getViewReceipt() {
         return viewReceipt;
     }
@@ -310,7 +301,6 @@ public class PaymentCongrats implements Parcelable {
         /* default */ PaymentCongratsResponse.Discount discount;
         /* default */ List<PaymentCongratsResponse.CrossSelling> crossSelling;
         /* default */ PaymentCongratsResponse.MoneySplit moneySplit;
-        /* default */ PaymentCongratsResponse.Text topTextBox;
         /* default */ PaymentCongratsResponse.Action viewReceipt;
         /* default */ boolean customOrder = false;
 
@@ -324,7 +314,7 @@ public class PaymentCongrats implements Parcelable {
             currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
                 currencyThousandsSeparator);
             paymentCongratsResponse =
-                new PaymentCongratsResponse(score, discount, moneySplit, crossSelling, topTextBox, viewReceipt,
+                new PaymentCongratsResponse(score, discount, moneySplit, crossSelling, viewReceipt,
                     customOrder);
 
             return new PaymentCongrats(this);
@@ -333,7 +323,7 @@ public class PaymentCongrats implements Parcelable {
         /**
          * Sets up the congrats type (green, red, orange)
          *
-         * @param congratsType enum with type atribute
+         * @param congratsType enum with type attribute
          * @return builder
          */
         public Builder withCongratsType(final CongratsType congratsType) {
@@ -364,7 +354,7 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * Sets up the image in congarts's header
+         * Sets up the image in conarats's header
          *
          * @param imageUrl url for the header's image
          * @return builder
@@ -380,7 +370,7 @@ public class PaymentCongrats implements Parcelable {
          * @param receiptId the receipt id to be shown.
          * @return builder
          */
-        public Builder withReceipId(final String receiptId) {
+        public Builder withReceiptId(final String receiptId) {
             this.receiptId = receiptId;
             return this;
         }
@@ -586,21 +576,8 @@ public class PaymentCongrats implements Parcelable {
             return this;
         }
 
-        //TODO  add accurate description since the name is not very descriptive
-
         /**
-         * @param topTextBox
-         * @return builder with the added object
-         */
-        public Builder withTopTextBox(final PaymentCongratsResponse.Text topTextBox) {
-            this.topTextBox = topTextBox;
-            return this;
-        }
-
-        //TODO  add accurate description since the name is not very descriptive
-
-        /**
-         * @param viewReceipt
+         * @param viewReceipt a button that takes you to hte payment receipt
          * @return builder with the added object
          */
         public Builder withViewReceipt(final PaymentCongratsResponse.Action viewReceipt) {
