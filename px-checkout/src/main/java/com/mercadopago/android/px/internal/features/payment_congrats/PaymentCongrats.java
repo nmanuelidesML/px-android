@@ -9,10 +9,22 @@ import android.support.v4.app.Fragment;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.ExitAction;
 import com.mercadopago.android.px.model.ExternalFragment;
+import com.mercadopago.android.px.model.Payment;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class PaymentCongrats implements Parcelable {
+    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
+        @Override
+        public PaymentCongrats createFromParcel(final Parcel source) {
+            return new PaymentCongrats(source);
+        }
+
+        @Override
+        public PaymentCongrats[] newArray(final int size) {
+            return new PaymentCongrats[size];
+        }
+    };
     //Basic data
     @NonNull private final CongratsType congratsType;
     @NonNull private final String title;
@@ -22,21 +34,17 @@ public class PaymentCongrats implements Parcelable {
     private final int iconId;
     @Nullable private final String statementDescription;
     private final boolean shouldShowPaymentMethod;
-
+    @NonNull private final PaymentInfo paymentInfo;
     //Receipt data
     @Nullable private final String receiptId;
     private final boolean shouldShowReceipt;
-
     // Exit Buttons
     @Nullable private final ExitAction exitActionPrimary;
     @Nullable private final ExitAction exitActionSecondary;
-
-
     // custom views for integrators
     @Nullable private final ExternalFragment topFragment;
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
-
     @NonNull private final PaymentCongratsCurrency currency;
 
     private PaymentCongrats(final Builder builder) {
@@ -51,11 +59,32 @@ public class PaymentCongrats implements Parcelable {
         exitActionSecondary = builder.exitActionSecondary;
         statementDescription = builder.statementDescription;
         shouldShowPaymentMethod = builder.shouldShowPaymentMethod;
+        paymentInfo = builder.paymentInfo;
         shouldShowReceipt = builder.shouldShowReceipt;
         topFragment = builder.topFragment;
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
         currency = builder.currency;
+    }
+
+    protected PaymentCongrats(Parcel in) {
+        this.congratsType = CongratsType.fromName(in.readString());
+        this.title = in.readString();
+        this.subtitle = in.readString();
+        this.imageUrl = in.readString();
+        this.help = in.readString();
+        this.iconId = in.readInt();
+        this.receiptId = in.readString();
+        this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
+        this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
+        this.statementDescription = in.readString();
+        this.shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.paymentInfo = in.readParcelable(Payment.class.getClassLoader());
+        this.shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
+        this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
     }
 
     @Override
@@ -76,43 +105,13 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.exitActionSecondary, flags);
         dest.writeString(this.statementDescription);
         dest.writeValue(this.shouldShowPaymentMethod);
+        dest.writeParcelable(this.paymentInfo, flags);
         dest.writeValue(this.shouldShowReceipt);
         dest.writeParcelable(this.topFragment, flags);
         dest.writeParcelable(this.bottomFragment, flags);
         dest.writeParcelable(this.importantFragment, flags);
         dest.writeParcelable(this.currency, flags);
     }
-
-    protected PaymentCongrats(Parcel in) {
-        this.congratsType = CongratsType.fromName(in.readString());
-        this.title = in.readString();
-        this.subtitle = in.readString();
-        this.imageUrl = in.readString();
-        this.help = in.readString();
-        this.iconId = in.readInt();
-        this.receiptId = in.readString();
-        this.exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
-        this.exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
-        this.statementDescription = in.readString();
-        this.shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
-        @Override
-        public PaymentCongrats createFromParcel(Parcel source) {
-            return new PaymentCongrats(source);
-        }
-
-        @Override
-        public PaymentCongrats[] newArray(int size) {
-            return new PaymentCongrats[size];
-        }
-    };
 
     @NotNull
     public String getTitle() {
@@ -157,6 +156,11 @@ public class PaymentCongrats implements Parcelable {
     @Nullable
     public Boolean getShouldShowPaymentMethod() {
         return shouldShowPaymentMethod;
+    }
+
+    @NonNull
+    public PaymentInfo getPaymentInfo() {
+        return paymentInfo;
     }
 
     @Nullable
@@ -218,7 +222,6 @@ public class PaymentCongrats implements Parcelable {
             }
             throw new IllegalStateException("Invalid congratsType");
         }
-
     }
 
     public static class Builder {
@@ -229,6 +232,7 @@ public class PaymentCongrats implements Parcelable {
         /* default */ String imageUrl;
         /* default */ String help;
         /* default */ int iconId;
+        /* default */ PaymentInfo paymentInfo;
 
         /* default */ String receiptId;
         /* default */ List<String> receiptIdList;
@@ -253,13 +257,15 @@ public class PaymentCongrats implements Parcelable {
         /* default */ Character currencyThousandsSeparator = '.';
         /* default */ PaymentCongratsCurrency currency;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public PaymentCongrats build() {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
-            this.currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator, currencyThousandsSeparator);
+            this.currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
+                currencyThousandsSeparator);
             return new PaymentCongrats(this);
         }
 
@@ -313,7 +319,7 @@ public class PaymentCongrats implements Parcelable {
          * @param receiptId the receipt id to be shown.
          * @return builder
          */
-        public Builder withReceipId(final String receiptId) {
+        public Builder withReceiptId(final String receiptId) {
             this.receiptId = receiptId;
             return this;
         }
@@ -339,12 +345,20 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param iconId header's icon
          * @return builder
          */
         public Builder withIconId(final int iconId) {
             this.iconId = iconId;
+            return this;
+        }
+
+        /**
+         * @param paymentInfo basic info about the payment
+         * @return builder
+         */
+        public Builder withPaymentInfo(final PaymentInfo paymentInfo) {
+            this.paymentInfo = paymentInfo;
             return this;
         }
 
@@ -362,8 +376,8 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         * if Exit action is set, then a big secondary button will appear and the click action will trigger a resCode that
-         * will be the same of the Exit action added.
+         * if Exit action is set, then a big secondary button will appear and the click action will trigger a resCode
+         * that will be the same of the Exit action added.
          *
          * @param label text show in secondary action
          * @param resCode resCode in exit case
@@ -448,7 +462,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param decimalPlaces decimal places in the amount, default value is "2"
          * @return
          */
@@ -458,7 +471,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param decimalSeparator decimal separator in the amout, default value is ","
          * @return
          */
@@ -468,7 +480,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param symbol currency symbol in the amount, default value is "$"
          * @return
          */
@@ -478,7 +489,6 @@ public class PaymentCongrats implements Parcelable {
         }
 
         /**
-         *
          * @param thousandsSeparator thousands separator in the amount, default value is "."
          * @return
          */
