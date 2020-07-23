@@ -33,11 +33,6 @@ public class PaymentCongrats implements Parcelable {
     private final int iconId;
     @Nullable private final String statementDescription;
     private final boolean shouldShowPaymentMethod;
-    @Nullable private final PaymentCongratsResponse.Score score;
-    @Nullable private final PaymentCongratsResponse.Discount discount;
-    @Nullable private final List<PaymentCongratsResponse.CrossSelling> crossSelling;
-    @Nullable private final PaymentCongratsResponse.MoneySplit moneySplit;
-    @Nullable private final PaymentCongratsResponse.Action viewReceipt;
     //Receipt data
     @Nullable private final String receiptId;
     private final boolean shouldShowReceipt;
@@ -68,11 +63,6 @@ public class PaymentCongrats implements Parcelable {
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
         currency = builder.currency;
-        score = builder.score;
-        discount = builder.discount;
-        crossSelling = builder.crossSelling;
-        moneySplit = builder.moneySplit;
-        viewReceipt = builder.viewReceipt;
         paymentCongratsResponse = builder.paymentCongratsResponse;
     }
 
@@ -94,11 +84,6 @@ public class PaymentCongrats implements Parcelable {
         this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
         this.paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
-        this.score = in.readParcelable(PaymentCongratsResponse.Score.class.getClassLoader());
-        this.discount = in.readParcelable(PaymentCongratsResponse.Discount.class.getClassLoader());
-        this.crossSelling = in.readParcelable(PaymentCongratsResponse.CrossSelling.class.getClassLoader());
-        this.moneySplit = in.readParcelable(PaymentCongratsResponse.MoneySplit.class.getClassLoader());
-        this.viewReceipt = in.readParcelable(PaymentCongratsResponse.Action.class.getClassLoader());
     }
 
     @Override
@@ -125,11 +110,6 @@ public class PaymentCongrats implements Parcelable {
         dest.writeParcelable(this.importantFragment, flags);
         dest.writeParcelable(this.currency, flags);
         dest.writeParcelable(this.paymentCongratsResponse, flags);
-        dest.writeParcelable(this.score, flags);
-        dest.writeParcelable(this.discount, flags);
-        dest.writeTypedList(crossSelling);
-        dest.writeParcelable(this.moneySplit, flags);
-        dest.writeParcelable(this.viewReceipt, flags);
     }
 
     @NotNull
@@ -221,31 +201,6 @@ public class PaymentCongrats implements Parcelable {
     @NonNull
     public CongratsType getCongratsType() {
         return congratsType;
-    }
-
-    @Nullable
-    public PaymentCongratsResponse.Score getScore() {
-        return score;
-    }
-
-    @Nullable
-    public PaymentCongratsResponse.Discount getDiscount() {
-        return discount;
-    }
-
-    @Nullable
-    public List<PaymentCongratsResponse.CrossSelling> getCrossSelling() {
-        return crossSelling;
-    }
-
-    @Nullable
-    public PaymentCongratsResponse.MoneySplit getMoneySplit() {
-        return moneySplit;
-    }
-
-    @Nullable
-    public PaymentCongratsResponse.Action getViewReceipt() {
-        return viewReceipt;
     }
 
     public enum CongratsType {
