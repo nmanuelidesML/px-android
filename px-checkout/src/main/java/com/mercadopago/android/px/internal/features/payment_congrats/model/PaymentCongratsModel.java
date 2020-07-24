@@ -1,4 +1,4 @@
-package com.mercadopago.android.px.internal.features.payment_congrats;
+package com.mercadopago.android.px.internal.features.payment_congrats.model;
 
 import android.os.Bundle;
 import android.os.Parcel;
@@ -13,16 +13,16 @@ import com.mercadopago.android.px.model.Payment;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class PaymentCongrats implements Parcelable {
-    public static final Parcelable.Creator<PaymentCongrats> CREATOR = new Parcelable.Creator<PaymentCongrats>() {
+public class PaymentCongratsModel implements Parcelable {
+    public static final Parcelable.Creator<PaymentCongratsModel> CREATOR = new Parcelable.Creator<PaymentCongratsModel>() {
         @Override
-        public PaymentCongrats createFromParcel(final Parcel source) {
-            return new PaymentCongrats(source);
+        public PaymentCongratsModel createFromParcel(final Parcel source) {
+            return new PaymentCongratsModel(source);
         }
 
         @Override
-        public PaymentCongrats[] newArray(final int size) {
-            return new PaymentCongrats[size];
+        public PaymentCongratsModel[] newArray(final int size) {
+            return new PaymentCongratsModel[size];
         }
     };
     //Basic data
@@ -47,7 +47,7 @@ public class PaymentCongrats implements Parcelable {
     @Nullable private final ExternalFragment importantFragment;
     @NonNull private final PaymentCongratsCurrency currency;
 
-    private PaymentCongrats(final Builder builder) {
+    private PaymentCongratsModel(final Builder builder) {
         congratsType = builder.congratsType;
         title = builder.title;
         subtitle = builder.subtitle;
@@ -67,7 +67,7 @@ public class PaymentCongrats implements Parcelable {
         currency = builder.currency;
     }
 
-    protected PaymentCongrats(Parcel in) {
+    protected PaymentCongratsModel(Parcel in) {
         this.congratsType = CongratsType.fromName(in.readString());
         this.title = in.readString();
         this.subtitle = in.readString();
@@ -260,13 +260,13 @@ public class PaymentCongrats implements Parcelable {
         public Builder() {
         }
 
-        public PaymentCongrats build() {
+        public PaymentCongratsModel build() {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
             this.currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
                 currencyThousandsSeparator);
-            return new PaymentCongrats(this);
+            return new PaymentCongratsModel(this);
         }
 
         /**
