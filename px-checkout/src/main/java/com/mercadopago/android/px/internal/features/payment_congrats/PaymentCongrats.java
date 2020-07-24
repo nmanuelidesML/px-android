@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import com.mercadopago.android.px.internal.features.business_result.BusinessPaymentResultActivity;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
-import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 
 public class PaymentCongrats {
 
@@ -13,15 +12,14 @@ public class PaymentCongrats {
     /**
      * Allows to execute a congrats activity
      *
-     * @param paymentCongratsModel model with the needed data
+     * @param paymentCongratsModel model with the needed data to show a PaymentCongrats
      * @param activity caller activity
      * @param requestCode requestCode for ActivityForResult
      */
     public static void show(final PaymentCongratsModel paymentCongratsModel, final Activity activity,
-        final int requestCode, final BusinessPaymentModel businessModel) {
+        final int requestCode) {
         final Intent intent = new Intent(activity, BusinessPaymentResultActivity.class);
         intent.putExtra(PAYMENT_CONGRATS, paymentCongratsModel);
-        intent.putExtra("extra_business_payment_model", businessModel);
         activity.startActivityForResult(intent, requestCode);
     }
 }
