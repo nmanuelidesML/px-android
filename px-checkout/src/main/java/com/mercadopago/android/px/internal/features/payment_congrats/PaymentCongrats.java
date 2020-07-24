@@ -18,8 +18,7 @@ public class PaymentCongrats {
      * @param requestCode resquestCode for ActivityForResult
      */
     public static void show(final PaymentCongratsModel paymentCongratsModel, final Activity activity,
-        final int requestCode, final
-    BusinessPaymentModel businessModel) {
+        final int requestCode, final BusinessPaymentModel businessModel) {
         final Intent intent = new Intent(activity, BusinessPaymentResultActivity.class);
         intent.putExtra(PAYMENT_CONGRATS, paymentCongratsModel);
         intent.putExtra("extra_business_payment_model", businessModel);
