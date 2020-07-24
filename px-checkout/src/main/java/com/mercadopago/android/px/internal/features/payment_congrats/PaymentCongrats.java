@@ -15,7 +15,7 @@ public class PaymentCongrats {
      *
      * @param paymentCongratsModel model with the needed data
      * @param activity caller activity
-     * @param requestCode resquestCode for ActivityForResult
+     * @param requestCode requestCode for ActivityForResult
      */
     public static void show(final PaymentCongratsModel paymentCongratsModel, final Activity activity,
         final int requestCode, final BusinessPaymentModel businessModel) {
