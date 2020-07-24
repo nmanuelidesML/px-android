@@ -303,7 +303,7 @@ public class PaymentCongratsModel implements Parcelable {
         }
 
         /**
-         * Sets up the image in congarts's header
+         * Sets up the image in congrats's header
          *
          * @param imageUrl url for the header's image
          * @return builder
