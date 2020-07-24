@@ -46,8 +46,9 @@ public class PaymentCongratsModel implements Parcelable {
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
     @NonNull private final PaymentCongratsCurrency currency;
+    @Nullable private final PaymentCongratsResponse paymentCongratsResponse;
 
-    private PaymentCongratsModel(final Builder builder) {
+    /* default */ PaymentCongratsModel(final Builder builder) {
         congratsType = builder.congratsType;
         title = builder.title;
         subtitle = builder.subtitle;
@@ -65,9 +66,10 @@ public class PaymentCongratsModel implements Parcelable {
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
         currency = builder.currency;
+        paymentCongratsResponse = builder.paymentCongratsResponse;
     }
 
-    protected PaymentCongratsModel(Parcel in) {
+    protected PaymentCongratsModel(final Parcel in) {
         this.congratsType = CongratsType.fromName(in.readString());
         this.title = in.readString();
         this.subtitle = in.readString();
@@ -85,6 +87,7 @@ public class PaymentCongratsModel implements Parcelable {
         this.bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         this.currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
+        this.paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
     }
 
     @Override
@@ -93,7 +96,7 @@ public class PaymentCongratsModel implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeString(this.congratsType.name());
         dest.writeString(this.title);
         dest.writeString(this.subtitle);
@@ -111,6 +114,7 @@ public class PaymentCongratsModel implements Parcelable {
         dest.writeParcelable(this.bottomFragment, flags);
         dest.writeParcelable(this.importantFragment, flags);
         dest.writeParcelable(this.currency, flags);
+        dest.writeParcelable(this.paymentCongratsResponse, flags);
     }
 
     @NotNull
@@ -256,6 +260,15 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ String currencySymbol = "$";
         /* default */ Character currencyThousandsSeparator = '.';
         /* default */ PaymentCongratsCurrency currency;
+        /* default */ PaymentCongratsResponse paymentCongratsResponse;
+
+        // MLBusinessComponents
+        /* default */ PaymentCongratsResponse.Score score;
+        /* default */ PaymentCongratsResponse.Discount discount;
+        /* default */ List<PaymentCongratsResponse.CrossSelling> crossSelling;
+        /* default */ PaymentCongratsResponse.MoneySplit moneySplit;
+        /* default */ PaymentCongratsResponse.Action viewReceipt;
+        /* default */ boolean customOrder = false;
 
         public Builder() {
         }
@@ -266,13 +279,17 @@ public class PaymentCongratsModel implements Parcelable {
             }
             currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
                 currencyThousandsSeparator);
+            paymentCongratsResponse =
+                new PaymentCongratsResponse(score, discount, moneySplit, crossSelling, viewReceipt,
+                    customOrder);
+
             return new PaymentCongratsModel(this);
         }
 
         /**
          * Sets up the congrats type (green, red, orange)
          *
-         * @param congratsType enum with type atribute
+         * @param congratsType enum with type attribute
          * @return builder
          */
         public Builder withCongratsType(final CongratsType congratsType) {
@@ -494,6 +511,52 @@ public class PaymentCongratsModel implements Parcelable {
          */
         public Builder withCurrencyThousandsSeparator(final Character thousandsSeparator) {
             this.currencyThousandsSeparator = thousandsSeparator;
+            return this;
+        }
+
+        /**
+         * @param score an object containing the needed info to display score MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withScore(final PaymentCongratsResponse.Score score) {
+            this.score = score;
+            return this;
+        }
+
+        /**
+         * @param discount an object containing the needed info to display discount MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withDiscount(final PaymentCongratsResponse.Discount discount) {
+            this.discount = discount;
+            return this;
+        }
+
+        /**
+         * @param crossSelling a list of crossSelling objects containing the needed info to display the cross selling
+         * MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withCrossSelling(final List<PaymentCongratsResponse.CrossSelling> crossSelling) {
+            this.crossSelling = crossSelling;
+            return this;
+        }
+
+        /**
+         * @param moneySplit an object containing the needed info to display the money split MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withMoneySplit(final PaymentCongratsResponse.MoneySplit moneySplit) {
+            this.moneySplit = moneySplit;
+            return this;
+        }
+
+        /**
+         * @param viewReceipt a button that takes you to hte payment receipt
+         * @return builder with the added object
+         */
+        public Builder withViewReceipt(final PaymentCongratsResponse.Action viewReceipt) {
+            this.viewReceipt = viewReceipt;
             return this;
         }
     }
