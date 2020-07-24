@@ -264,7 +264,7 @@ public class PaymentCongratsModel implements Parcelable {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
-            this.currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
+            currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
                 currencyThousandsSeparator);
             return new PaymentCongratsModel(this);
         }
