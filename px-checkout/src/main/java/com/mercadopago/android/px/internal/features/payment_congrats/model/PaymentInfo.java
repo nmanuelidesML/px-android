@@ -1,4 +1,4 @@
-package com.mercadopago.android.px.model.internal;
+package com.mercadopago.android.px.internal.features.payment_congrats.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
