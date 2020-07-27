@@ -239,7 +239,6 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ List<PaymentInfo> paymentsInfo;
 
         /* default */ String receiptId;
-        /* default */ List<String> receiptIdList;
 
         // Exit Buttons
         /* default */ ExitAction exitActionPrimary;
@@ -335,21 +334,12 @@ public class PaymentCongratsModel implements Parcelable {
         }
 
         /**
-         * @param receiptIdList The list of receipt ids
-         * @return builder
-         */
-        public Builder withReceiptIdList(final List<String> receiptIdList) {
-            this.receiptIdList = receiptIdList;
-            return this;
-        }
-
-        /**
          * if help is set, then a small box with help instructions will appear
          *
          * @param help a help message
          * @return builder
          */
-        public Builder withHelp(@Nullable final String help) {
+        public Builder withHelp(final String help) {
             this.help = help;
             return this;
         }
@@ -545,7 +535,7 @@ public class PaymentCongratsModel implements Parcelable {
         }
 
         /**
-         * @param viewReceipt a button that takes you to hte payment receipt
+         * @param viewReceipt a button that takes you to the payment receipt
          * @return builder with the added object
          */
         public Builder withViewReceipt(final PaymentCongratsResponse.Action viewReceipt) {

@@ -1,10 +1,13 @@
 package com.mercadopago.android.px.internal.features.payment_congrats.model;
 
+import android.support.annotation.Nullable;
 import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.model.BusinessPayment;
+import com.mercadopago.android.px.model.internal.Action;
 import com.mercadopago.android.px.model.internal.CongratsResponse;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 class PaymentCongratsModelMapper {
 
@@ -18,19 +21,54 @@ class PaymentCongratsModelMapper {
             .withCurrencyDecimalSeparator(businessPaymentModel.getCurrency().getDecimalSeparator())
             .withCurrencySymbol(businessPaymentModel.getCurrency().getSymbol())
             .withCurrencyThousandsSeparator(businessPaymentModel.getCurrency().getThousandsSeparator())
-            .withDiscount(getDiscount(businessPaymentModel.getCongratsResponse().getDiscount()))
-            .withExitActionPrimary(businessPayment.getPrimaryAction().getName(),
-                businessPayment.getPrimaryAction().getResCode())
-            .withExitActionSecondary(businessPayment.getSecondaryAction().getName(),
-                businessPayment.getSecondaryAction().getResCode())
+            .withTitle(businessPayment.getTitle())
             .withShouldShowPaymentMethod(businessPayment.shouldShowPaymentMethod())
-            .withHelp(businessPayment.getHelp())
-            .withIconId(businessPayment.getIcon())
-            .withImageUrl(businessPayment.getImageUrl())
-            .withBottomFragment(businessPayment.getBottomFragment())
-            .withTopFragment(businessPayment.getTopFragment())
-            .withImportantFragment(businessPayment.getImportantFragment())
-            ;
+            .withIconId(businessPayment.getIcon());
+        
+        if (businessPayment.getPrimaryAction() != null && businessPayment.getPrimaryAction().getName() != null) {
+            builder.withExitActionPrimary(businessPayment.getPrimaryAction().getName(),
+                businessPayment.getPrimaryAction().getResCode());
+        }
+        if (businessPayment.getSecondaryAction() != null && businessPayment.getSecondaryAction().getName() != null) {
+            builder.withExitActionSecondary(businessPayment.getSecondaryAction().getName(),
+                businessPayment.getSecondaryAction().getResCode());
+        }
+        if (businessPayment.getHelp() != null) {
+            builder.withHelp(businessPayment.getHelp());
+        }
+        if (businessPaymentModel.getCongratsResponse().getDiscount() != null) {
+            builder.withDiscount(getDiscount(businessPaymentModel.getCongratsResponse().getDiscount()));
+        }
+        if (businessPayment.getImageUrl() != null) {
+            builder.withImageUrl(businessPayment.getImageUrl());
+        }
+        if (businessPayment.getBottomFragment() != null) {
+            builder.withBottomFragment(businessPayment.getBottomFragment());
+        }
+        if (businessPayment.getTopFragment() != null) {
+            builder.withTopFragment(businessPayment.getTopFragment());
+        }
+        if (businessPayment.getImportantFragment() != null) {
+            builder.withImportantFragment(businessPayment.getImportantFragment());
+        }
+        if (businessPaymentModel.getCongratsResponse().getMoneySplit() != null) {
+            builder.withMoneySplit(getMoneySplit(businessPaymentModel.getCongratsResponse().getMoneySplit()));
+        }
+        if (businessPaymentModel.getCongratsResponse().getScore() != null) {
+            builder.withScore(getScore(businessPaymentModel.getCongratsResponse().getScore()));
+        }
+        if (businessPayment.getReceipt() != null) {
+            builder.withReceiptId(businessPayment.getReceipt());
+        }
+        if (businessPayment.getStatementDescription() != null) {
+            builder.withStatementDescription(businessPayment.getStatementDescription());
+        }
+        if (businessPayment.getSubtitle() != null) {
+            builder.withSubtitle(businessPayment.getSubtitle());
+        }
+        if (businessPaymentModel.getCongratsResponse().getViewReceipt() != null) {
+            builder.withViewReceipt(getAction(businessPaymentModel.getCongratsResponse().getViewReceipt()));
+        }
 
         return builder.build();
     }
@@ -40,7 +78,7 @@ class PaymentCongratsModelMapper {
         return new PaymentCongratsResponse.Score(
             new PaymentCongratsResponse.Score.Progress(score.getProgress().getPercentage(),
                 score.getProgress().getColor(), score.getProgress().getLevel()), score.getTitle(),
-            new PaymentCongratsResponse.Action(score.getAction().getLabel(), score.getAction().getTarget()));
+            getAction(score.getAction()));
     }
 
     private List<PaymentCongratsResponse.CrossSelling> getCrossSelling(
@@ -49,15 +87,12 @@ class PaymentCongratsModelMapper {
         for (final CongratsResponse.CrossSelling crossSelling : crossSellings) {
             crossSellingList
                 .add(new PaymentCongratsResponse.CrossSelling(crossSelling.getTitle(), crossSelling.getIcon(),
-                    new PaymentCongratsResponse.Action(crossSelling.getAction().getLabel(),
-                        crossSelling.getAction().getTarget()), crossSelling.getContentId()));
+                    getAction(crossSelling.getAction()), crossSelling.getContentId()));
         }
         return crossSellingList;
     }
 
     private PaymentCongratsResponse.Discount getDiscount(final CongratsResponse.Discount discount) {
-        final PaymentCongratsResponse.Action action =
-            new PaymentCongratsResponse.Action(discount.getAction().getLabel(), discount.getAction().getTarget());
         final PaymentCongratsResponse.AdditionalEdgeInsets additionalEdgeInsets =
             discount.getTouchpoint().getAdditionalEdgeInsets() == null ? null :
                 new PaymentCongratsResponse.AdditionalEdgeInsets(
@@ -69,9 +104,27 @@ class PaymentCongratsModelMapper {
             new PaymentCongratsResponse.PXBusinessTouchpoint(discount.getTouchpoint().getId(),
                 discount.getTouchpoint().getType(), discount.getTouchpoint().getContent(),
                 discount.getTouchpoint().getTracking(), additionalEdgeInsets);
-        return new PaymentCongratsResponse.Discount(discount.getTitle(), discount.getSubtitle(), action
-            , new PaymentCongratsResponse.Discount.DownloadApp(discount.getActionDownload().getTitle(), action),
+
+        return new PaymentCongratsResponse.Discount(discount.getTitle(), discount.getSubtitle(),
+            getAction(discount.getAction())
+            , new PaymentCongratsResponse.Discount.DownloadApp(discount.getActionDownload().getTitle(),
+            getAction(discount.getActionDownload().getAction())),
             touchpoint, getDiscountItems(discount.getItems()));
+    }
+
+    @Nullable
+    private PaymentCongratsResponse.MoneySplit getMoneySplit(@Nullable final CongratsResponse.MoneySplit moneySplit) {
+        return moneySplit == null ? null
+            : new PaymentCongratsResponse.MoneySplit(
+                new PaymentCongratsResponse.Text(moneySplit.getTitle().getMessage(),
+                    moneySplit.getTitle().getBackgroundColor(), moneySplit.getTitle().getTextColor(),
+                    moneySplit.getTitle().getWeight()), getAction(moneySplit.getAction()),
+                moneySplit.getImageUrl());
+    }
+
+    @NotNull
+    private PaymentCongratsResponse.Action getAction(final Action action) {
+        return new PaymentCongratsResponse.Action(action.getLabel(), action.getTarget());
     }
 
     private List<PaymentCongratsResponse.Discount.Item> getDiscountItems(
