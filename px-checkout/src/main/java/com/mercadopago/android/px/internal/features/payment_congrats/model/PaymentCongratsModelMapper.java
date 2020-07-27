@@ -3,6 +3,7 @@ package com.mercadopago.android.px.internal.features.payment_congrats.model;
 import android.support.annotation.Nullable;
 import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.model.BusinessPayment;
+import com.mercadopago.android.px.model.PaymentData;
 import com.mercadopago.android.px.model.internal.Action;
 import com.mercadopago.android.px.model.internal.CongratsResponse;
 import java.util.ArrayList;
@@ -23,8 +24,9 @@ class PaymentCongratsModelMapper {
             .withCurrencyThousandsSeparator(businessPaymentModel.getCurrency().getThousandsSeparator())
             .withTitle(businessPayment.getTitle())
             .withShouldShowPaymentMethod(businessPayment.shouldShowPaymentMethod())
-            .withIconId(businessPayment.getIcon());
-        
+            .withIconId(businessPayment.getIcon())
+            .withPaymentsInfo(getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList()));
+
         if (businessPayment.getPrimaryAction() != null && businessPayment.getPrimaryAction().getName() != null) {
             builder.withExitActionPrimary(businessPayment.getPrimaryAction().getName(),
                 businessPayment.getPrimaryAction().getResCode());
@@ -136,5 +138,20 @@ class PaymentCongratsModelMapper {
                     item.getTarget(), item.getCampaignId()));
         }
         return discountItems;
+    }
+
+    private List<PaymentInfo> getPaymentsInfo(final Iterable<PaymentData> paymentDataList) {
+        final List<PaymentInfo> paymentsInfoList = new ArrayList<>();
+        for (final PaymentData paymentData : paymentDataList) {
+            final PaymentInfo paymentInfo = new PaymentInfo.Builder()
+                .withPaymentMethodId(paymentData.getPaymentMethod().getId())
+                .withPaymentMethodName(paymentData.getPaymentMethod().getName())
+                .withRawAmount(paymentData.getRawAmount().toString())
+                .build();
+            //TODO LAST FOUR DIGITS ARE NOWHERE TO BE SEEN, WHERE DO I GET THEM FROM???
+            //.withLastFourDigits()
+            paymentsInfoList.add(paymentInfo);
+        }
+        return paymentsInfoList;
     }
 }
