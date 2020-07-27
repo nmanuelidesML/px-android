@@ -417,7 +417,7 @@ public class PaymentCongratsModel implements Parcelable {
          * @param shouldShowPaymentMethod visibility mode, default value is "false"
          * @return builder
          */
-        public Builder withShouldPaymentMethod(final boolean shouldShowPaymentMethod) {
+        public Builder withShouldShowPaymentMethod(final boolean shouldShowPaymentMethod) {
             this.shouldShowPaymentMethod = shouldShowPaymentMethod;
             return this;
         }
