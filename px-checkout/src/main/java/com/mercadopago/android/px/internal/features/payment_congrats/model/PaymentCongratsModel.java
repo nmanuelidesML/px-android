@@ -356,7 +356,7 @@ public class PaymentCongratsModel implements Parcelable {
          * @param help a help message
          * @return builder
          */
-        public Builder withHelp(final String help) {
+        public Builder withHelp(@Nullable final String help) {
             this.help = help;
             return this;
         }
@@ -443,12 +443,36 @@ public class PaymentCongratsModel implements Parcelable {
         /**
          * Custom fragment that will appear before payment method description inside Business result screen.
          *
+         * @param externalFragment a fragment to be displayed
+         * @return builder
+         */
+
+        /* default */ Builder withTopFragment(@NonNull final ExternalFragment externalFragment) {
+            this.topFragment = externalFragment;
+            return this;
+        }
+
+        /**
+         * Custom fragment that will appear before payment method description inside Business result screen.
+         *
          * @param zClass fragment class
          * @param args args for fragment class
          * @return builder
          */
         public Builder withTopFragment(@NonNull final Class<? extends Fragment> zClass, @Nullable final Bundle args) {
             this.topFragment = new ExternalFragment(zClass, args);
+            return this;
+        }
+
+        /**
+         * Custom fragment that will appear after payment method description inside Business result screen.
+         *
+         * @param externalFragment a fragment to be displayed
+         * @return builder
+         */
+
+        /* default */ Builder withBottomFragment(@NonNull final ExternalFragment externalFragment) {
+            this.bottomFragment = externalFragment;
             return this;
         }
 
@@ -462,6 +486,18 @@ public class PaymentCongratsModel implements Parcelable {
         public Builder withBottomFragment(@NonNull final Class<? extends Fragment> zClass,
             @Nullable final Bundle args) {
             this.bottomFragment = new ExternalFragment(zClass, args);
+            return this;
+        }
+
+        /**
+         * Custom fragment that will appear at the top of all information inside Business result screen.
+         *
+         * @param externalFragment a fragment to be displayed
+         * @return builder
+         */
+
+        /* default */ Builder withImportantFragment(@NonNull final ExternalFragment externalFragment) {
+            this.importantFragment = externalFragment;
             return this;
         }
 
