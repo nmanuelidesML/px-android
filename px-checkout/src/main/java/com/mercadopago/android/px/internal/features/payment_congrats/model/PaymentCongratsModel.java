@@ -424,7 +424,7 @@ public class PaymentCongratsModel implements Parcelable {
          * @param shouldShowPaymentMethod visibility mode, default value is "false"
          * @return builder
          */
-        public Builder withShouldPaymentMethod(final boolean shouldShowPaymentMethod) {
+        public Builder withShouldShowPaymentMethod(final boolean shouldShowPaymentMethod) {
             this.shouldShowPaymentMethod = shouldShowPaymentMethod;
             return this;
         }
@@ -488,7 +488,7 @@ public class PaymentCongratsModel implements Parcelable {
         }
 
         /**
-         * @param decimalSeparator decimal separator in the amout, default value is ","
+         * @param decimalSeparator decimal separator in the amount, default value is ","
          * @return
          */
         public Builder withCurrencyDecimalSeparator(final Character decimalSeparator) {
