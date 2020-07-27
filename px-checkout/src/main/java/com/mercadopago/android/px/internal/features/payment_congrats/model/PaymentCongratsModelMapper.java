@@ -12,6 +12,12 @@ import org.jetbrains.annotations.NotNull;
 
 class PaymentCongratsModelMapper {
 
+    /**
+     * Takes a BusinessPaymentModel and outputs a PaymentCongratsModel
+     *
+     * @param businessPaymentModel the data to be converted
+     * @return a paymentCongratsModel built from a businessPaymentModel
+     */
     public PaymentCongratsModel map(final BusinessPaymentModel businessPaymentModel) {
         final BusinessPayment businessPayment = businessPaymentModel.getPayment();
         final PaymentCongratsModel.Builder builder = new PaymentCongratsModel.Builder()
