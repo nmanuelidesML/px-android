@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-class PaymentCongratsModelMapper {
+public class PaymentCongratsModelMapper {
 
     /**
      * Takes a BusinessPaymentModel and outputs a PaymentCongratsModel
@@ -149,14 +149,14 @@ class PaymentCongratsModelMapper {
     private List<PaymentInfo> getPaymentsInfo(final Iterable<PaymentData> paymentDataList) {
         final List<PaymentInfo> paymentsInfoList = new ArrayList<>();
         for (final PaymentData paymentData : paymentDataList) {
-            final PaymentInfo paymentInfo = new PaymentInfo.Builder()
+            final PaymentInfo.Builder paymentInfo = new PaymentInfo.Builder()
                 .withPaymentMethodId(paymentData.getPaymentMethod().getId())
                 .withPaymentMethodName(paymentData.getPaymentMethod().getName())
-                .withRawAmount(paymentData.getRawAmount().toString())
-                .build();
-            //TODO LAST FOUR DIGITS ARE NOWHERE TO BE SEEN, WHERE DO I GET THEM FROM???
-            //.withLastFourDigits()
-            paymentsInfoList.add(paymentInfo);
+                .withRawAmount(paymentData.getRawAmount().toString());
+            if (paymentData.getToken() != null && paymentData.getToken().getLastFourDigits() != null) {
+                paymentInfo.withLastFourDigits(paymentData.getToken().getLastFourDigits());
+            }
+            paymentsInfoList.add(paymentInfo.build());
         }
         return paymentsInfoList;
     }
