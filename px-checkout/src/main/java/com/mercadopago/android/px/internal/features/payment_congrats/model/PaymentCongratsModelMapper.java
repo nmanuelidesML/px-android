@@ -30,6 +30,7 @@ public class PaymentCongratsModelMapper {
             .withCurrencyThousandsSeparator(businessPaymentModel.getCurrency().getThousandsSeparator())
             .withTitle(businessPayment.getTitle())
             .withShouldShowPaymentMethod(businessPayment.shouldShowPaymentMethod())
+            .withShouldShowReceipt(businessPayment.shouldShowReceipt())
             .withIconId(businessPayment.getIcon())
             .withPaymentsInfo(getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList()));
 
