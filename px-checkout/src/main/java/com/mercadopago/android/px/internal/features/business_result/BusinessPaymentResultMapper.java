@@ -8,11 +8,9 @@ import com.mercadopago.android.px.internal.features.payment_congrats.model.Payme
 import com.mercadopago.android.px.internal.view.PaymentResultBody;
 import com.mercadopago.android.px.internal.view.PaymentResultHeader;
 import com.mercadopago.android.px.internal.view.PaymentResultMethod;
-import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.GenericLocalized;
 import com.mercadopago.android.px.internal.viewmodel.PaymentResultType;
 import com.mercadopago.android.px.internal.viewmodel.mappers.Mapper;
-import com.mercadopago.android.px.model.BusinessPayment;
 import java.util.ArrayList;
 import java.util.List;
 
