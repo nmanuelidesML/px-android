@@ -137,6 +137,10 @@ public class PaymentCongratsModel implements Parcelable {
         return help;
     }
 
+    public int getIconId() {
+        return iconId;
+    }
+
     @org.jetbrains.annotations.Nullable
     public String getReceiptId() {
         return receiptId;
@@ -211,6 +215,11 @@ public class PaymentCongratsModel implements Parcelable {
     @NonNull
     public CongratsType getCongratsType() {
         return congratsType;
+    }
+
+    @Nullable
+    public PaymentCongratsResponse getPaymentCongratsResponse() {
+        return paymentCongratsResponse;
     }
 
     public enum CongratsType {
