@@ -2,8 +2,9 @@ package com.mercadopago.android.px.internal.features.business_result;
 
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponseMapper;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
 import com.mercadopago.android.px.internal.view.PaymentResultBody;
 import com.mercadopago.android.px.internal.view.PaymentResultHeader;
 import com.mercadopago.android.px.internal.view.PaymentResultMethod;
@@ -12,56 +13,49 @@ import com.mercadopago.android.px.internal.viewmodel.GenericLocalized;
 import com.mercadopago.android.px.internal.viewmodel.PaymentResultType;
 import com.mercadopago.android.px.internal.viewmodel.mappers.Mapper;
 import com.mercadopago.android.px.model.BusinessPayment;
-import com.mercadopago.android.px.model.PaymentData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusinessPaymentResultMapper extends Mapper<BusinessPaymentModel, BusinessPaymentResultViewModel> {
+public class BusinessPaymentResultMapper extends Mapper<PaymentCongratsModel, BusinessPaymentResultViewModel> {
 
     @Override
-    public BusinessPaymentResultViewModel map(@NonNull final BusinessPaymentModel model) {
-        final PaymentResultHeader.Model headerModel = getHeaderModel(model.getPayment());
+    public BusinessPaymentResultViewModel map(@NonNull final PaymentCongratsModel model) {
+        final PaymentResultHeader.Model headerModel = getHeaderModel(model);
         final PaymentResultBody.Model bodyModel = getBodyModel(model);
         return new BusinessPaymentResultViewModel(headerModel, bodyModel,
-            model.getPayment().getPrimaryAction(), model.getPayment().getSecondaryAction());
+            model.getExitActionPrimary(), model.getExitActionSecondary());
     }
 
     @NonNull
-    private PaymentResultBody.Model getBodyModel(@NonNull final BusinessPaymentModel model) {
-        final BusinessPayment payment = model.getPayment();
+    private PaymentResultBody.Model getBodyModel(@NonNull final PaymentCongratsModel model) {
         final List<PaymentResultMethod.Model> methodModels = new ArrayList<>();
-        final PaymentCongratsResponse paymentCongratsResponse = new CongratsResponseMapper()
-            .map(model.getCongratsResponse());
-        if (payment.shouldShowPaymentMethod()) {
-            for (final PaymentData paymentData : model.getPaymentResult().getPaymentDataList()) {
-                methodModels.add(PaymentResultMethod.Model.with(paymentData, model.getCurrency(),
-                    payment.getStatementDescription()));
+        if (model.getShouldShowPaymentMethod()) {
+            for (final PaymentInfo paymentInfo : model.getPaymentsInfo()) {
+                methodModels.add(PaymentResultMethod.Model.with(paymentInfo,
+                    model.getStatementDescription()));
             }
         }
-
-        final PaymentResultType type = PaymentResultType.from(payment.getDecorator());
+        final PaymentCongratsModel.CongratsType type = model.getCongratsType();
         return new PaymentResultBody.Model.Builder()
             .setMethodModels(methodModels)
             .setCongratsViewModel(new PaymentCongratsResponseMapper(new BusinessPaymentResultTracker())
-                .map(paymentCongratsResponse))
-            .setReceiptId((type == PaymentResultType.APPROVED && payment.shouldShowReceipt()) ? payment.getReceipt() : null)
-            .setHelp(payment.getHelp())
-            .setStatement(payment.getStatementDescription())
-            .setTopFragment(payment.getTopFragment())
-            .setBottomFragment(payment.getBottomFragment())
-            .setImportantFragment(payment.getImportantFragment())
+                .map(model.getPaymentCongratsResponse()))
+            .setReceiptId((type == PaymentCongratsModel.CongratsType.APPROVED && model.getShouldShowReceipt()) ? model
+                .getReceiptId() : null)
+            .setHelp(model.getHelp())
+            .setStatement(model.getStatementDescription())
+            .setTopFragment(model.getTopFragment())
+            .setBottomFragment(model.getBottomFragment())
+            .setImportantFragment(model.getImportantFragment())
             .build();
     }
 
     @NonNull
-    private PaymentResultHeader.Model getHeaderModel(@NonNull final BusinessPayment payment) {
+    private PaymentResultHeader.Model getHeaderModel(@NonNull final PaymentCongratsModel payment) {
         final PaymentResultHeader.Model.Builder builder = new PaymentResultHeader.Model.Builder();
-
-        builder.setIconImage(payment.getIcon() == 0 ? R.drawable.px_icon_product : payment.getIcon());
+        builder.setIconImage(payment.getIconId() == 0 ? R.drawable.px_icon_product : payment.getIconId());
         builder.setIconUrl(payment.getImageUrl());
-
-        final PaymentResultType type = PaymentResultType.from(payment.getDecorator());
-
+        final PaymentResultType type = PaymentResultType.from(payment.getCongratsType());
         return builder
             .setBackground(type.resColor)
             .setBadgeImage(type.badge)
