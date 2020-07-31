@@ -4,18 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.util.PaymentDataHelper;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
 import com.mercadopago.android.px.internal.util.ResourceUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.PaymentData;
-import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.PaymentTypes;
 import com.mercadopago.android.px.model.display_info.ResultInfo;
 import com.mercadopago.android.px.model.internal.Text;
@@ -76,7 +74,7 @@ public class PaymentResultMethod extends ConstraintLayout {
                 model.paymentMethodName,
                 getResources().getString(R.string.px_ending_in),
                 model.lastFourDigits);
-        } else if(!PaymentTypes.isAccountMoney(model.paymentTypeId)){
+        } else if (!PaymentTypes.isAccountMoney(model.paymentTypeId)) {
             return model.paymentMethodName;
         }
         return null;
@@ -94,31 +92,6 @@ public class PaymentResultMethod extends ConstraintLayout {
 
     public static final class Model {
 
-        public static Model with(@NonNull final PaymentData paymentData, @NonNull final Currency currency) {
-            return with(paymentData, currency, null);
-        }
-
-        public static Model with(@NonNull final PaymentData paymentData, @NonNull final Currency currency,
-            @Nullable final String statement) {
-
-            final PaymentResultAmount.Model amountModel = new PaymentResultAmount.Model.Builder(
-                PaymentDataHelper.getPrettyAmountToPay(paymentData), paymentData.getRawAmount(), currency)
-                .setPayerCost(paymentData.getPayerCost())
-                .setDiscount(paymentData.getDiscount())
-                .build();
-
-            final PaymentMethod paymentMethod = paymentData.getPaymentMethod();
-            final Text description =
-                paymentMethod.getDisplayInfo() != null ? paymentMethod.getDisplayInfo().getDescription() : Text.EMPTY;
-            return new Builder(paymentMethod.getId(), paymentMethod.getName(), description,
-                paymentMethod.getPaymentTypeId())
-                .setLastFourDigits(paymentData.getToken() != null ? paymentData.getToken().getLastFourDigits() : null)
-                .setStatement(statement)
-                .setAmountModel(amountModel)
-                .setInfo(paymentMethod.getDisplayInfo() != null ? paymentMethod.getDisplayInfo().getResultInfo() : null)
-                .build();
-        }
-
         @NonNull /* default */ final String paymentMethodId;
         @NonNull /* default */ final String paymentMethodName;
         @NonNull /* default */ final Text paymentMethodDescription;
@@ -127,7 +100,6 @@ public class PaymentResultMethod extends ConstraintLayout {
         @Nullable /* default */ final String lastFourDigits;
         @Nullable /* default */ final String statement;
         @Nullable /* default */ final ResultInfo info;
-
         /* default */ Model(@NonNull final Builder builder) {
             paymentMethodId = builder.paymentMethodId;
             paymentMethodName = builder.paymentMethodName;
@@ -139,10 +111,43 @@ public class PaymentResultMethod extends ConstraintLayout {
             info = builder.info;
         }
 
+        public static Model with(@NonNull final PaymentData paymentData, @NonNull final Currency currency) {
+            final PaymentInfo paymentInfo = new PaymentInfo.Builder()
+                .withLastFourDigits(paymentData.getToken() != null ? paymentData.getToken().getLastFourDigits() : null)
+                .withPaymentMethodId(paymentData.getPaymentMethod().getId())
+                .withPaymentMethodName(paymentData.getPaymentMethod().getName())
+                .withRawAmount(paymentData.getRawAmount().toString())
+                .build();
+            return with(paymentInfo, null);
+        }
+
+        public static Model with(@NonNull final PaymentInfo paymentInfo, @Nullable final String statement) {
+
+            final PaymentResultAmount.Model amountModel = new PaymentResultAmount.Model.Builder(
+                paymentInfo.amountPaid, paymentInfo.rawAmount)
+                .setDiscountName(paymentInfo.discountName)
+                .setNumberOfInstallments(paymentInfo.numberOfInstallments)
+                .setInstallmentsAmount(paymentInfo.installmentsAmount)
+                .setInstallmentsRate(paymentInfo.installmentsRate)
+                .setInstallmentsTotalAmount(paymentInfo.)
+                .build();
+
+            final Text description =
+                paymentMethod.getDisplayInfo() != null ? paymentMethod.getDisplayInfo().getDescription() : Text.EMPTY;
+
+            return new Builder(paymentInfo.paymentMethodId, paymentInfo.paymentMethodName, description,
+                paymentInfo.paymentMethodType.value)
+                .setLastFourDigits(paymentInfo.lastFourDigits)
+                .setStatement(statement)
+                .setAmountModel(amountModel)
+                .setInfo(paymentInfo.consumerCreditsInfo)
+                .build();
+        }
+
         public static class Builder {
+            @NonNull /* default */ final Text paymentMethodDescription;
             @NonNull /* default */ String paymentMethodId;
             @NonNull /* default */ String paymentMethodName;
-            @NonNull /* default */ final Text paymentMethodDescription;
             @NonNull /* default */ String paymentTypeId;
             /* default */ PaymentResultAmount.Model amountModel;
             @Nullable /* default */ String lastFourDigits;
