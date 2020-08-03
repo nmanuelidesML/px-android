@@ -117,10 +117,6 @@ public class PaymentResultMethod extends ConstraintLayout {
         }
 
         public static Model with(@NonNull final PaymentData paymentData, @NonNull final Currency currency) {
-
-
-
-
             final PaymentInfo.Builder paymentInfoBuilder = new PaymentInfo.Builder()
                 .withLastFourDigits(paymentData.getToken() != null ? paymentData.getToken().getLastFourDigits() : null)
                 .withPaymentMethodId(paymentData.getPaymentMethod().getId())
