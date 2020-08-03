@@ -18,7 +18,7 @@ class ProductIdProvider(private val sharedPreferences: SharedPreferences) {
         sharedPreferences.edit().putString(PREF_PRODUCT_ID, productId).apply()
     }
 
-    fun clear() {
+    fun reset() {
         internalProductId = DEFAULT_PRODUCT_ID
         sharedPreferences.edit().remove(PREF_PRODUCT_ID).apply()
     }

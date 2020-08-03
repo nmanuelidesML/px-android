@@ -18,7 +18,7 @@ import android.widget.FrameLayout;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.base.PXActivity;
 import com.mercadopago.android.px.internal.controllers.CheckoutTimer;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.express.installments.InstallmentRowHolder;
 import com.mercadopago.android.px.internal.features.express.installments.InstallmentsAdapter;
@@ -79,7 +79,7 @@ public class InstallmentsActivity extends PXActivity<InstallmentsPresenter> impl
     @Override
     protected void onCreated(@Nullable final Bundle savedInstanceState) {
         final Session session = Session.getInstance();
-        final ConfigurationModule configurationModule = session.getConfigurationModule();
+        final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
         configuration = configurationModule.getPaymentSettings();
         presenter = new InstallmentsPresenter(session.getAmountRepository(), configuration,
             configurationModule.getUserSelectionRepository(), session.getDiscountRepository(),
@@ -339,6 +339,6 @@ public class InstallmentsActivity extends PXActivity<InstallmentsPresenter> impl
     @Override
     public void showDetailDialog(@NonNull final Currency currency,
         @NonNull final DiscountConfigurationModel discountModel) {
-        DiscountDetailDialog.showDialog(getSupportFragmentManager(), currency, discountModel);
+        DiscountDetailDialog.showDialog(getSupportFragmentManager(), discountModel);
     }
 }

@@ -5,7 +5,9 @@ import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ViewTreeObserver;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.font.FontHelper;
 import com.mercadopago.android.px.internal.font.PxFont;
@@ -33,6 +35,14 @@ public class MPTextView extends AppCompatTextView {
         if (!isInEditMode()) {
             FontHelper.setFont(this, font);
         }
+
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                configureEllipsize();
+            }
+        });
     }
 
     public void setText(@NonNull final Text text) {
@@ -40,6 +50,16 @@ public class MPTextView extends AppCompatTextView {
         ViewUtils.setTextColor(this, text.getTextColor());
         if (TextUtil.isNotEmpty(text.getWeight())) {
             FontHelper.setFont(this, PxFont.from(text.getWeight()));
+        }
+    }
+
+    private void configureEllipsize() {
+        final TextUtils.TruncateAt truncateAt = getEllipsize();
+        if (truncateAt != null && truncateAt.equals(TextUtils.TruncateAt.END) && getLineCount() > getMaxLines()) {
+
+            final int indexLastLine = getLayout().getLineEnd(getMaxLines() - 1);
+            final String text = getText().subSequence(0, indexLastLine - 3) + "...";
+            setText(text);
         }
     }
 }

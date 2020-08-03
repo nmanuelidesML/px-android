@@ -14,6 +14,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.base.BaseFragment;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.NetworkModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.checkout.CheckoutActivity;
@@ -51,11 +52,9 @@ public class OtherPaymentMethodFragment
         if (model.getNewCardMetadata() != null && OLD_VERSION.equals(model.getNewCardMetadata().getVersion())) {
             return new AddNewCardOldPresenter(Session.getInstance().getInitRepository());
         } else {
-            final NetworkModule networkModule = Session.getInstance().getNetworkModule();
+            final CheckoutConfigurationModule configurationModule = Session.getInstance().getConfigurationModule();
             return new OtherPaymentMethodPresenter(
-                Session.getInstance().getConfigurationModule().getPaymentSettings(),
-                networkModule.getSessionIdProvider(),
-                networkModule.getFlowIdProvider());
+                configurationModule.getPaymentSettings(), configurationModule.getTrackingRepository());
         }
     }
 

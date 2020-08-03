@@ -2,26 +2,23 @@ package com.mercadopago.android.px.internal.features.express.add_new_card;
 
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.internal.base.BasePresenter;
-import com.mercadopago.android.px.internal.core.FlowIdProvider;
-import com.mercadopago.android.px.internal.core.SessionIdProvider;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.internal.util.CardFormWithFragmentWrapper;
 
 public class OtherPaymentMethodPresenter extends BasePresenter<AddNewCard.View> implements AddNewCard.Actions {
 
     private final PaymentSettingRepository settingRepository;
-    private final SessionIdProvider sessionIdProvider;
-    @NonNull private final FlowIdProvider flowIdProvider;
+    @NonNull private final TrackingRepository trackingRepository;
 
     /* default */ OtherPaymentMethodPresenter(@NonNull final PaymentSettingRepository settingRepository,
-        @NonNull final SessionIdProvider sessionIdProvider, @NonNull final FlowIdProvider flowIdProvider) {
+        @NonNull final TrackingRepository trackingRepository) {
         this.settingRepository = settingRepository;
-        this.sessionIdProvider = sessionIdProvider;
-        this.flowIdProvider = flowIdProvider;
+        this.trackingRepository = trackingRepository;
     }
 
     @Override
     public void onAddNewCardSelected() {
-        getView().startCardForm(new CardFormWithFragmentWrapper(settingRepository, sessionIdProvider, flowIdProvider));
+        getView().startCardForm(new CardFormWithFragmentWrapper(settingRepository, trackingRepository));
     }
 }

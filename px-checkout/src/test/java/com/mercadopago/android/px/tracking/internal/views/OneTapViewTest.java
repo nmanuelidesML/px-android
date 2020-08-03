@@ -1,9 +1,9 @@
 package com.mercadopago.android.px.tracking.internal.views;
 
 import android.support.annotation.NonNull;
-import com.mercadopago.android.px.internal.core.FlowIdProvider;
-import com.mercadopago.android.px.internal.di.NetworkModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.internal.util.JsonUtil;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
@@ -49,11 +49,11 @@ public class OneTapViewTest {
     @Test
     public void verifyListenerCalled() {
         final Session session = mock(Session.class);
-        final NetworkModule networkModule = mock(NetworkModule.class);
+        final CheckoutConfigurationModule configurationModule = mock(CheckoutConfigurationModule.class);
         PowerMockito.mockStatic(Session.class);
         when(Session.getInstance()).thenReturn(session);
-        when(session.getNetworkModule()).thenReturn(networkModule);
-        when(networkModule.getFlowIdProvider()).thenReturn(mock(FlowIdProvider.class));
+        when(session.getConfigurationModule()).thenReturn(configurationModule);
+        when(configurationModule.getTrackingRepository()).thenReturn(mock(TrackingRepository.class));
         MPTracker.getInstance().hasExpressCheckout(true);
 
         final PXTrackingListener listener = mock(PXTrackingListener.class);

@@ -32,7 +32,7 @@ public final class JsonUtil {
         return GSON.fromJson(json, classOfT);
     }
 
-    private static Map<String, Object> getMapFromJson(@Nullable final String json) {
+    public static Map<String, Object> getMapFromJson(@Nullable final String json) {
         return GSON.fromJson(
             json, new TypeToken<ObjectMapTypeAdapter.ObjectMapType>() {
             }.getType()

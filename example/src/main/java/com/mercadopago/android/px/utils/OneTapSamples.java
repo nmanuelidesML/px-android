@@ -9,6 +9,7 @@ import com.mercadopago.android.px.configuration.DiscountConfiguration;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.configuration.PaymentResultScreenConfiguration;
+import com.mercadopago.android.px.configuration.TrackingConfiguration;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
 import com.mercadopago.android.px.core.SplitPaymentProcessor;
 import com.mercadopago.android.px.model.GenericPayment;
@@ -153,11 +154,13 @@ public final class OneTapSamples {
                         PaymentTypes.CREDIT_CARD, "Mensaje de prueba")))
                 .build();
 
-        PXTracker.setListener(TrackingSamples.INSTANCE.getTracker(), new HashMap<>(), "example_app");
+        final TrackingConfiguration trackingConfiguration =
+            new TrackingConfiguration.Builder().flowId("example_app").build();
 
         return new MercadoPagoCheckout.Builder(ONE_TAP_DIRECT_DISCOUNT_MERCHANT_PUBLIC_KEY, preference,
             paymentConfiguration)
             .setPrivateKey(ONE_TAP_PAYER_1_ACCESS_TOKEN)
+            .setTrackingConfiguration(trackingConfiguration)
             .setAdvancedConfiguration(new AdvancedConfiguration.Builder()
                 .setPaymentResultScreenConfiguration(new PaymentResultScreenConfiguration.Builder()
                     .setTopFragment(SampleDialog.class, null).build())

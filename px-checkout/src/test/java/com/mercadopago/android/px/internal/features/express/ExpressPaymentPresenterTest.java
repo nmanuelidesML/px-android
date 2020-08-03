@@ -4,8 +4,6 @@ import com.mercadopago.android.px.addons.ESCManagerBehaviour;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
-import com.mercadopago.android.px.internal.core.FlowIdProvider;
-import com.mercadopago.android.px.internal.core.SessionIdProvider;
 import com.mercadopago.android.px.internal.features.express.slider.HubAdapter;
 import com.mercadopago.android.px.internal.repository.AmountConfigurationRepository;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
@@ -19,6 +17,7 @@ import com.mercadopago.android.px.internal.repository.PayerComplianceRepository;
 import com.mercadopago.android.px.internal.repository.PayerCostSelectionRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.internal.view.ElementDescriptorView;
 import com.mercadopago.android.px.internal.viewmodel.SplitSelectionState;
 import com.mercadopago.android.px.internal.viewmodel.drawables.DrawableFragmentItem;
@@ -128,10 +127,7 @@ public class ExpressPaymentPresenterTest {
     private PayerComplianceRepository payerComplianceRepository;
 
     @Mock
-    private SessionIdProvider sessionIdProvider;
-
-    @Mock
-    private FlowIdProvider flowIdProvider;
+    private TrackingRepository trackingRepository;
 
     private ExpressPaymentPresenter expressPaymentPresenter;
 
@@ -159,7 +155,7 @@ public class ExpressPaymentPresenterTest {
             new ExpressPaymentPresenter(paymentRepository, paymentSettingRepository, disabledPaymentMethodRepository,
                 payerCostSelectionRepository, discountRepository, amountRepository, initRepository,
                 amountConfigurationRepository, chargeRepository, escManagerBehaviour, paymentMethodDrawableItemMapper,
-                congratsRepository, experimentsRepository, payerComplianceRepository, sessionIdProvider, flowIdProvider,
+                congratsRepository, experimentsRepository, payerComplianceRepository, trackingRepository,
                 mock(PaymentMethodDescriptorMapper.class));
 
         verifyAttachView();

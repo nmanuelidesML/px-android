@@ -11,6 +11,7 @@ import com.mercadopago.android.px.addons.FakeLocaleBehaviourImpl;
 import com.mercadopago.android.px.addons.MockSecurityBehaviour;
 import com.mercadopago.android.px.addons.PXBehaviourConfigurer;
 import com.mercadopago.android.px.di.Dependencies;
+import com.mercadopago.android.px.font.FontConfigurator;
 import com.mercadopago.android.px.internal.util.HttpClientUtil;
 import com.squareup.leakcanary.LeakCanary;
 import okhttp3.OkHttpClient;
@@ -27,6 +28,7 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initializeLeakCanary();
+        FontConfigurator.configure();
     }
 
     private void initializeLeakCanary() {

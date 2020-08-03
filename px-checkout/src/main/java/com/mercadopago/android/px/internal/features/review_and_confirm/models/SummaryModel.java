@@ -33,7 +33,7 @@ public class SummaryModel implements Parcelable {
 
     public static String resolveTitle(@NonNull final List<Item> items, @NonNull final Resources resources) {
         final int quantity = items.size() == 1 ? items.get(0).getQuantity() : items.size();
-        return quantity == 1 && TextUtil.isEmpty(items.get(0).getTitle()) ?
+        return quantity == 1 && TextUtil.isNotEmpty(items.get(0).getTitle()) ?
             items.get(0).getTitle() : (resources.getString(quantity == 1 ?
             R.string.px_review_summary_product : R.string.px_review_summary_products));
     }

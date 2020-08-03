@@ -21,11 +21,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class UsedUpDiscountValidator extends DefaultValidator {
     @Override
     public void validate(@NonNull final DiscountDetailPage discountDetailPage) {
-        final Matcher<View> discountDetailLine = withId(com.mercadopago.android.px.R.id.px_discount_detail_line);
-        final Matcher<View> discountSubDetails = withId(com.mercadopago.android.px.R.id.px_discount_sub_details);
+        final Matcher<View> summary = withId(com.mercadopago.android.px.R.id.summary);
+        final Matcher<View> description = withId(com.mercadopago.android.px.R.id.description);
         final Matcher<View> detail = withId(com.mercadopago.android.px.R.id.detail);
-        onView(discountDetailLine).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
-        onView(discountSubDetails).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(summary).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(description).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         onView(detail).check(matches(withText(com.mercadopago.android.px.R.string.px_used_up_discount_detail)));
     }
 

@@ -21,7 +21,7 @@ public class ExpressPaymentPage extends PageObject<CheckoutValidator> {
     }
 
     public DiscountDetailPage pressOnDiscountDetail() {
-        onView(withId(R.id.icon_descriptor_amount)).perform(click());
+        onView(withId(R.id.icon_descriptor)).perform(click());
         return new DiscountDetailPage(validator);
     }
 
