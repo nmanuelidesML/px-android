@@ -8,7 +8,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentResultInfo;
+import com.mercadopago.android.px.internal.util.PaymentDataHelper;
 import com.mercadopago.android.px.internal.util.ResourceUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
@@ -80,7 +83,7 @@ public class PaymentResultMethod extends ConstraintLayout {
         return null;
     }
 
-    private void renderInfo(@Nullable final ResultInfo info) {
+    private void renderInfo(@Nullable final PaymentResultInfo info) {
         if (info != null) {
             ViewUtils.loadOrGone(info.getTitle(), infoTitle);
             ViewUtils.loadOrGone(info.getSubtitle(), infoSubtitle);
@@ -94,12 +97,12 @@ public class PaymentResultMethod extends ConstraintLayout {
 
         @NonNull /* default */ final String paymentMethodId;
         @NonNull /* default */ final String paymentMethodName;
-        @NonNull /* default */ final Text paymentMethodDescription;
+        @NonNull /* default */ final PaymentCongratsText paymentMethodDescription;
         @NonNull /* default */ final String paymentTypeId;
         @NonNull /* default */ final PaymentResultAmount.Model amountModel;
         @Nullable /* default */ final String lastFourDigits;
         @Nullable /* default */ final String statement;
-        @Nullable /* default */ final ResultInfo info;
+        @Nullable /* default */ final PaymentResultInfo info;
         /* default */ Model(@NonNull final Builder builder) {
             paymentMethodId = builder.paymentMethodId;
             paymentMethodName = builder.paymentMethodName;
@@ -112,11 +115,32 @@ public class PaymentResultMethod extends ConstraintLayout {
         }
 
         public static Model with(@NonNull final PaymentData paymentData, @NonNull final Currency currency) {
+
+            final PaymentResultInfo paymentResultInfo = new PaymentResultInfo(
+                paymentData.getPaymentMethod().getDisplayInfo().getResultInfo().getTitle()
+            , paymentData.getPaymentMethod().getDisplayInfo().getResultInfo().getSubtitle());
+
+            final PaymentCongratsText description = new PaymentCongratsText(
+                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getMessage(),
+                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getBackgroundColor(),
+                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getTextColor(),
+                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getWeight()
+            );
+
             final PaymentInfo paymentInfo = new PaymentInfo.Builder()
                 .withLastFourDigits(paymentData.getToken() != null ? paymentData.getToken().getLastFourDigits() : null)
                 .withPaymentMethodId(paymentData.getPaymentMethod().getId())
                 .withPaymentMethodName(paymentData.getPaymentMethod().getName())
                 .withRawAmount(paymentData.getRawAmount().toString())
+                .withPaymentMethodType(PaymentInfo.PaymentMethodType.fromName(paymentData.getPaymentMethod().getPaymentTypeId()))
+                .withAmountPaid(PaymentDataHelper.getPrettyAmountToPay(paymentData).toString())
+                .withDiscountName(paymentData.getDiscount().getName())
+                .withNumberOfInstallments(paymentData.getPayerCost().getInstallments())
+                .withInstallmentsAmount(paymentData.getPayerCost().getInstallmentAmount().toString())
+                .withInstallmentsTotalAmount(paymentData.getPayerCost().getTotalAmount().toString())
+                .withInstallmentsRate(paymentData.getPayerCost().getInstallmentRate())
+                .withDescription(description)
+                .withConsumerCreditsInfo(paymentResultInfo)
                 .build();
             return with(paymentInfo, null);
         }
@@ -129,11 +153,11 @@ public class PaymentResultMethod extends ConstraintLayout {
                 .setNumberOfInstallments(paymentInfo.numberOfInstallments)
                 .setInstallmentsAmount(paymentInfo.installmentsAmount)
                 .setInstallmentsRate(paymentInfo.installmentsRate)
-                .setInstallmentsTotalAmount(paymentInfo.)
+                .setInstallmentsTotalAmount(paymentInfo.installmentsTotalAmount)
                 .build();
 
-            final Text description =
-                paymentMethod.getDisplayInfo() != null ? paymentMethod.getDisplayInfo().getDescription() : Text.EMPTY;
+            final PaymentCongratsText description =
+                paymentInfo.description != null ? paymentInfo.description : PaymentCongratsText.EMPTY;
 
             return new Builder(paymentInfo.paymentMethodId, paymentInfo.paymentMethodName, description,
                 paymentInfo.paymentMethodType.value)
@@ -145,17 +169,17 @@ public class PaymentResultMethod extends ConstraintLayout {
         }
 
         public static class Builder {
-            @NonNull /* default */ final Text paymentMethodDescription;
+            @NonNull /* default */ final PaymentCongratsText paymentMethodDescription;
             @NonNull /* default */ String paymentMethodId;
             @NonNull /* default */ String paymentMethodName;
             @NonNull /* default */ String paymentTypeId;
             /* default */ PaymentResultAmount.Model amountModel;
             @Nullable /* default */ String lastFourDigits;
             @Nullable /* default */ String statement;
-            @Nullable /* default */ ResultInfo info;
+            @Nullable /* default */ PaymentResultInfo info;
 
             public Builder(@NonNull final String paymentMethodId, @NonNull final String paymentMethodName,
-                @NonNull final Text paymentMethodDescription, @NonNull final String paymentTypeId) {
+                @NonNull final PaymentCongratsText paymentMethodDescription, @NonNull final String paymentTypeId) {
                 this.paymentMethodId = paymentMethodId;
                 this.paymentMethodName = paymentMethodName;
                 this.paymentMethodDescription = paymentMethodDescription;
@@ -177,7 +201,7 @@ public class PaymentResultMethod extends ConstraintLayout {
                 return this;
             }
 
-            public Builder setInfo(@Nullable final ResultInfo info) {
+            public Builder setInfo(@Nullable final PaymentResultInfo info) {
                 this.info = info;
                 return this;
             }

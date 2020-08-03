@@ -29,8 +29,10 @@ public class PaymentInfo implements Parcelable {
     @Nullable public final String discountName;
     @NonNull public final Integer numberOfInstallments;
     @Nullable public final String installmentsAmount;
+    @Nullable public final String installmentsTotalAmount;
     @Nullable public final BigDecimal installmentsRate;
-    @Nullable public final ResultInfo consumerCreditsInfo;
+    @Nullable public final PaymentResultInfo consumerCreditsInfo;
+    @Nullable public final PaymentCongratsText description;
 
     protected PaymentInfo(final Builder builder) {
         rawAmount = builder.rawAmount;
@@ -44,6 +46,8 @@ public class PaymentInfo implements Parcelable {
         installmentsAmount = builder.installmentsAmount;
         installmentsRate = builder.installmentsRate;
         consumerCreditsInfo = builder.consumerCreditsInfo;
+        description = builder.description;
+        installmentsTotalAmount = builder.installmentsTotalAmount;
     }
 
     protected PaymentInfo(final Parcel in) {
@@ -56,12 +60,14 @@ public class PaymentInfo implements Parcelable {
         discountName = in.readString();
         numberOfInstallments = in.readInt();
         installmentsAmount = in.readString();
+        installmentsTotalAmount = in.readString();
         if (in.readByte() == 0) {
             installmentsRate = null;
         } else {
             installmentsRate = new BigDecimal(in.readString());
         }
         consumerCreditsInfo = in.readParcelable(ResultInfo.class.getClassLoader());
+        description = in.readParcelable(PaymentCongratsText.class.getClassLoader());
     }
 
     @Override
@@ -80,6 +86,7 @@ public class PaymentInfo implements Parcelable {
         dest.writeString(discountName);
         dest.writeInt(numberOfInstallments);
         dest.writeString(installmentsAmount);
+        dest.writeString(installmentsTotalAmount);
         if (installmentsRate == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -87,6 +94,7 @@ public class PaymentInfo implements Parcelable {
             dest.writeString(installmentsRate.toString());
         }
         dest.writeParcelable(consumerCreditsInfo, flags);
+        dest.writeParcelable(description, flags);
     }
 
     public enum PaymentMethodType {
@@ -105,6 +113,15 @@ public class PaymentInfo implements Parcelable {
         PaymentMethodType(final String value) {
             this.value = value;
         }
+
+        public static PaymentMethodType fromName(final String text) {
+            for (final PaymentMethodType paymentMethodType : PaymentMethodType.values()) {
+                if (paymentMethodType.name().equalsIgnoreCase(text)) {
+                    return paymentMethodType;
+                }
+            }
+            throw new IllegalStateException("Invalid paymentMethodType");
+        }
     }
 
     public static class Builder {
@@ -117,8 +134,11 @@ public class PaymentInfo implements Parcelable {
         /* default */ String discountName;
         /* default */ Integer numberOfInstallments;
         /* default */ String installmentsAmount;
+        /* default */ String installmentsTotalAmount;
         /* default */ BigDecimal installmentsRate;
-        /* default */ ResultInfo consumerCreditsInfo;
+        /* default */ PaymentResultInfo consumerCreditsInfo;
+        /* default */ PaymentCongratsText description;
+
 
         /**
          * Instantiates a PaymentInfo object
@@ -241,14 +261,38 @@ public class PaymentInfo implements Parcelable {
         }
 
         /**
+         * Adds the installments rate
+         *
+         * @param installmentsTotalAmount the rate/interest of the installments. If its without a rate or interest "0" should
+         * be passed as param
+         * @return Builder
+         */
+        public Builder withInstallmentsTotalAmount(final String installmentsTotalAmount) {
+            this.installmentsTotalAmount = installmentsTotalAmount;
+            return this;
+        }
+
+
+        /**
          * Adds info to be displayed about consumerCredits (e.g. the date when the payer will start paying the credit
          * installments)
          *
          * @param consumerCreditsInfo info shown related to consumerCredits
          * @return Builder
          */
-        public Builder withConsumerCreditsInfo(final ResultInfo consumerCreditsInfo) {
+        public Builder withConsumerCreditsInfo(final PaymentResultInfo consumerCreditsInfo) {
             this.consumerCreditsInfo = consumerCreditsInfo;
+            return this;
+        }
+
+        /**
+         * Adds extra info to the paymentMethodName
+         *
+         * @param description info shown related to paymentMethodName
+         * @return Builder
+         */
+        public Builder withDescription(final PaymentCongratsText description) {
+            this.description = description;
             return this;
         }
     }
