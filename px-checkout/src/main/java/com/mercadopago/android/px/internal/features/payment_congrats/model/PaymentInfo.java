@@ -132,13 +132,12 @@ public class PaymentInfo implements Parcelable {
         /* default */ PaymentMethodType paymentMethodType;
         /* default */ String amountPaid;
         /* default */ String discountName;
-        /* default */ Integer numberOfInstallments;
+        /* default */ Integer numberOfInstallments = 0;
         /* default */ String installmentsAmount;
         /* default */ String installmentsTotalAmount;
         /* default */ BigDecimal installmentsRate;
         /* default */ PaymentResultInfo consumerCreditsInfo;
         /* default */ PaymentCongratsText description;
-
 
         /**
          * Instantiates a PaymentInfo object
@@ -157,17 +156,6 @@ public class PaymentInfo implements Parcelable {
          */
         public Builder withPaymentMethodName(final String paymentMethodName) {
             this.paymentMethodName = paymentMethodName;
-            return this;
-        }
-
-        /**
-         * Adds the raw amount of the payment
-         *
-         * @param rawAmount the value of the raw Amount for the payment
-         * @return Builder
-         */
-        public Builder withRawAmount(final String rawAmount) {
-            this.rawAmount = rawAmount;
             return this;
         }
 
@@ -219,59 +207,31 @@ public class PaymentInfo implements Parcelable {
          * Adds the name of the discount to be displayed (e.g.: 20% OFF)
          *
          * @param discountName the text to be displayed showing the discount (e.g.: 20% OFF)
+         * @param rawAmount the value of the raw Amount for the payment without discount
          * @return Builder
          */
-        public Builder withDiscountName(final String discountName) {
+        public Builder withDiscountData(final String discountName, final String rawAmount) {
             this.discountName = discountName;
+            this.rawAmount = rawAmount;
             return this;
         }
 
         /**
-         * Adds the number of installments
-         *
+         * Adds the installments info
          * @param numberOfInstallments number of installments, if there ara non 0 should be passes as param
-         * @return Builder
-         */
-        public Builder withNumberOfInstallments(final Integer numberOfInstallments) {
-            this.numberOfInstallments = numberOfInstallments;
-            return this;
-        }
-
-        /**
-         * Adds the installments amount
-         *
          * @param installmentsAmount the amount to be paid for each installment
-         * @return Builder
-         */
-        public Builder withInstallmentsAmount(final String installmentsAmount) {
-            this.installmentsAmount = installmentsAmount;
-            return this;
-        }
-
-        /**
-         * Adds the installments rate
-         *
+         * @param installmentsTotalAmount the total amount to pay
          * @param installmentsRate the rate/interest of the installments. If its without a rate or interest "0" should
-         * be passed as param
-         * @return Builder
+         * @return
          */
-        public Builder withInstallmentsRate(final BigDecimal installmentsRate) {
+        public Builder withInstallmentsData(final Integer numberOfInstallments, final String installmentsAmount,
+            final String installmentsTotalAmount, final BigDecimal installmentsRate) {
+            this.numberOfInstallments = numberOfInstallments;
+            this.installmentsAmount = installmentsAmount;
+            this.installmentsTotalAmount = installmentsTotalAmount;
             this.installmentsRate = installmentsRate;
             return this;
         }
-
-        /**
-         * Adds the installments rate
-         *
-         * @param installmentsTotalAmount the rate/interest of the installments. If its without a rate or interest "0" should
-         * be passed as param
-         * @return Builder
-         */
-        public Builder withInstallmentsTotalAmount(final String installmentsTotalAmount) {
-            this.installmentsTotalAmount = installmentsTotalAmount;
-            return this;
-        }
-
 
         /**
          * Adds info to be displayed about consumerCredits (e.g. the date when the payer will start paying the credit

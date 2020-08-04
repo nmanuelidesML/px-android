@@ -77,7 +77,7 @@ public class PaymentResultMethod extends ConstraintLayout {
                 model.paymentMethodName,
                 getResources().getString(R.string.px_ending_in),
                 model.lastFourDigits);
-        } else if (!PaymentTypes.isAccountMoney(model.paymentTypeId)) {
+        } else if (!PaymentTypes.isAccountMoney(model.paymentTypeId) || model.paymentMethodDescription == null || model.paymentMethodDescription.getMessage() == null) {
             return model.paymentMethodName;
         }
         return null;
@@ -131,14 +131,10 @@ public class PaymentResultMethod extends ConstraintLayout {
                 .withLastFourDigits(paymentData.getToken() != null ? paymentData.getToken().getLastFourDigits() : null)
                 .withPaymentMethodId(paymentData.getPaymentMethod().getId())
                 .withPaymentMethodName(paymentData.getPaymentMethod().getName())
-                .withRawAmount(paymentData.getRawAmount().toString())
                 .withPaymentMethodType(PaymentInfo.PaymentMethodType.fromName(paymentData.getPaymentMethod().getPaymentTypeId()))
                 .withAmountPaid(PaymentDataHelper.getPrettyAmountToPay(paymentData).toString())
-                .withDiscountName(paymentData.getDiscount().getName())
-                .withNumberOfInstallments(paymentData.getPayerCost().getInstallments())
-                .withInstallmentsAmount(paymentData.getPayerCost().getInstallmentAmount().toString())
-                .withInstallmentsTotalAmount(paymentData.getPayerCost().getTotalAmount().toString())
-                .withInstallmentsRate(paymentData.getPayerCost().getInstallmentRate())
+                .withDiscountData(paymentData.getDiscount().getName(), paymentData.getRawAmount().toString())
+                .withInstallmentsData(paymentData.getPayerCost().getInstallments(),paymentData.getPayerCost().getInstallmentAmount().toString(),paymentData.getPayerCost().getTotalAmount().toString(), paymentData.getPayerCost().getInstallmentRate())
                 .withDescription(description)
                 .withConsumerCreditsInfo(paymentResultInfo)
                 .build();
