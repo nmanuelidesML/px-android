@@ -11,6 +11,7 @@ import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentResultInfo;
+import com.mercadopago.android.px.internal.util.CurrenciesUtil;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
 import com.mercadopago.android.px.internal.util.ResourceUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
@@ -18,8 +19,7 @@ import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.PaymentData;
 import com.mercadopago.android.px.model.PaymentTypes;
-import com.mercadopago.android.px.model.display_info.ResultInfo;
-import com.mercadopago.android.px.model.internal.Text;
+import java.math.BigDecimal;
 import java.util.Locale;
 
 public class PaymentResultMethod extends ConstraintLayout {
@@ -77,7 +77,8 @@ public class PaymentResultMethod extends ConstraintLayout {
                 model.paymentMethodName,
                 getResources().getString(R.string.px_ending_in),
                 model.lastFourDigits);
-        } else if (!PaymentTypes.isAccountMoney(model.paymentTypeId) || model.paymentMethodDescription == null || model.paymentMethodDescription.getMessage() == null) {
+        } else if (!PaymentTypes.isAccountMoney(model.paymentTypeId) || model.paymentMethodDescription == null ||
+            model.paymentMethodDescription.getMessage() == null) {
             return model.paymentMethodName;
         }
         return null;
@@ -103,6 +104,7 @@ public class PaymentResultMethod extends ConstraintLayout {
         @Nullable /* default */ final String lastFourDigits;
         @Nullable /* default */ final String statement;
         @Nullable /* default */ final PaymentResultInfo info;
+
         /* default */ Model(@NonNull final Builder builder) {
             paymentMethodId = builder.paymentMethodId;
             paymentMethodName = builder.paymentMethodName;
@@ -116,29 +118,49 @@ public class PaymentResultMethod extends ConstraintLayout {
 
         public static Model with(@NonNull final PaymentData paymentData, @NonNull final Currency currency) {
 
-            final PaymentResultInfo paymentResultInfo = new PaymentResultInfo(
-                paymentData.getPaymentMethod().getDisplayInfo().getResultInfo().getTitle()
-            , paymentData.getPaymentMethod().getDisplayInfo().getResultInfo().getSubtitle());
 
-            final PaymentCongratsText description = new PaymentCongratsText(
-                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getMessage(),
-                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getBackgroundColor(),
-                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getTextColor(),
-                paymentData.getPaymentMethod().getDisplayInfo().getDescription().getWeight()
-            );
 
-            final PaymentInfo paymentInfo = new PaymentInfo.Builder()
+
+            final PaymentInfo.Builder paymentInfoBuilder = new PaymentInfo.Builder()
                 .withLastFourDigits(paymentData.getToken() != null ? paymentData.getToken().getLastFourDigits() : null)
                 .withPaymentMethodId(paymentData.getPaymentMethod().getId())
                 .withPaymentMethodName(paymentData.getPaymentMethod().getName())
-                .withPaymentMethodType(PaymentInfo.PaymentMethodType.fromName(paymentData.getPaymentMethod().getPaymentTypeId()))
-                .withAmountPaid(PaymentDataHelper.getPrettyAmountToPay(paymentData).toString())
-                .withDiscountData(paymentData.getDiscount().getName(), paymentData.getRawAmount().toString())
-                .withInstallmentsData(paymentData.getPayerCost().getInstallments(),paymentData.getPayerCost().getInstallmentAmount().toString(),paymentData.getPayerCost().getTotalAmount().toString(), paymentData.getPayerCost().getInstallmentRate())
-                .withDescription(description)
-                .withConsumerCreditsInfo(paymentResultInfo)
-                .build();
-            return with(paymentInfo, null);
+                .withPaymentMethodType(
+                    PaymentInfo.PaymentMethodType.fromName(paymentData.getPaymentMethod().getPaymentTypeId()))
+                .withAmountPaid(getPrettyAmount(currency,
+                    PaymentDataHelper.getPrettyAmountToPay(paymentData)));
+
+            if (paymentData.getPaymentMethod().getDisplayInfo() != null) {
+                final PaymentResultInfo paymentResultInfo = new PaymentResultInfo(
+                    paymentData.getPaymentMethod().getDisplayInfo().getResultInfo().getTitle()
+                    , paymentData.getPaymentMethod().getDisplayInfo().getResultInfo().getSubtitle());
+
+                final PaymentCongratsText description = new PaymentCongratsText(
+                    paymentData.getPaymentMethod().getDisplayInfo().getDescription().getMessage(),
+                    paymentData.getPaymentMethod().getDisplayInfo().getDescription().getBackgroundColor(),
+                    paymentData.getPaymentMethod().getDisplayInfo().getDescription().getTextColor(),
+                    paymentData.getPaymentMethod().getDisplayInfo().getDescription().getWeight()
+                );
+
+                paymentInfoBuilder.withConsumerCreditsInfo(paymentResultInfo)
+                    .withDescription(description);
+            }
+            if (paymentData.getDiscount() != null) {
+                paymentInfoBuilder
+                    .withDiscountData(paymentData.getDiscount().getName(), getPrettyAmount(currency,paymentData.getRawAmount()));
+            }
+
+            if (paymentData.getPayerCost() != null) {
+                paymentInfoBuilder.withInstallmentsData(paymentData.getPayerCost().getInstallments(),
+                    getPrettyAmount(currency,paymentData.getPayerCost().getInstallmentAmount()),
+                    getPrettyAmount(currency,paymentData.getPayerCost().getTotalAmount()),
+                    paymentData.getPayerCost().getInstallmentRate());
+            }
+            return with(paymentInfoBuilder.build(), null);
+        }
+
+        private static String getPrettyAmount(@NonNull final Currency currency, @NonNull final BigDecimal amount) {
+            return CurrenciesUtil.getLocalizedAmountWithoutZeroDecimals(currency, amount);
         }
 
         public static Model with(@NonNull final PaymentInfo paymentInfo, @Nullable final String statement) {
