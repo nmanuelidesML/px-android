@@ -1,61 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:gravity="center_vertical"
+    android:orientation="horizontal"
     tools:background="@color/px_colorPrimary"
     tools:parentTag="android.support.constraint.ConstraintLayout">
 
-    <LinearLayout
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/descriptor_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/amount"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/space">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guide_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent=".9"
+            android:orientation="vertical" />
+
+        <ImageView
+            android:id="@+id/icon_descriptor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/px_xxxs_margin"
+            android:importantForAccessibility="no"
+            app:layout_constraintBottom_toTopOf="@+id/brief"
+            app:layout_constraintEnd_toStartOf="@+id/guide_line"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/descriptor"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/px_helper" />
 
         <com.mercadopago.android.px.internal.view.MPTextView
-            android:id="@+id/label"
-            android:layout_width="wrap_content"
+            android:id="@+id/descriptor"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:importantForAccessibility="no"
             android:maxLines="1"
             android:textColor="@color/px_expressCheckoutTextColor"
             android:textSize="@dimen/px_s_text"
-            tools:text="Total"/>
+            app:layout_constraintBottom_toTopOf="@+id/brief"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="20% OFF (Tope: $ 100)" />
 
-        <ImageView
-            android:id="@+id/icon_descriptor_amount"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+        <com.mercadopago.android.px.internal.view.MPTextView
+            android:id="@+id/brief"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:importantForAccessibility="no"
-            android:layout_marginLeft="@dimen/px_xxxs_margin"
-            android:layout_marginStart="@dimen/px_xxxs_margin"
-            tools:src="@drawable/px_helper"/>
-    </LinearLayout>
+            android:textColor="@color/px_expressCheckoutTextColor"
+            android:textSize="@dimen/px_xxs_text"
+            android:visibility="gone"
+            android:lineSpacingExtra="3sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guide_line"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descriptor"
+            tools:text="Con cada pago en esta marca consumirás el tope hasta agotarlo." />
 
-    <Space
-        android:id="@+id/space"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/title"
-        app:layout_constraintEnd_toStartOf="@id/amount"
-        />
+    </android.support.constraint.ConstraintLayout>
 
     <com.mercadopago.android.px.internal.view.MPTextView
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/px_expressCheckoutTextColor"
         android:importantForAccessibility="no"
+        android:textColor="@color/px_expressCheckoutTextColor"
         android:textSize="@dimen/px_s_text"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/space"
-        tools:text="$124"/>
+        app:layout_constraintStart_toEndOf="@+id/descriptor_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="$124" />
+
 </merge>

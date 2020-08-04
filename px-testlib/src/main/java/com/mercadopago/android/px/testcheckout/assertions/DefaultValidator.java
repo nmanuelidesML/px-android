@@ -172,11 +172,13 @@ public class DefaultValidator implements CheckoutValidator {
 
     @Override
     public void validate(@NonNull final DiscountDetailPage discountDetailPage) {
-        final Matcher<View> discountDetailLine = withId(com.mercadopago.android.px.R.id.px_discount_detail_line);
-        final Matcher<View> discountSubDetails = withId(com.mercadopago.android.px.R.id.px_discount_sub_details);
-        onView(discountDetailLine).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        onView(discountSubDetails).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        onView(discountSubDetails)
+        final Matcher<View> summary = withId(com.mercadopago.android.px.R.id.summary);
+        final Matcher<View> description = withId(com.mercadopago.android.px.R.id.description);
+        onView(summary).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(description).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
+
+        onView(description)
             .check(matches(withText(com.mercadopago.android.px.R.string.px_we_apply_the_best_available_discount)));
     }
 

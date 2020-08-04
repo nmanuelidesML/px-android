@@ -188,20 +188,6 @@ public class SummaryView extends LinearLayout {
         toolbar.setNavigationOnClickListener(listener);
     }
 
-    public void enableToolbarBack(@NonNull final AppCompatActivity activity) {
-        final ActionBar actionBar = activity.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-        }
-    }
-
-    public void disableToolbarBack(@NonNull final AppCompatActivity activity) {
-        final ActionBar actionBar = activity.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(false);
-        }
-    }
-
     public void update(@NonNull final Model model) {
         if (model.headerDescriptor != null) {
             bigHeaderDescriptor.update(model.headerDescriptor);

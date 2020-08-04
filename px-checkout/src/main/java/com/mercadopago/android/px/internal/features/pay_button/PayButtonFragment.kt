@@ -67,6 +67,7 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
         })
         savedInstanceState?.let {
             buttonStatus = it.getInt(EXTRA_STATE, MeliButton.State.NORMAL)
+            button.visibility = it.getInt(EXTRA_VISIBILITY, VISIBLE)
             viewModel.recoverFromBundle(it)
         }
         updateButtonState()
@@ -85,6 +86,7 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(EXTRA_STATE, buttonStatus)
+        outState.putInt(EXTRA_VISIBILITY, button.visibility)
         viewModel.storeInBundle(outState)
     }
 
@@ -251,5 +253,6 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
         private const val REQ_CODE_PAYMENT_PROCESSOR = 302
         private const val REQ_CODE_BIOMETRICS = 303
         private const val EXTRA_STATE = "extra_state"
+        private const val EXTRA_VISIBILITY = "extra_visibility"
     }
 }

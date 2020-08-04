@@ -20,8 +20,7 @@ public class PxCheckoutInitProvider extends ContentProvider {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         }
-        NetworkModule.initialize(getContext());
-        Session.initialize(getContext(), NetworkModule.INSTANCE);
+        Session.initialize(getContext());
         ConnectionHelper.getInstance().initialize(getContext());
         return false;
     }

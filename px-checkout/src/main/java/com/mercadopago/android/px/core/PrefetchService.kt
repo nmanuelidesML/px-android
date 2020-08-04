@@ -47,7 +47,7 @@ class PrefetchService(private val checkout: MercadoPagoCheckout, private val ses
 
     private fun initCall() {
         CoroutineScope(Dispatchers.IO).launch {
-            session.initIds(checkout)
+            session.init(checkout)
             session.getPrefetchInitService(checkout).get().let {
                 when(it) {
                     is Response.Success<*> -> {

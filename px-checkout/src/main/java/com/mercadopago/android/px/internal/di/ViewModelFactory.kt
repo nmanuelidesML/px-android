@@ -10,7 +10,7 @@ internal class ViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PayButtonViewModel::class.java)) {
             return PayButtonViewModel(Session.getInstance().paymentRepository,
-                Session.getInstance().networkModule.productIdProvider,
+                Session.getInstance().configurationModule.productIdProvider,
                 ConnectionHelper.instance,
                 Session.getInstance().configurationModule.paymentSettings) as T
         }

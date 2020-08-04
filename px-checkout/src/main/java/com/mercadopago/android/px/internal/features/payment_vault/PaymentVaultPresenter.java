@@ -350,7 +350,9 @@ public class PaymentVaultPresenter extends BasePresenter<PaymentVaultView> imple
 
     @Override
     public void onDetailClicked(@NonNull final DiscountConfigurationModel discountModel) {
-        getView().showDetailDialog(paymentSettingRepository.getCurrency(), discountModel);
+        if (discountModel.getDiscountDescription() != null) {
+            getView().showDetailDialog(paymentSettingRepository.getCurrency(), discountModel);
+        }
     }
 
     public void onPaymentMethodReturned() {

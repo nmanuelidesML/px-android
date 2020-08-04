@@ -14,7 +14,7 @@ import com.mercadolibre.android.cardform.internal.LifecycleListener;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.core.BackHandler;
 import com.mercadopago.android.px.internal.base.PXActivity;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.cardvault.CardVaultActivity;
 import com.mercadopago.android.px.internal.features.express.ExpressPayment;
@@ -124,7 +124,7 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             final Session session = Session.getInstance();
-            final ConfigurationModule configurationModule = session.getConfigurationModule();
+            final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
 
             presenter =
                 new CheckoutPresenter(CheckoutStateModel.fromBundle(savedInstanceState),
@@ -184,7 +184,7 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
 
     protected CheckoutPresenter getActivityParameters() {
         final Session session = Session.getInstance();
-        final ConfigurationModule configurationModule = session.getConfigurationModule();
+        final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
         final PaymentSettingRepository configuration = configurationModule.getPaymentSettings();
 
         privateKey = configuration.getPrivateKey();

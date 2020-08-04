@@ -19,7 +19,7 @@ import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.ReviewAndConfirmConfiguration;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
 import com.mercadopago.android.px.internal.base.PXActivity;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.Constants;
 import com.mercadopago.android.px.internal.features.pay_button.PayButton;
@@ -200,7 +200,7 @@ public final class ReviewAndConfirmActivity extends PXActivity<ReviewAndConfirmP
                 extras.getParcelable(EXTRA_DISCOUNT_TERMS_AND_CONDITIONS);
 
             final Session session = Session.getInstance();
-            final ConfigurationModule configurationModule = session.getConfigurationModule();
+            final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
             final AdvancedConfiguration advancedConfiguration = configurationModule.getPaymentSettings()
                 .getAdvancedConfiguration();
             final Payer payer = configurationModule.getPaymentSettings().getCheckoutPreference().getPayer();

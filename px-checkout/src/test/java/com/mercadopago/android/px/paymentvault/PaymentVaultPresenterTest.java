@@ -21,6 +21,7 @@ import com.mercadopago.android.px.mocks.InitResponseStub;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.CustomSearchItem;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
+import com.mercadopago.android.px.model.DiscountDescription;
 import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.PaymentMethodSearchItem;
 import com.mercadopago.android.px.model.PaymentMethods;
@@ -291,8 +292,10 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenDetailClickedThenShowDetailDialog() {
         final Currency currency = CurrencyStub.MLA.get();
+        final DiscountConfigurationModel model = mock(DiscountConfigurationModel.class);
         when(paymentSettingRepository.getCurrency()).thenReturn(currency);
-        presenter.onDetailClicked(mock(DiscountConfigurationModel.class));
+        when(model.getDiscountDescription()).thenReturn(mock(DiscountDescription.class));
+        presenter.onDetailClicked(model);
         verify(view).showDetailDialog(eq(currency), any(DiscountConfigurationModel.class));
     }
 

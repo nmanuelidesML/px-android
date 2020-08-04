@@ -413,7 +413,7 @@ public class PaymentVaultActivity extends PXActivity<PaymentVaultPresenter> impl
     @Override
     public void showDetailDialog(@NonNull final Currency currency,
         @NonNull final DiscountConfigurationModel discountModel) {
-        DiscountDetailDialog.showDialog(getSupportFragmentManager(), currency, discountModel);
+        DiscountDetailDialog.showDialog(getSupportFragmentManager(), discountModel);
     }
 
     @Override

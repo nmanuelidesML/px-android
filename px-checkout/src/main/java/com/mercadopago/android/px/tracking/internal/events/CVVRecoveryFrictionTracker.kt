@@ -6,7 +6,7 @@ import com.mercadopago.android.px.tracking.internal.model.AvailableMethod
 import com.mercadopago.android.px.tracking.internal.model.Reason
 import com.mercadopago.android.px.tracking.internal.views.CvvAskViewTracker
 
-class CVVRecoveryFrictionTracker(card: Card, paymentMethod: PaymentMethod, reason: Reason) {
+class CVVRecoveryFrictionTracker private constructor(card: Card, paymentMethod: PaymentMethod, reason: Reason) {
 
     private val frictionTracker: FrictionEventTracker
 
@@ -22,7 +22,7 @@ class CVVRecoveryFrictionTracker(card: Card, paymentMethod: PaymentMethod, reaso
     }
 
     companion object {
-        fun with(card: Card?, reason: Reason): CVVRecoveryFrictionTracker? {
+        @JvmStatic fun with(card: Card?, reason: Reason): CVVRecoveryFrictionTracker? {
             return card?.paymentMethod?.let {
                 CVVRecoveryFrictionTracker(card, it, reason)
             }

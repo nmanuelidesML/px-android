@@ -9,7 +9,7 @@ class AppliedDiscountViewTracker(private val discountModel: DiscountConfiguratio
 
     private val data = mutableMapOf<String, Any?>().also {
         DiscountInfo.with(discountModel.discount, discountModel.campaign, discountModel.isAvailable)?.let { info ->
-            it["discount"] = info
+            it["discount"] = info.toMap()
         }
     }
 

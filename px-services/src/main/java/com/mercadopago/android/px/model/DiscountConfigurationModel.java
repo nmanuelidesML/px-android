@@ -13,6 +13,8 @@ public class DiscountConfigurationModel implements Parcelable {
     private final Campaign campaign;
     private final boolean isAvailable;
     private final Reason reason;
+    private final DiscountOverview discountOverview;
+    private final DiscountDescription discountDescription;
 
     public static final Creator<DiscountConfigurationModel> CREATOR = new Creator<DiscountConfigurationModel>() {
         @Override
@@ -32,6 +34,8 @@ public class DiscountConfigurationModel implements Parcelable {
         this.campaign = campaign;
         this.isAvailable = isAvailable;
         reason = null;
+        discountOverview = null;
+        discountDescription = null;
     }
 
     protected DiscountConfigurationModel(final Parcel in) {
@@ -39,6 +43,8 @@ public class DiscountConfigurationModel implements Parcelable {
         campaign = in.readParcelable(Campaign.class.getClassLoader());
         isAvailable = in.readByte() != 0;
         reason = in.readParcelable(Reason.class.getClassLoader());
+        discountOverview = in.readParcelable(DiscountOverview.class.getClassLoader());
+        discountDescription = in.readParcelable(DiscountDescription.class.getClassLoader());
     }
 
     @Override
@@ -47,6 +53,8 @@ public class DiscountConfigurationModel implements Parcelable {
         dest.writeParcelable(campaign, flags);
         dest.writeByte((byte) (isAvailable ? 1 : 0));
         dest.writeParcelable(reason, flags);
+        dest.writeParcelable(discountOverview, flags);
+        dest.writeParcelable(discountDescription, flags);
     }
 
     public Discount getDiscount() {
@@ -63,6 +71,14 @@ public class DiscountConfigurationModel implements Parcelable {
 
     public Reason getReason() {
         return reason;
+    }
+
+    public DiscountOverview getDiscountOverview() {
+        return discountOverview;
+    }
+
+    public DiscountDescription getDiscountDescription() {
+        return discountDescription;
     }
 
     public boolean hasValidDiscount() {

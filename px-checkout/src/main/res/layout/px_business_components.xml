@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="6dp"
         app:cardElevation="6dp"
-        app:cardPreventCornerOverlap="true"
+        app:cardPreventCornerOverlap="false"
         app:cardBackgroundColor="@color/ui_meli_white"
         android:layout_marginTop="@dimen/px_m_margin"
         android:layout_marginBottom="@dimen/px_m_margin"

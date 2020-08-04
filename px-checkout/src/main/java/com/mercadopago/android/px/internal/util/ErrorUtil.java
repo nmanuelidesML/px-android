@@ -46,8 +46,7 @@ public final class ErrorUtil {
         @Nullable final MercadoPagoError mercadoPagoError) {
         final String publicKey =
             Session.getInstance()
-                .getConfigurationModule()
-                .getPaymentSettings()
+                .getConfigurationModule().getPaymentSettings()
                 .getPublicKey();
 
         final Intent intent = new Intent(launcherActivity, ErrorActivity.class);
