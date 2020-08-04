@@ -9,6 +9,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public class PaymentResultAmount extends FlexboxLayout {
 
@@ -39,7 +40,7 @@ public class PaymentResultAmount extends FlexboxLayout {
 
     public void setModel(@NonNull final Model model) {
         title.setText(getAmountTitle(model));
-        ViewUtils.loadOrGone(model.installmentsTotalAmount, detail);
+        ViewUtils.loadOrGone(getAmountDetail(model), detail);
         ViewUtils.loadOrGone(getNoRate(model), noRate);
 
         final String discountName = model.discountName;
@@ -53,11 +54,21 @@ public class PaymentResultAmount extends FlexboxLayout {
         }
     }
 
+    @Nullable
+    private String getAmountDetail(@NonNull final Model model) {
+        if (hasPayerCostWithMultipleInstallments(model.numberOfInstallments)) {
+            return String.format(Locale.getDefault(), "(%s)",
+                model.installmentsTotalAmount);
+        }
+        return null;
+    }
+
     @NonNull
     private String getAmountTitle(@NonNull final Model model) {
         if (hasPayerCostWithMultipleInstallments(model.numberOfInstallments) && model.installmentsAmount != null &&
             !model.installmentsAmount.isEmpty()) {
-            return model.installmentsAmount;
+            return String.format(Locale.getDefault(), "%dx %s", model.numberOfInstallments,
+                model.installmentsAmount);
         } else {
             return model.amountPaid;
         }
