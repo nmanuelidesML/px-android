@@ -120,6 +120,17 @@ public final class ViewUtils {
         }
     }
 
+    public static boolean loadOrHide(final int visibility, @Nullable final PaymentCongratsText text, @NonNull final MPTextView view) {
+        if (text == null || TextUtil.isEmpty(text.getMessage())) {
+            view.setVisibility(visibility);
+            return false;
+        } else {
+            view.setText(text);
+            view.setVisibility(View.VISIBLE);
+            return true;
+        }
+    }
+
     public static void loadOrGone(@Nullable final CharSequence text, @NonNull final TextView textView) {
         if (TextUtil.isEmpty(text)) {
             textView.setVisibility(GONE);
