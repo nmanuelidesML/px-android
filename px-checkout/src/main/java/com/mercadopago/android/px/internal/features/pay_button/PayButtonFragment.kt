@@ -104,26 +104,7 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
             is UIError.ConnectionError -> showSnackBar(stateUI.error)
             is UIResult.PaymentResult -> PaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
             is UIResult.BusinessPaymentResult -> {
-//                BusinessPaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
-//                stateUI.model.payment.importantFragment?.
-                var paymentList: ArrayList<PaymentInfo> = ArrayList()
-                paymentList.add(
-                        PaymentInfo.Builder()
-                                .withPaymentMethodId("account_money")
-                                .withPaymentMethodName("Money in Mercado Pago")
-                                .withPaymentMethodType(PaymentInfo.PaymentMethodType.ACCOUNT_MONEY)
-                                .withAmountPaid("$ 100")
-                                .build()
-                )
-                var congrats: PaymentCongratsModel = PaymentCongratsModel.Builder()
-                        .withCongratsType(PaymentCongratsModel.CongratsType.APPROVED)
-                        .withTitle("Congrats de la mechi")
-                        .withImageUrl("https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg")
-                        .withExitActionSecondary("Dale mechi!", 13)
-                        .withPaymentsInfo(paymentList)
-                        .build()
-
-                PaymentCongrats.show(congrats, activity, 13)
+                BusinessPaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
             }
         }
     }

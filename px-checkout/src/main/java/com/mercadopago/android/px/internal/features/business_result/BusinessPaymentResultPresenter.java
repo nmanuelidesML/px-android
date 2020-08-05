@@ -34,6 +34,7 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     implements ActionDispatcher, BusinessPaymentResultContract.Presenter, PaymentResultBody.Listener {
 
     private final PaymentCongratsModel model;
+    // TODO: fix tracker
 //    private final ResultViewTrack viewTracker;
     private final FlowBehaviour flowBehaviour;
 
