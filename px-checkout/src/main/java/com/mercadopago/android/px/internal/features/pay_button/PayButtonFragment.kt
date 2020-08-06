@@ -99,9 +99,7 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
             is UIResult.VisualProcessorResult -> PaymentProcessorActivity.start(this, REQ_CODE_PAYMENT_PROCESSOR)
             is UIError.ConnectionError -> showSnackBar(stateUI.error)
             is UIResult.PaymentResult -> PaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
-            is UIResult.BusinessPaymentResult -> {
-                BusinessPaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
-            }
+            is UIResult.BusinessPaymentResult -> BusinessPaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
         }
     }
 
