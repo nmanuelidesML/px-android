@@ -25,6 +25,11 @@ import com.mercadopago.android.px.internal.features.SecurityCodeActivity
 import com.mercadopago.android.px.internal.features.business_result.BusinessPaymentResultActivity
 import com.mercadopago.android.px.internal.features.explode.ExplodeDecorator
 import com.mercadopago.android.px.internal.features.explode.ExplodingFragment
+import com.mercadopago.android.px.internal.features.payment_congrats.PaymentCongrats
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModelMapper
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo
 import com.mercadopago.android.px.internal.features.payment_result.PaymentResultActivity
 import com.mercadopago.android.px.internal.features.plugins.PaymentProcessorActivity
 import com.mercadopago.android.px.internal.util.FragmentUtil
@@ -36,6 +41,8 @@ import com.mercadopago.android.px.model.PaymentRecovery
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError
 import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker
 import com.mercadopago.android.px.tracking.internal.model.Reason
+import java.math.BigDecimal
+import java.util.ArrayList
 import com.mercadopago.android.px.internal.viewmodel.PayButtonViewModel as ButtonConfig
 
 class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler {
@@ -100,7 +107,9 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
             is UIError.ConnectionError -> showSnackBar(stateUI.error)
             is UIResult.PaymentResult -> PaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
             is UIResult.BusinessPaymentResult -> {
-                BusinessPaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
+                var paymentCongrats: PaymentCongratsModel = PaymentCongratsModelMapper().map(stateUI.model)
+
+                PaymentCongrats.show(paymentCongrats, activity, REQ_CODE_CONGRATS)
             }
         }
     }
