@@ -22,6 +22,7 @@ import com.mercadopago.android.px.addons.model.SecurityValidationData
 import com.mercadopago.android.px.internal.di.Session
 import com.mercadopago.android.px.internal.features.Constants
 import com.mercadopago.android.px.internal.features.SecurityCodeActivity
+import com.mercadopago.android.px.internal.features.business_result.BusinessPaymentResultActivity
 import com.mercadopago.android.px.internal.features.explode.ExplodeDecorator
 import com.mercadopago.android.px.internal.features.explode.ExplodingFragment
 import com.mercadopago.android.px.internal.features.payment_result.PaymentResultActivity
