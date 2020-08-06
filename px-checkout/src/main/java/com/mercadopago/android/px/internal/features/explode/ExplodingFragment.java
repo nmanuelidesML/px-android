@@ -37,6 +37,7 @@ public class ExplodingFragment extends Fragment {
 
     public static final String TAG = "TAG_EXPLODING_FRAGMENT";
     private static final String BUNDLE_DECORATOR = "BUNDLE_DECORATOR";
+    private static final String Y_POSITION_BUTTON = "Y_POSITION_BUTTON";
     private static final String ARG_EXPLODING_PARAMS = "ARG_EXPLODING_PARAMS";
 
     public static final float ICON_SCALE = 3.0f;
@@ -107,6 +108,12 @@ public class ExplodingFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
         final Bundle savedInstanceState) {
         final ViewGroup view = getActivityContentView();
+
+        if (savedInstanceState != null) {
+            explodeDecorator = savedInstanceState.getParcelable(BUNDLE_DECORATOR);
+            yButtonPosition = savedInstanceState.getInt(Y_POSITION_BUTTON);
+        }
+
         rootView = (ViewGroup) inflater.inflate(R.layout.px_fragment_exploding, view);
         circle = rootView.findViewById(R.id.cho_loading_buy_circular);
         icon = rootView.findViewById(R.id.cho_loading_buy_icon);
@@ -137,6 +144,10 @@ public class ExplodingFragment extends Fragment {
         animator.setInterpolator(new LinearInterpolator());
         animator.setDuration(maxLoadingTime).start();
 
+        if (explodeDecorator != null) {
+            finishLoading(explodeDecorator);
+        }
+
         return null;
     }
 
@@ -150,19 +161,8 @@ public class ExplodingFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull final Bundle outState) {
         outState.putParcelable(BUNDLE_DECORATOR, explodeDecorator);
+        outState.putInt(Y_POSITION_BUTTON, yButtonPosition);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable final Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_DECORATOR)) {
-            explodeDecorator = savedInstanceState.getParcelable(BUNDLE_DECORATOR);
-
-            if (explodeDecorator != null) {
-                finishLoading(explodeDecorator);
-            }
-        }
     }
 
     private void adjustHeight(final ImageView view) {
@@ -247,6 +247,7 @@ public class ExplodingFragment extends Fragment {
                 layerBg.setCornerRadius(value);
             }
         });
+
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(final Animator animation) {
@@ -311,6 +312,7 @@ public class ExplodingFragment extends Fragment {
 
         //try to avoid reveal detached view
         reveal.post(() -> {
+
             final int endColor = explodeDecorator.getPrimaryColor(getContext());
             final Animator anim;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.configuration.DynamicFragmentConfiguration;
 import com.mercadopago.android.px.core.DynamicFragmentCreator;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.review_and_confirm.components.actions.ChangePaymentMethodAction;
 import com.mercadopago.android.px.internal.features.review_and_confirm.components.items.ReviewItems;
@@ -52,7 +52,7 @@ public class ReviewAndConfirmRenderer extends Renderer<ReviewAndConfirmContainer
         }
 
         final Session session = Session.getInstance();
-        final ConfigurationModule configurationModule = session.getConfigurationModule();
+        final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
         final PaymentMethod paymentMethod = configurationModule.getUserSelectionRepository().getPaymentMethod();
 
         final DefaultPayerInformationDriver defaultPayerInformationDriver =

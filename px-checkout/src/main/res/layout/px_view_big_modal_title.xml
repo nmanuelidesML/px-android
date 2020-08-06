@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mercadopago.android.px.internal.view.MPTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:background="@color/ui_components_light_grey_color"
-    android:clickable="true"
-    android:ellipsize="end"
-    android:gravity="center"
-    android:lineSpacingExtra="@dimen/ui_dialog_title_linespacing"
-    android:maxLines="2"
-    android:minHeight="@dimen/ui_dialog_title_height"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:textColor="@color/ui_components_black_color"
-    android:textSize="@dimen/ui_fontsize_xlarge"
-    app:customStyle="light"
-    tools:text="50% OFF">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/ui_3m"
+    android:paddingEnd="@dimen/ui_3m"
+    android:paddingStart="@dimen/ui_3m">
 
-</com.mercadopago.android.px.internal.view.MPTextView>
+    <com.mercadopago.android.px.internal.view.MPTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/ui_2_5m"
+        app:lineHeight="@dimen/ui_3m"
+        app:customStyle="semi_bold"
+        tools:text="70% OFF"/>
+
+    <com.mercadopago.android.px.internal.view.MPTextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/ui_1m"
+        android:textColor="#73000000"
+        tools:text="Merchant"/>
+
+    <com.mercadopago.android.px.internal.view.Badge
+        android:id="@+id/badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ui_1m"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        tools:visibility="visible"/>
+</LinearLayout>

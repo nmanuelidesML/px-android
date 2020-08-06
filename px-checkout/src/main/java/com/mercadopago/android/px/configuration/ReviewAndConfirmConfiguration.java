@@ -10,6 +10,10 @@ import com.mercadopago.android.px.model.ExternalFragment;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * @deprecated groups will no longer be available anymore
+ */
+@Deprecated
 @SuppressWarnings("unused")
 public final class ReviewAndConfirmConfiguration implements Serializable {
 
@@ -193,6 +197,10 @@ public final class ReviewAndConfirmConfiguration implements Serializable {
         return new BigDecimal(0);
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     public static final class Builder {
 
         @Deprecated
@@ -269,6 +277,10 @@ public final class ReviewAndConfirmConfiguration implements Serializable {
             return this;
         }
 
+        /**
+         * @deprecated groups will no longer be available anymore
+         */
+        @Deprecated
         public ReviewAndConfirmConfiguration build() {
             return new ReviewAndConfirmConfiguration(this);
         }

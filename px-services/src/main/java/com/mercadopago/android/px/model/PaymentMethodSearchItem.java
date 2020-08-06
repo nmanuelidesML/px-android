@@ -6,6 +6,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated groups will no longer be available anymore
+ */
+@Deprecated
 public class PaymentMethodSearchItem implements Serializable {
 
     private static final String TYPE_PAYMENT_METHOD = "payment_method";
@@ -57,6 +61,10 @@ public class PaymentMethodSearchItem implements Serializable {
         this.comment = comment;
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     @NonNull
     public List<PaymentMethodSearchItem> getChildren() {
         return children == null ? new ArrayList<PaymentMethodSearchItem>() : children;

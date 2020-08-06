@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import com.mercadopago.android.px.addons.BehaviourProvider;
 import com.mercadopago.android.px.addons.model.Track;
 import com.mercadopago.android.px.addons.model.internal.Experiment;
-import com.mercadopago.android.px.internal.core.FlowIdProvider;
 import com.mercadopago.android.px.internal.di.Session;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.internal.util.Logger;
 import com.mercadopago.android.px.model.CheckoutType;
 import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker;
@@ -32,13 +32,6 @@ public final class MPTracker {
 
     private static MPTracker trackerInstance;
 
-    /**
-     * Added in 4.3.0 version - temporal replacement for tracking additional params.
-     */
-    @Nullable private Map<String, ?> flowDetail;
-
-    @Nullable private String sessionId;
-
     @CheckoutType @Nullable private String checkoutType;
 
     private long initSessionTimestamp;
@@ -47,35 +40,17 @@ public final class MPTracker {
 
     @NonNull private List<Experiment> experiments = Collections.emptyList();
 
-    @NonNull private FlowIdProvider flowIdProvider = Session.getInstance().getNetworkModule().getFlowIdProvider();
+    @NonNull private final TrackingRepository trackingRepository;
 
-    private MPTracker() {
-        // do nothing
+    private MPTracker(@NonNull final TrackingRepository trackingRepository) {
+        this.trackingRepository = trackingRepository;
     }
 
     public static synchronized MPTracker getInstance() {
         if (trackerInstance == null) {
-            trackerInstance = new MPTracker();
+            trackerInstance = new MPTracker(Session.getInstance().getConfigurationModule().getTrackingRepository());
         }
         return trackerInstance;
-    }
-
-    /**
-     * Set a map to add information to the library's screen and event tracks.
-     *
-     * @param flowDetail A map with extra information about the flow in your app that uses the checkout.
-     */
-    public void setFlowDetail(@NonNull final Map<String, ?> flowDetail) {
-        this.flowDetail = flowDetail;
-    }
-
-    /**
-     * Set a session id to identify differents user's session.
-     *
-     * @param sessionId The id that identifies a session
-     */
-    public void setSessionId(@Nullable final String sessionId) {
-        this.sessionId = sessionId;
     }
 
     /**
@@ -113,8 +88,8 @@ public final class MPTracker {
             final Object o = data.get(ATTR_EXTRA_INFO);
             try {
                 final Map<String, Object> value = (Map<String, Object>) o;
-                value.put(ATTR_FLOW_NAME, flowIdProvider.getFlowId());
-                value.put(ATTR_SESSION_ID, sessionId);
+                value.put(ATTR_FLOW_NAME, trackingRepository.getFlowId());
+                value.put(ATTR_SESSION_ID, trackingRepository.getSessionId());
                 value.put(ATTR_SESSION_TIME, getSecondsAfterInit());
                 value.put(ATTR_CHECKOUT_TYPE, checkoutType);
                 value.put(ATTR_SECURITY_ENABLED, securityEnabled);
@@ -126,9 +101,9 @@ public final class MPTracker {
     }
 
     private void addAdditionalFlowInfo(@NonNull final Map<String, Object> data) {
-        data.put(ATTR_FLOW_DETAIL, flowDetail);
-        data.put(ATTR_FLOW_NAME, flowIdProvider.getFlowId());
-        data.put(ATTR_SESSION_ID, sessionId);
+        data.put(ATTR_FLOW_DETAIL, trackingRepository.getFlowDetail());
+        data.put(ATTR_FLOW_NAME, trackingRepository.getFlowId());
+        data.put(ATTR_SESSION_ID, trackingRepository.getSessionId());
         data.put(ATTR_SESSION_TIME, getSecondsAfterInit());
         data.put(ATTR_CHECKOUT_TYPE, checkoutType);
         data.put(ATTR_SECURITY_ENABLED, securityEnabled);

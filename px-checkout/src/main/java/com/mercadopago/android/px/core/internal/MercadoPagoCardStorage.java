@@ -7,14 +7,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.configuration.TrackingConfiguration;
-import com.mercadopago.android.px.internal.core.SessionIdProvider;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.guessing_card.GuessingCardActivity;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.tracking.internal.MPTracker;
 
 /**
  * Provides access to card storage flow
+ * @deprecated this flow will no longer be available anymore
  */
+@Deprecated
 @SuppressWarnings("unused")
 public final class MercadoPagoCardStorage implements Parcelable {
 
@@ -75,12 +77,13 @@ public final class MercadoPagoCardStorage implements Parcelable {
      * informing that the card association failed.
      *
      * @param context Context.
+     * @deprecated this flow will no longer be available anymore
      */
+    @Deprecated
     public void start(@NonNull final Context context) {
         //start new session id
-        final SessionIdProvider sessionIdProvider = Session.getInstance().getNetworkModule().getSessionIdProvider();
-        sessionIdProvider.configure(new TrackingConfiguration.Builder().build().getSessionId());
-        MPTracker.getInstance().setSessionId(sessionIdProvider.getSessionId());
+        final TrackingRepository trackingRepository = Session.getInstance().getConfigurationModule().getTrackingRepository();
+        trackingRepository.configure(new TrackingRepository.Model(new TrackingConfiguration.Builder().build().sessionId));
         MPTracker.getInstance().initializeSessionTime();
         Session.getInstance().init(this);
         GuessingCardActivity.startGuessingCardActivityForStorage(context, this);
@@ -149,6 +152,10 @@ public final class MercadoPagoCardStorage implements Parcelable {
         dest.writeByte((byte) (skipResultScreen ? 1 : 0));
     }
 
+    /**
+     * @deprecated this flow will no longer be available anymore
+     */
+    @Deprecated
     public static final class Builder {
 
         /* default */ final String accessToken;
@@ -183,7 +190,9 @@ public final class MercadoPagoCardStorage implements Parcelable {
 
         /**
          * @return {@link MercadoPagoCardStorage} instance
+         * @deprecated this flow will no longer be available anymore
          */
+        @Deprecated
         public MercadoPagoCardStorage build() {
             return new MercadoPagoCardStorage(this);
         }

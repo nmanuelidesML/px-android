@@ -38,6 +38,10 @@ public final class AdvancedConfiguration implements Serializable {
         productId = builder.productId;
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     public boolean isBankDealsEnabled() {
         return bankDealsEnabled;
     }
@@ -46,10 +50,18 @@ public final class AdvancedConfiguration implements Serializable {
         return true;
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     public boolean isAmountRowEnabled() {
         return amountRowEnabled;
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     @NonNull
     public DynamicFragmentConfiguration getDynamicFragmentConfiguration() {
         return dynamicFragmentConfiguration;
@@ -65,11 +77,19 @@ public final class AdvancedConfiguration implements Serializable {
         return paymentResultScreenConfiguration;
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     @NonNull
     public ReviewAndConfirmConfiguration getReviewAndConfirmConfiguration() {
         return reviewAndConfirmConfiguration;
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     public boolean isExpressPaymentEnabled() {
         return expressEnabled;
     }
@@ -114,7 +134,9 @@ public final class AdvancedConfiguration implements Serializable {
          *
          * @param bankDealsEnabled bool that reflects it's behaviour
          * @return builder to keep operating
+         * @deprecated groups will no longer be available anymore
          */
+        @Deprecated
         public Builder setBankDealsEnabled(final boolean bankDealsEnabled) {
             this.bankDealsEnabled = bankDealsEnabled;
             return this;
@@ -138,7 +160,9 @@ public final class AdvancedConfiguration implements Serializable {
          *
          * @param amountRowEnabled show or hide amount row
          * @return builder to keep operating
+         * @deprecated groups will no longer be available anymore
          */
+        @Deprecated
         public Builder setAmountRowEnabled(final boolean amountRowEnabled) {
             this.amountRowEnabled = amountRowEnabled;
             return this;
@@ -163,7 +187,9 @@ public final class AdvancedConfiguration implements Serializable {
          *
          * @param reviewAndConfirmConfiguration your custom preferences.
          * @return builder to keep operating
+         * @deprecated groups will no longer be available anymore
          */
+        @Deprecated
         public Builder setReviewAndConfirmConfiguration(
             @NonNull final ReviewAndConfirmConfiguration reviewAndConfirmConfiguration) {
             this.reviewAndConfirmConfiguration = reviewAndConfirmConfiguration;
@@ -176,7 +202,9 @@ public final class AdvancedConfiguration implements Serializable {
          *
          * @param dynamicFragmentConfiguration your custom configurations.
          * @return builder to keep operating
+         * @deprecated groups will no longer be available anymore
          */
+        @Deprecated
         public Builder setDynamicFragmentConfiguration(
             @NonNull final DynamicFragmentConfiguration dynamicFragmentConfiguration) {
             this.dynamicFragmentConfiguration = dynamicFragmentConfiguration;
@@ -202,7 +230,9 @@ public final class AdvancedConfiguration implements Serializable {
          *
          * @param enabled if your checkout supports express mode
          * @return builder to keep operating
+         * @deprecated groups will no longer be available anymore
          */
+        @Deprecated
         public Builder setExpressPaymentEnable(final boolean enabled) {
             expressEnabled = enabled;
             return this;

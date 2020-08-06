@@ -9,6 +9,7 @@ import com.mercadopago.android.px.configuration.DiscountConfiguration;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.configuration.PaymentResultScreenConfiguration;
+import com.mercadopago.android.px.configuration.TrackingConfiguration;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
 import com.mercadopago.android.px.core.SplitPaymentProcessor;
 import com.mercadopago.android.px.model.GenericPayment;
@@ -34,7 +35,7 @@ import static com.mercadopago.android.px.utils.PaymentUtils.getGenericPaymentRej
 public final class OneTapSamples {
 
     private static final String ONE_TAP_PAYER_1_ACCESS_TOKEN =
-        "APP_USR-3671576383500204-012221-5957120e397c5f7e85204d41f587d3cd-506902649";
+        "APP_USR-3671576383500204-072117-d275735575b2b95458be231afc00f14c-506902649";
     private static final String ONE_TAP_PAYER_2_ACCESS_TOKEN =
         "APP_USR-3666825723887583-102916-54c728cfd9eea30e98073b19617a5eec-484351849";
     private static final String ONE_TAP_PAYER_3_ACCESS_TOKEN =
@@ -153,11 +154,13 @@ public final class OneTapSamples {
                         PaymentTypes.CREDIT_CARD, "Mensaje de prueba")))
                 .build();
 
-        PXTracker.setListener(TrackingSamples.INSTANCE.getTracker(), new HashMap<>(), "example_app");
+        final TrackingConfiguration trackingConfiguration =
+            new TrackingConfiguration.Builder().flowId("example_app").build();
 
         return new MercadoPagoCheckout.Builder(ONE_TAP_DIRECT_DISCOUNT_MERCHANT_PUBLIC_KEY, preference,
             paymentConfiguration)
             .setPrivateKey(ONE_TAP_PAYER_1_ACCESS_TOKEN)
+            .setTrackingConfiguration(trackingConfiguration)
             .setAdvancedConfiguration(new AdvancedConfiguration.Builder()
                 .setPaymentResultScreenConfiguration(new PaymentResultScreenConfiguration.Builder()
                     .setTopFragment(SampleDialog.class, null).build())

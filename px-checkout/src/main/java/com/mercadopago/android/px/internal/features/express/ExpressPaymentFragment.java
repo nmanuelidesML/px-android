@@ -25,7 +25,7 @@ import com.mercadolibre.android.cardform.internal.CardFormWithFragment;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.core.BackHandler;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.MapperProvider;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.experiments.Variant;
@@ -214,14 +214,14 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
 
         presenter = createPresenter();
         if (savedInstanceState != null) {
-            renderMode = (PaymentMethodFragmentAdapter.RenderMode) savedInstanceState.getSerializable(EXTRA_RENDER_MODE);
+            renderMode =
+                (PaymentMethodFragmentAdapter.RenderMode) savedInstanceState.getSerializable(EXTRA_RENDER_MODE);
             presenter.recoverFromBundle(savedInstanceState);
+        } else {
+            presenter.onFreshStart();
         }
+
         presenter.attachView(this);
-        if (savedInstanceState == null) {
-            //TODO if we need the view attached for tracking, then it should be done in another place
-            presenter.trackExpressView();
-        }
 
         summaryView.setOnLogoClickListener(v -> presenter.onHeaderClicked());
 
@@ -360,7 +360,7 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
 
     private ExpressPaymentPresenter createPresenter() {
         final Session session = Session.getInstance();
-        final ConfigurationModule configurationModule = session.getConfigurationModule();
+        final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
         return new ExpressPaymentPresenter(session.getPaymentRepository(),
             configurationModule.getPaymentSettings(),
             configurationModule.getDisabledPaymentMethodRepository(),
@@ -369,14 +369,13 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
             session.getAmountRepository(),
             session.getInitRepository(),
             session.getAmountConfigurationRepository(),
-            configurationModule.getChargeSolver(),
+            session.getConfigurationModule().getChargeRepository(),
             session.getMercadoPagoESC(),
             MapperProvider.INSTANCE.getPaymentMethodDrawableItemMapper(getContext()),
             session.getCongratsRepository(),
             session.getExperimentsRepository(),
             configurationModule.getPayerComplianceRepository(),
-            Session.getInstance().getNetworkModule().getSessionIdProvider(),
-            Session.getInstance().getNetworkModule().getFlowIdProvider(),
+            configurationModule.getTrackingRepository(),
             MapperProvider.INSTANCE.getPaymentMethodDescriptorMapper());
     }
 
@@ -550,7 +549,7 @@ public class ExpressPaymentFragment extends Fragment implements ExpressPayment.V
     @Override
     public void showDiscountDetailDialog(@NonNull final Currency currency,
         @NonNull final DiscountConfigurationModel discountModel) {
-        DiscountDetailDialog.showDialog(getFragmentManager(), currency, discountModel);
+        DiscountDetailDialog.showDialog(getChildFragmentManager(), discountModel);
     }
 
     @Override

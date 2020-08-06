@@ -27,6 +27,7 @@ import com.mercadopago.android.px.model.PaymentTypes;
 import com.mercadopago.android.px.model.SummaryAmount;
 import com.mercadopago.android.px.model.exceptions.ApiException;
 import com.mercadopago.android.px.services.Callback;
+import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker;
 import com.mercadopago.android.px.tracking.internal.views.InstallmentsViewTrack;
 import java.util.List;
 
@@ -176,7 +177,9 @@ public class InstallmentsPresenter extends BasePresenter<InstallmentsView> imple
 
     @Override
     public void onDetailClicked(@NonNull final DiscountConfigurationModel discountModel) {
-        getView().showDetailDialog(paymentSettingRepository.getCurrency(), discountModel);
+        if(discountModel.getDiscountDescription() != null) {
+            getView().showDetailDialog(paymentSettingRepository.getCurrency(), discountModel);
+        }
     }
 
     @Override

@@ -146,6 +146,7 @@
     <color name="px_badge_error">#d12440</color>
 
     <color name="px_white">@color/ui_components_white_color</color>
+    <color name="px_white_smoke">#ccededed</color>
     <color name="px_med_light_gray">@color/ui_components_light_grey_color</color>
 
     <!-- Customized colors -->
@@ -183,6 +184,7 @@
     <!-- ExpressMetadata checkout configurations-->
     <color name="px_expressCheckoutTextColor">@color/px_white</color>
     <color name="px_expressCheckoutTextColorDiscount">@color/px_white</color>
+    <color name="px_expressCheckoutTextColorBriefDiscount">@color/px_white_smoke</color>
     <color name="px_expressCheckoutSeparatorLine">#19000000</color>
     <color name="px_expressCheckoutScrollIndicatorColor">@color/px_expressCheckoutSeparatorLine</color>
     <color name="px_expressCheckoutChangePaymentMethodColor">#ffeae8e8</color>

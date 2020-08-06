@@ -16,7 +16,7 @@ import com.mercadopago.android.px.core.SplitPaymentProcessor;
 import com.mercadopago.android.px.internal.base.PXActivity;
 import com.mercadopago.android.px.internal.callbacks.PaymentServiceHandler;
 import com.mercadopago.android.px.internal.callbacks.PaymentServiceHandlerWrapper;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.ErrorUtil;
@@ -107,7 +107,7 @@ public final class PaymentProcessorActivity extends PXActivity
     private void addPaymentProcessorFragment(@NonNull final FragmentManager supportFragmentManager,
         @NonNull final Session session) {
 
-        final ConfigurationModule configurationModule = session.getConfigurationModule();
+        final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
         final PaymentSettingRepository paymentSettings = configurationModule.getPaymentSettings();
 
         final SplitPaymentProcessor paymentProcessor = paymentSettings

@@ -2,10 +2,10 @@ package com.mercadopago.android.px.internal.datasource
 
 import com.mercadopago.android.px.addons.ESCManagerBehaviour
 import com.mercadopago.android.px.core.MercadoPagoCheckout
-import com.mercadopago.android.px.internal.core.FlowIdProvider
 import com.mercadopago.android.px.internal.services.CheckoutService
 import com.mercadopago.android.px.internal.services.Response
 import com.mercadopago.android.px.internal.services.awaitCallback
+import com.mercadopago.android.px.internal.tracking.TrackingRepository
 import com.mercadopago.android.px.internal.util.JsonUtil
 import com.mercadopago.android.px.model.internal.CheckoutFeatures
 import com.mercadopago.android.px.model.internal.InitRequest
@@ -14,7 +14,7 @@ import java.util.*
 internal class PrefetchInitService(private val checkout: MercadoPagoCheckout,
     private val checkoutService: CheckoutService,
     private val escManagerBehaviour: ESCManagerBehaviour,
-    private val flowIdProvider: FlowIdProvider) {
+    private val trackingRepository: TrackingRepository) {
 
     suspend fun get(): Response {
         val checkoutPreference = checkout.checkoutPreference
@@ -33,7 +33,7 @@ internal class PrefetchInitService(private val checkout: MercadoPagoCheckout,
             .setDiscountParamsConfiguration(discountParamsConfiguration)
             .setCheckoutFeatures(features)
             .setCheckoutPreference(checkoutPreference)
-            .setFlow(flowIdProvider.flowId)
+            .setFlow(trackingRepository.flowId)
             .build())
 
         return checkout.preferenceId?.let {

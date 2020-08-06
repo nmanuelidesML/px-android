@@ -45,7 +45,6 @@ public class PaymentCongratsModel implements Parcelable {
     @Nullable private final ExternalFragment topFragment;
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
-    @NonNull private final PaymentCongratsCurrency currency;
     @Nullable private final PaymentCongratsResponse paymentCongratsResponse;
 
     /* default */ PaymentCongratsModel(final Builder builder) {
@@ -65,7 +64,6 @@ public class PaymentCongratsModel implements Parcelable {
         topFragment = builder.topFragment;
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
-        currency = builder.currency;
         paymentCongratsResponse = builder.paymentCongratsResponse;
     }
 
@@ -86,7 +84,6 @@ public class PaymentCongratsModel implements Parcelable {
         topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
-        currency = in.readParcelable(PaymentCongratsCurrency.class.getClassLoader());
         paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
     }
 
@@ -113,7 +110,6 @@ public class PaymentCongratsModel implements Parcelable {
         dest.writeParcelable(topFragment, flags);
         dest.writeParcelable(bottomFragment, flags);
         dest.writeParcelable(importantFragment, flags);
-        dest.writeParcelable(currency, flags);
         dest.writeParcelable(paymentCongratsResponse, flags);
     }
 
@@ -135,6 +131,10 @@ public class PaymentCongratsModel implements Parcelable {
     @Nullable
     public String getHelp() {
         return help;
+    }
+
+    public int getIconId() {
+        return iconId;
     }
 
     @org.jetbrains.annotations.Nullable
@@ -187,11 +187,6 @@ public class PaymentCongratsModel implements Parcelable {
         return importantFragment;
     }
 
-    @NotNull
-    public PaymentCongratsCurrency getCurrency() {
-        return currency;
-    }
-
     public Boolean hasTopFragment() {
         return getTopFragment() != null;
     }
@@ -211,6 +206,11 @@ public class PaymentCongratsModel implements Parcelable {
     @NonNull
     public CongratsType getCongratsType() {
         return congratsType;
+    }
+
+    @Nullable
+    public PaymentCongratsResponse getPaymentCongratsResponse() {
+        return paymentCongratsResponse;
     }
 
     public enum CongratsType {
@@ -254,11 +254,6 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ ExternalFragment bottomFragment;
         /* default */ ExternalFragment importantFragment;
 
-        /* default */ int currencyDecimalPlaces = 2;
-        /* default */ Character currencyDecimalSeparator = ',';
-        /* default */ String currencySymbol = "$";
-        /* default */ Character currencyThousandsSeparator = '.';
-        /* default */ PaymentCongratsCurrency currency;
         /* default */ PaymentCongratsResponse paymentCongratsResponse;
 
         // MLBusinessComponents
@@ -276,8 +271,6 @@ public class PaymentCongratsModel implements Parcelable {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
-            currency = new PaymentCongratsCurrency(currencySymbol, currencyDecimalPlaces, currencyDecimalSeparator,
-                currencyThousandsSeparator);
             paymentCongratsResponse =
                 new PaymentCongratsResponse(score, discount, moneySplit, crossSelling, viewReceipt,
                     customOrder);
@@ -505,42 +498,6 @@ public class PaymentCongratsModel implements Parcelable {
         }
 
         /**
-         * @param decimalPlaces decimal places in the amount, default value is "2"
-         * @return
-         */
-        public Builder withCurrencyDecimalPlaces(final int decimalPlaces) {
-            this.currencyDecimalPlaces = decimalPlaces;
-            return this;
-        }
-
-        /**
-         * @param decimalSeparator decimal separator in the amount, default value is ","
-         * @return
-         */
-        public Builder withCurrencyDecimalSeparator(final Character decimalSeparator) {
-            this.currencyDecimalSeparator = decimalSeparator;
-            return this;
-        }
-
-        /**
-         * @param symbol currency symbol in the amount, default value is "$"
-         * @return
-         */
-        public Builder withCurrencySymbol(final String symbol) {
-            this.currencySymbol = symbol;
-            return this;
-        }
-
-        /**
-         * @param thousandsSeparator thousands separator in the amount, default value is "."
-         * @return
-         */
-        public Builder withCurrencyThousandsSeparator(final Character thousandsSeparator) {
-            this.currencyThousandsSeparator = thousandsSeparator;
-            return this;
-        }
-
-        /**
          * @param score an object containing the needed info to display score MLBusinessComponent
          * @return builder with the added object
          */
@@ -583,6 +540,15 @@ public class PaymentCongratsModel implements Parcelable {
          */
         public Builder withViewReceipt(final PaymentCongratsResponse.Action viewReceipt) {
             this.viewReceipt = viewReceipt;
+            return this;
+        }
+
+        /**
+         * @param customOrder allows to activate custom order
+         * @return builder with the added boolean
+         */
+        /* default */ Builder withCustomOrder(final boolean customOrder) {
+            this.customOrder = customOrder;
             return this;
         }
     }

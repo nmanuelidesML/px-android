@@ -230,7 +230,10 @@ public class SecurityCodePresenter extends BasePresenter<SecurityCodeActivityVie
                 createTokenWithoutESC();
             }
         } catch (final CardTokenException exception) {
-            new CVVRecoveryFrictionTracker(getCard(), getPaymentMethod(), reason).track();
+            final CVVRecoveryFrictionTracker friction = CVVRecoveryFrictionTracker.with(getCard(), reason);
+            if (friction != null) {
+                friction.track();
+            }
             getView().setErrorView(exception);
         }
     }

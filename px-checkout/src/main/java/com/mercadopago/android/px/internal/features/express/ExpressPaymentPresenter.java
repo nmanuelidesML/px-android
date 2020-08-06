@@ -7,9 +7,8 @@ import android.support.annotation.Nullable;
 import com.mercadopago.android.px.addons.ESCManagerBehaviour;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
+import com.mercadopago.android.px.core.internal.TriggerableQueue;
 import com.mercadopago.android.px.internal.base.BasePresenter;
-import com.mercadopago.android.px.internal.core.FlowIdProvider;
-import com.mercadopago.android.px.internal.core.SessionIdProvider;
 import com.mercadopago.android.px.internal.experiments.BadgeVariant;
 import com.mercadopago.android.px.internal.experiments.PulseVariant;
 import com.mercadopago.android.px.internal.experiments.Variant;
@@ -32,6 +31,7 @@ import com.mercadopago.android.px.internal.repository.PayerComplianceRepository;
 import com.mercadopago.android.px.internal.repository.PayerCostSelectionRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.internal.util.CardFormWithFragmentWrapper;
 import com.mercadopago.android.px.internal.util.PayerComplianceWrapper;
 import com.mercadopago.android.px.internal.util.TextUtil;
@@ -99,8 +99,7 @@ import java.util.Set;
     @NonNull private final CongratsRepository congratsRepository;
     @NonNull private final ExperimentsRepository experimentsRepository;
     @NonNull private final PayerComplianceRepository payerComplianceRepository;
-    @NonNull private final SessionIdProvider sessionIdProvider;
-    @NonNull private final FlowIdProvider flowIdProvider;
+    @NonNull private final TrackingRepository trackingRepository;
     @NonNull private final PaymentMethodDescriptorMapper paymentMethodDescriptorMapper;
     @Nullable private Runnable unattendedEvent;
     @NonNull /* default */ final InitRepository initRepository;
@@ -114,6 +113,7 @@ import java.util.Set;
     /* default */ PayerComplianceWrapper payerCompliance; //FIXME remove.
     /* default */ int paymentMethodIndex;
     /* default */ ActionTypeWrapper actionTypeWrapper;
+    /* default */ TriggerableQueue triggerableQueue;
 
     /* default */ ExpressPaymentPresenter(@NonNull final PaymentRepository paymentRepository,
         @NonNull final PaymentSettingRepository paymentSettingRepository,
@@ -129,8 +129,7 @@ import java.util.Set;
         @NonNull final CongratsRepository congratsRepository,
         @NonNull final ExperimentsRepository experimentsRepository,
         @NonNull final PayerComplianceRepository payerComplianceRepository,
-        @NonNull final SessionIdProvider sessionIdProvider,
-        @NonNull final FlowIdProvider flowIdProvider,
+        @NonNull final TrackingRepository trackingRepository,
         @NonNull final PaymentMethodDescriptorMapper paymentMethodDescriptorMapper) {
 
         this.paymentRepository = paymentRepository;
@@ -147,11 +146,11 @@ import java.util.Set;
         this.congratsRepository = congratsRepository;
         this.experimentsRepository = experimentsRepository;
         this.payerComplianceRepository = payerComplianceRepository;
-        this.sessionIdProvider = sessionIdProvider;
-        this.flowIdProvider = flowIdProvider;
+        this.trackingRepository = trackingRepository;
         this.paymentMethodDescriptorMapper = paymentMethodDescriptorMapper;
 
         splitSelectionState = new SplitSelectionState();
+        triggerableQueue = new TriggerableQueue();
     }
 
     /* default */ void onFailToRetrieveInitResponse() {
@@ -168,7 +167,7 @@ import java.util.Set;
         final List<SummaryView.Model> summaryModels =
             new SummaryViewModelMapper(paymentSettingRepository.getCurrency(),
                 discountRepository, amountRepository, elementDescriptorModel, this, summaryInfo,
-                chargeRepository).map(new ArrayList<>(expressMetadataList));
+                chargeRepository, amountConfigurationRepository).map(new ArrayList<>(expressMetadataList));
 
         final List<PaymentMethodDescriptorView.Model> paymentModels =
             paymentMethodDescriptorMapper.map(expressMetadataList);
@@ -209,6 +208,7 @@ import java.util.Set;
                     payerCompliance = new PayerComplianceWrapper(initResponse.getPayerCompliance());
                     paymentMethodDrawableItemMapper.setCustomSearchItems(initResponse.getCustomSearchItems());
                     cardsWithSplit = initResponse.getIdsWithSplitAllowed();
+                    triggerableQueue.execute();
                     loadViewModel();
                 }
             }
@@ -237,7 +237,14 @@ import java.util.Set;
     }
 
     @Override
-    public void trackExpressView() {
+    public void onFreshStart() {
+        triggerableQueue.enqueue(() -> {
+            trackOneTapView();
+            return null;
+        });
+    }
+
+    private void trackOneTapView() {
         final OneTapViewTracker oneTapViewTracker =
             new OneTapViewTracker(expressMetadataList, paymentSettingRepository.getCheckoutPreference(),
                 discountRepository.getCurrentConfiguration(), escManagerBehaviour.getESCCardIds(), cardsWithSplit,
@@ -485,7 +492,7 @@ import java.util.Set;
         case ActionType.ADD_NEW_CARD:
             getView().setPagerIndex(actionTypeWrapper.getIndexToReturn());
             getView().startAddNewCardFlow(
-                new CardFormWithFragmentWrapper(paymentSettingRepository, sessionIdProvider, flowIdProvider));
+                new CardFormWithFragmentWrapper(paymentSettingRepository, trackingRepository));
             break;
         default: // do nothing
         }
