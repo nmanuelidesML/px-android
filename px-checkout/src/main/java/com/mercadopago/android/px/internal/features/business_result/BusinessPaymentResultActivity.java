@@ -44,17 +44,6 @@ public class BusinessPaymentResultActivity extends PXActivity<BusinessPaymentRes
         activity.startActivity(intent);
     }
 
-    public static void start(@NonNull final Fragment fragment, final int requestCode,
-        @NonNull final BusinessPaymentModel model) {
-        final Activity activity = fragment.getActivity();
-        if (activity instanceof PXActivity) {
-            ((PXActivity) activity).overrideTransitionIn();
-        }
-        final Intent intent = new Intent(fragment.getContext(), BusinessPaymentResultActivity.class);
-        intent.putExtra(EXTRA_BUSINESS_PAYMENT_MODEL, model);
-        fragment.startActivityForResult(intent, requestCode);
-    }
-
     public static Intent getIntent(@NonNull final Context context,
         @NonNull final BusinessPaymentModel model) {
         final Intent intent = new Intent(context, BusinessPaymentResultActivity.class);
@@ -77,7 +66,6 @@ public class BusinessPaymentResultActivity extends PXActivity<BusinessPaymentRes
     @NonNull
     private BusinessPaymentResultPresenter createPresenter() {
         final PaymentCongratsModel model = getIntent().getParcelableExtra(PAYMENT_CONGRATS);
-
         return new BusinessPaymentResultPresenter(model,
             BehaviourProvider.getFlowBehaviour(), isMP(this));
     }
