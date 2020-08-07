@@ -637,23 +637,23 @@ public final class PaymentCongratsResponse implements Parcelable {
                 return new MoneySplit[size];
             }
         };
-        private final Text title;
+        private final PaymentCongratsText title;
         private final Action action;
         private final String imageUrl;
 
-        public MoneySplit(final Text title, final Action action, final String imageUrl) {
+        public MoneySplit(final PaymentCongratsText title, final Action action, final String imageUrl) {
             this.title = title;
             this.action = action;
             this.imageUrl = imageUrl;
         }
 
         /* default */ MoneySplit(final Parcel in) {
-            title = in.readParcelable(Text.class.getClassLoader());
+            title = in.readParcelable(PaymentCongratsText.class.getClassLoader());
             action = in.readParcelable(Action.class.getClassLoader());
             imageUrl = in.readString();
         }
 
-        public Text getTitle() {
+        public PaymentCongratsText getTitle() {
             return title;
         }
 
@@ -670,76 +670,6 @@ public final class PaymentCongratsResponse implements Parcelable {
             dest.writeParcelable(title, flags);
             dest.writeParcelable(action, flags);
             dest.writeString(imageUrl);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-    }
-
-    public static final class Text implements Parcelable, Serializable {
-
-        public static final Creator<Text> CREATOR = new Creator<Text>() {
-            @Override
-            public Text createFromParcel(final Parcel in) {
-                return new Text(in);
-            }
-
-            @Override
-            public Text[] newArray(final int size) {
-                return new Text[size];
-            }
-        };
-        public static final Text EMPTY = new Text();
-        private final String message;
-        private final String backgroundColor;
-        private final String textColor;
-        private final String weight;
-
-        public Text(final String message, final String backgroundColor, final String textColor, final String weight) {
-            this.message = message;
-            this.backgroundColor = backgroundColor;
-            this.textColor = textColor;
-            this.weight = weight;
-        }
-
-        private Text() {
-            message = null;
-            backgroundColor = null;
-            textColor = null;
-            weight = null;
-        }
-
-        /* default */ Text(final Parcel in) {
-            message = in.readString();
-            backgroundColor = in.readString();
-            textColor = in.readString();
-            weight = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(final Parcel dest, final int flags) {
-            dest.writeString(message);
-            dest.writeString(backgroundColor);
-            dest.writeString(textColor);
-            dest.writeString(weight);
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getBackgroundColor() {
-            return backgroundColor;
-        }
-
-        public String getTextColor() {
-            return textColor;
-        }
-
-        public String getWeight() {
-            return weight;
         }
 
         @Override
