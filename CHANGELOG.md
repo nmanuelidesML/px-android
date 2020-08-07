@@ -1,3 +1,7 @@
+## VERSION 4.53.1
+_03_08_2020_
+* FIX - Added keep rules for renderer's contructor in R8 fullmode
+
 ## VERSION 4.53.0
 _30_07_2020_
 * ENHANCEMENT - Deprecated old groups' api
