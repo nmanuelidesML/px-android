@@ -22,11 +22,9 @@ import com.mercadopago.android.px.addons.model.SecurityValidationData
 import com.mercadopago.android.px.internal.di.Session
 import com.mercadopago.android.px.internal.features.Constants
 import com.mercadopago.android.px.internal.features.SecurityCodeActivity
+import com.mercadopago.android.px.internal.features.business_result.BusinessPaymentResultActivity
 import com.mercadopago.android.px.internal.features.explode.ExplodeDecorator
 import com.mercadopago.android.px.internal.features.explode.ExplodingFragment
-import com.mercadopago.android.px.internal.features.payment_congrats.PaymentCongrats
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModelMapper
 import com.mercadopago.android.px.internal.features.payment_result.PaymentResultActivity
 import com.mercadopago.android.px.internal.features.plugins.PaymentProcessorActivity
 import com.mercadopago.android.px.internal.util.FragmentUtil
@@ -101,10 +99,7 @@ class PayButtonFragment : Fragment(), PayButton.View, SecurityValidationHandler 
             is UIResult.VisualProcessorResult -> PaymentProcessorActivity.start(this, REQ_CODE_PAYMENT_PROCESSOR)
             is UIError.ConnectionError -> showSnackBar(stateUI.error)
             is UIResult.PaymentResult -> PaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
-            is UIResult.BusinessPaymentResult -> {
-                var paymentCongrats: PaymentCongratsModel = PaymentCongratsModelMapper().map(stateUI.model)
-                PaymentCongrats.show(paymentCongrats, activity, REQ_CODE_CONGRATS)
-            }
+            is UIResult.BusinessPaymentResult -> BusinessPaymentResultActivity.start(this, REQ_CODE_CONGRATS, stateUI.model)
         }
     }
 
