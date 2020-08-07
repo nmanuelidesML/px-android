@@ -32,7 +32,7 @@ public class PaymentCongratsModelMapper {
             .withCongratsType(
                 PaymentCongratsModel.CongratsType.fromName(businessPayment.getPaymentStatus()))
             .withCrossSelling(paymentCongratsResponse.getCrossSellings())
-            .withTitle(businessPayment.getTitle() + " (PaymentCongrats)")
+            .withTitle(businessPayment.getTitle())
             .withShouldShowPaymentMethod(businessPayment.shouldShowPaymentMethod())
             .withShouldShowReceipt(businessPayment.shouldShowReceipt())
             .withIconId(businessPayment.getIcon())
