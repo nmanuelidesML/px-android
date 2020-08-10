@@ -8,6 +8,10 @@ import java.util.HashMap;
 
 // Used by single player to inform charges and other payment special information.
 // Single player usecase depends on amount and payment method.
+/**
+ * @deprecated groups will no longer be available anymore
+ */
+@Deprecated
 @SuppressWarnings("unused")
 public final class DynamicFragmentConfiguration implements Serializable {
 
@@ -31,6 +35,10 @@ public final class DynamicFragmentConfiguration implements Serializable {
         return creators.containsKey(fragmentLocation);
     }
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     public static final class Builder {
 
         /* default */ HashMap<FragmentLocation, DynamicFragmentCreator> creators = new HashMap<>();
@@ -45,6 +53,10 @@ public final class DynamicFragmentConfiguration implements Serializable {
             return this;
         }
 
+        /**
+         * @deprecated groups will no longer be available anymore
+         */
+        @Deprecated
         public DynamicFragmentConfiguration build() {
             return new DynamicFragmentConfiguration(this);
         }

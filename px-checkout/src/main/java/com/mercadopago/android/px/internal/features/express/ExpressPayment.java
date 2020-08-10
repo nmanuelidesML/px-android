@@ -80,7 +80,7 @@ public interface ExpressPayment {
 
     interface Actions {
 
-        void trackExpressView();
+        void onFreshStart();
 
         void cancel();
 

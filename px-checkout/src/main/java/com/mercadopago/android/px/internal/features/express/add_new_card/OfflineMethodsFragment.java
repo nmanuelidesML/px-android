@@ -162,7 +162,7 @@ public class OfflineMethodsFragment extends BaseFragment<OfflineMethodsPresenter
             session.getConfigurationModule().getPaymentSettings(),
             session.getAmountRepository(),
             session.getDiscountRepository(),
-            session.getNetworkModule().getProductIdProvider(),
+            session.getConfigurationModule().getProductIdProvider(),
             model.getPaymentTypes().isEmpty() ? TextUtil.EMPTY : model.getPaymentTypes().get(0).getId(),
             session.getInitRepository(), session.getCongratsRepository());
     }

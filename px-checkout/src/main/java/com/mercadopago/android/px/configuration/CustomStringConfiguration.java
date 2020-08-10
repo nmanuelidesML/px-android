@@ -46,7 +46,9 @@ public final class CustomStringConfiguration implements Serializable {
      * Obtain customized payment vault title
      *
      * @return Custom Payment Vault Title
+     * @deprecated groups will no longer be available anymore
      */
+    @Deprecated
     @Nullable
     public String getCustomPaymentVaultTitle() {
         return customPaymentVaultTitle;
@@ -110,7 +112,9 @@ public final class CustomStringConfiguration implements Serializable {
          *
          * @param title Custom title to be setted
          * @return builder to keep operating
+         * @deprecated groups will no longer be available anymore
          */
+        @Deprecated
         @SuppressWarnings("unused")
         public Builder setCustomPaymentVaultTitle(@NonNull final String title) {
             customPaymentVaultTitle = title;

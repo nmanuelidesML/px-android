@@ -22,11 +22,13 @@ public final class CardAssociationSession extends ApplicationModule {
      * never leaking.
      */
     @SuppressLint("StaticFieldLeak") private static CardAssociationSession instance;
+    private final ConfigurationModule configurationModule;
     private final NetworkModule networkModule;
 
     private CardAssociationSession(@NonNull final Context context) {
         super(context.getApplicationContext());
-        networkModule = NetworkModule.INSTANCE;
+        configurationModule = ConfigurationModule.INSTANCE;
+        networkModule = new NetworkModule(context);
     }
 
     public static CardAssociationSession getCardAssociationSession(final Context context) {
@@ -49,10 +51,8 @@ public final class CardAssociationSession extends ApplicationModule {
 
     @NonNull
     public ESCManagerBehaviour getMercadoPagoESC() {
-        //noinspection ConstantConditions
-        return BehaviourProvider
-            .getEscManagerBehaviour(networkModule.getSessionIdProvider().getSessionId(),
-                networkModule.getFlowIdProvider().getFlowId());
+        return BehaviourProvider.getEscManagerBehaviour(configurationModule.getTrackingRepository().getSessionId(),
+            configurationModule.getTrackingRepository().getFlowId());
     }
 
     @NonNull

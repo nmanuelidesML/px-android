@@ -8,13 +8,13 @@ import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.DiscountParamsConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.internal.callbacks.MPCall;
-import com.mercadopago.android.px.internal.core.FlowIdProvider;
 import com.mercadopago.android.px.internal.datasource.cache.Cache;
 import com.mercadopago.android.px.internal.repository.DisabledPaymentMethodRepository;
 import com.mercadopago.android.px.internal.repository.ExperimentsRepository;
 import com.mercadopago.android.px.internal.repository.InitRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.services.CheckoutService;
+import com.mercadopago.android.px.internal.tracking.TrackingRepository;
 import com.mercadopago.android.px.internal.util.JsonUtil;
 import com.mercadopago.android.px.internal.viewmodel.mappers.ExpressMetadataToDisabledIdMapper;
 import com.mercadopago.android.px.model.ExpressMetadata;
@@ -42,7 +42,7 @@ public class InitService implements InitRepository {
     @NonNull /* default */ DisabledPaymentMethodRepository disabledPaymentMethodRepository;
     @NonNull /* default */ final Cache<InitResponse> initCache;
     @NonNull /* default */ final List<OnChangedListener> listeners = new ArrayList<>();
-    @NonNull private final FlowIdProvider flowIdProvider;
+    @NonNull private final TrackingRepository trackingRepository;
     /* default */ int refreshRetriesAvailable = MAX_REFRESH_RETRIES;
     /* default */ Handler retryHandler;
 
@@ -50,13 +50,13 @@ public class InitService implements InitRepository {
         @NonNull final ExperimentsRepository experimentsRepository,
         @NonNull final DisabledPaymentMethodRepository disabledPaymentMethodRepository,
         @NonNull final ESCManagerBehaviour escManagerBehaviour, @NonNull final CheckoutService checkoutService,
-        @NonNull final FlowIdProvider flowIdProvider, @NonNull final Cache<InitResponse> initCache) {
+        @NonNull final TrackingRepository trackingRepository, @NonNull final Cache<InitResponse> initCache) {
         this.paymentSettingRepository = paymentSettingRepository;
         this.experimentsRepository = experimentsRepository;
         this.disabledPaymentMethodRepository = disabledPaymentMethodRepository;
         this.escManagerBehaviour = escManagerBehaviour;
         this.checkoutService = checkoutService;
-        this.flowIdProvider = flowIdProvider;
+        this.trackingRepository = trackingRepository;
         this.initCache = initCache;
     }
 
@@ -158,7 +158,7 @@ public class InitService implements InitRepository {
                 .setDiscountParamsConfiguration(discountParamsConfiguration)
                 .setCheckoutFeatures(features)
                 .setCheckoutPreference(checkoutPreference)
-                .setFlow(flowIdProvider.getFlowId())
+                .setFlow(trackingRepository.getFlowId())
                 .build());
 
         final String preferenceId = paymentSettingRepository.getCheckoutPreferenceId();

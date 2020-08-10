@@ -23,6 +23,10 @@ android {
             buildConfigField "boolean", "HTTP_CLIENT_LOG", "false"
         }
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {

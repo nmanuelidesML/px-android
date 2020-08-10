@@ -7,13 +7,13 @@ import com.mercadopago.android.px.internal.viewmodel.mappers.PaymentMethodDescri
 internal object MapperProvider {
     fun getPaymentMethodDrawableItemMapper(context: Context): PaymentMethodDrawableItemMapper {
         return PaymentMethodDrawableItemMapper(
-            Session.getInstance().configurationModule.chargeSolver,
+            Session.getInstance().configurationModule.chargeRepository,
             Session.getInstance().configurationModule.disabledPaymentMethodRepository, context
         )
     }
 
     fun getPaymentMethodDrawableItemMapper(): PaymentMethodDrawableItemMapper {
-        return PaymentMethodDrawableItemMapper(Session.getInstance().configurationModule.chargeSolver)
+        return PaymentMethodDrawableItemMapper(Session.getInstance().configurationModule.chargeRepository)
     }
 
     fun getPaymentMethodDescriptorMapper(): PaymentMethodDescriptorMapper {

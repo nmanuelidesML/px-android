@@ -15,7 +15,7 @@ import com.mercadopago.android.px.internal.core.SessionIdInterceptor;
 import com.mercadopago.android.px.internal.core.StrictModeInterceptor;
 import com.mercadopago.android.px.internal.core.TLSSocketFactory;
 import com.mercadopago.android.px.internal.core.UserAgentInterceptor;
-import com.mercadopago.android.px.internal.di.NetworkModule;
+import com.mercadopago.android.px.internal.di.ConfigurationModule;
 import com.mercadopago.android.px.services.BuildConfig;
 import java.io.File;
 import java.security.KeyStore;
@@ -88,11 +88,11 @@ public final class HttpClientUtil {
 
         if (context != null) {
             baseClient.addInterceptor(new ConnectivityStateInterceptor(context));
-            baseClient.addInterceptor(new SessionIdInterceptor(NetworkModule.INSTANCE.getSessionIdProvider()));
-            baseClient.addInterceptor(new ProductIdInterceptor(NetworkModule.INSTANCE.getProductIdProvider()));
+            baseClient.addInterceptor(new SessionIdInterceptor(ConfigurationModule.INSTANCE.getTrackingRepository()));
+            baseClient.addInterceptor(new ProductIdInterceptor(ConfigurationModule.INSTANCE.getProductIdProvider()));
             baseClient.addInterceptor(new ScreenDensityInterceptor(context));
             baseClient.addInterceptor(new PlatformInterceptor(context));
-            baseClient.addInterceptor(new FlowIdInterceptor(NetworkModule.INSTANCE.getFlowIdProvider()));
+            baseClient.addInterceptor(new FlowIdInterceptor(ConfigurationModule.INSTANCE.getTrackingRepository()));
             baseClient.addInterceptor(new LanguageInterceptor(context));
         }
 

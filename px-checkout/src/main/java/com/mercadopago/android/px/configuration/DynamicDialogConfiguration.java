@@ -16,6 +16,10 @@ public final class DynamicDialogConfiguration implements Serializable {
     private final Map<DialogLocation, DynamicDialogCreator> creators;
 
     public enum DialogLocation {
+        /**
+         * @deprecated groups will no longer be available anymore
+         */
+        @Deprecated
         ENTER_REVIEW_AND_CONFIRM,
         TAP_ONE_TAP_HEADER,
     }

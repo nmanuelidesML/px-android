@@ -53,7 +53,6 @@
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 ######################## Okhttp ##########################
 
-
 ######################## Retrofit ########################
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
@@ -65,3 +64,7 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 ######################## Retrofit ########################
+
+-keepclassmembers public class * extends com.mercadopago.android.px.internal.view.Renderer {
+   public <init>(...);
+}

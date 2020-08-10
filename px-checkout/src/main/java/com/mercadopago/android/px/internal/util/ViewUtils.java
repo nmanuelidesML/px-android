@@ -3,10 +3,13 @@ package com.mercadopago.android.px.internal.util;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -19,8 +22,11 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +41,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mercadolibre.android.picassodiskcache.PicassoDiskLoader;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
 import com.mercadopago.android.px.internal.font.FontHelper;
 import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.view.MPTextView;
 import com.mercadopago.android.px.model.internal.Text;
 import com.squareup.picasso.Callback;
+import java.util.List;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public final class ViewUtils {
 
@@ -65,11 +76,11 @@ public final class ViewUtils {
     }
 
     public static boolean shouldVisibleAnim(@NonNull final View viewToAnimate) {
-        return hasEndedAnim(viewToAnimate) && viewToAnimate.getVisibility() != View.VISIBLE;
+        return hasEndedAnim(viewToAnimate) && viewToAnimate.getVisibility() != VISIBLE;
     }
 
     public static boolean shouldGoneAnim(@NonNull final View viewToAnimate) {
-        return hasEndedAnim(viewToAnimate) && viewToAnimate.getVisibility() != View.GONE;
+        return hasEndedAnim(viewToAnimate) && viewToAnimate.getVisibility() != GONE;
     }
 
     public static boolean hasEndedAnim(@NonNull final View viewToAnimate) {
@@ -93,6 +104,17 @@ public final class ViewUtils {
             return false;
         } else {
             view.setText(text);
+            view.setVisibility(VISIBLE);
+            return true;
+        }
+    }
+
+    public static boolean loadOrHide(final int visibility, @Nullable final PaymentCongratsText text, @NonNull final MPTextView view) {
+        if (text == null || TextUtil.isEmpty(text.getMessage())) {
+            view.setVisibility(visibility);
+            return false;
+        } else {
+            view.setText(text);
             view.setVisibility(View.VISIBLE);
             return true;
         }
@@ -100,10 +122,19 @@ public final class ViewUtils {
 
     public static void loadOrGone(@Nullable final CharSequence text, @NonNull final TextView textView) {
         if (TextUtil.isEmpty(text)) {
-            textView.setVisibility(View.GONE);
+            textView.setVisibility(GONE);
         } else {
             textView.setText(text);
-            textView.setVisibility(View.VISIBLE);
+            textView.setVisibility(VISIBLE);
+        }
+    }
+
+    public static void loadOrGone(@Nullable final Text text, @NonNull final MPTextView textView) {
+        if (text ==  null || TextUtil.isEmpty(text.getMessage())) {
+            textView.setVisibility(GONE);
+        } else {
+            textView.setText(text);
+            textView.setVisibility(VISIBLE);
         }
     }
 
@@ -114,10 +145,10 @@ public final class ViewUtils {
 
     public static void loadOrGone(@DrawableRes final int resId, final ImageView imageView) {
         if (resId == 0) {
-            imageView.setVisibility(View.GONE);
+            imageView.setVisibility(GONE);
         } else {
             imageView.setImageResource(resId);
-            imageView.setVisibility(View.VISIBLE);
+            imageView.setVisibility(VISIBLE);
         }
     }
 
@@ -165,11 +196,11 @@ public final class ViewUtils {
         final View progress = activity.findViewById(R.id.mpsdkProgressLayout);
 
         if (progress != null) {
-            progress.setVisibility(showLayout ? View.GONE : View.VISIBLE);
+            progress.setVisibility(showLayout ? GONE : VISIBLE);
         }
 
         if (form != null) {
-            form.setVisibility(showProgress ? View.GONE : View.VISIBLE);
+            form.setVisibility(showProgress ? GONE : VISIBLE);
         }
     }
 
@@ -189,11 +220,30 @@ public final class ViewUtils {
         }
     }
 
+    public static void setBackgroundColorInSpannable(final int color, final int indexStart, final int indexEnd,
+        @NonNull final Spannable spannable) {
+        if (color != 0) {
+            spannable.setSpan(new BackgroundColorSpan(color), indexStart, indexEnd,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
     public static void setColorInSpannable(@Nullable final String color, final int indexStart, final int indexEnd,
         @NonNull final Spannable spannable) {
         if (TextUtil.isNotEmpty(color)) {
             try {
                 setColorInSpannable(Color.parseColor(color), indexStart, indexEnd, spannable);
+            } catch (final Exception e) {
+                logParseColorError(color);
+            }
+        }
+    }
+
+    public static void setBackgroundColorInSpannable(@Nullable final String color, final int indexStart, final int indexEnd,
+        @NonNull final Spannable spannable) {
+        if (TextUtil.isNotEmpty(color)) {
+            try {
+                setBackgroundColorInSpannable(Color.parseColor(color), indexStart, indexEnd, spannable);
             } catch (final Exception e) {
                 logParseColorError(color);
             }
@@ -243,6 +293,27 @@ public final class ViewUtils {
 
     private static void logParseColorError(@Nullable final String color) {
         Logger.debug(TAG, "Cannot parse color" + color);
+    }
+
+    public static void loadTextListOrGone(@NonNull final MPTextView textView,
+        @Nullable final List<Text> texts, @ColorInt final int color) {
+        if (texts != null && !texts.isEmpty()) {
+            final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+            int startIndex = 0, endIndex;
+
+            for (Text text : texts) {
+                spannableStringBuilder.append(text.getMessage()).append(" ");
+                endIndex = spannableStringBuilder.length();
+                ViewUtils.setFontInSpannable(textView.getContext(), PxFont.from(text.getWeight()), spannableStringBuilder, startIndex, endIndex);
+                ViewUtils.setColorInSpannable(color, startIndex, endIndex, spannableStringBuilder);
+                startIndex = spannableStringBuilder.length();
+            }
+
+            textView.setText(spannableStringBuilder);
+            textView.setVisibility(VISIBLE);
+        } else {
+            textView.setVisibility(GONE);
+        }
     }
 
     public static void setFontInSpannable(@NonNull final Context context, @NonNull final PxFont font,
@@ -351,5 +422,9 @@ public final class ViewUtils {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getDarkPrimaryColor(color));
         }
+    }
+
+    public static boolean isScreenSize(@NonNull final Context context, final int screenLayoutSize) {
+        return context.getResources().getConfiguration().isLayoutSizeAtLeast(screenLayoutSize);
     }
 }

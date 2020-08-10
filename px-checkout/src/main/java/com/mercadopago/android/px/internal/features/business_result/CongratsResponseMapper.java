@@ -3,6 +3,7 @@ package com.mercadopago.android.px.internal.features.business_result;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
 import com.mercadopago.android.px.internal.viewmodel.mappers.Mapper;
 import com.mercadopago.android.px.model.internal.Action;
 import com.mercadopago.android.px.model.internal.CongratsResponse;
@@ -76,7 +77,7 @@ public class CongratsResponseMapper extends Mapper<CongratsResponse, PaymentCong
         if (moneySplit != null) {
             return moneySplit == null ? null
                 : new PaymentCongratsResponse.MoneySplit(
-                    new PaymentCongratsResponse.Text(moneySplit.getTitle().getMessage(),
+                    new PaymentCongratsText(moneySplit.getTitle().getMessage(),
                         moneySplit.getTitle().getBackgroundColor(), moneySplit.getTitle().getTextColor(),
                         moneySplit.getTitle().getWeight()), getAction(moneySplit.getAction()),
                     moneySplit.getImageUrl());

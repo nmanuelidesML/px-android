@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.di.ConfigurationModule;
+import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.ItemsModel;
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.LineSeparatorType;
@@ -41,7 +41,7 @@ public class ReviewAndConfirmBuilder {
     public Intent getIntent(@NonNull final Context context) {
         final Resources resources = context.getResources();
         final Session session = Session.getInstance();
-        final ConfigurationModule configurationModule = session.getConfigurationModule();
+        final CheckoutConfigurationModule configurationModule = session.getConfigurationModule();
         final UserSelectionRepository userSelectionRepository = configurationModule.getUserSelectionRepository();
         final Issuer issuer = userSelectionRepository.getIssuer();
         final PaymentSettingRepository paymentSettings = configurationModule.getPaymentSettings();

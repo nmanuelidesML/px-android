@@ -133,6 +133,10 @@ public class PaymentMethodSearch implements Serializable {
 
     //endregion deprecated
 
+    /**
+     * @deprecated groups will no longer be available anymore
+     */
+    @Deprecated
     @NonNull
     public List<PaymentMethodSearchItem> getGroups() {
         return groups == null ? new ArrayList<PaymentMethodSearchItem>() : groups;

@@ -1,16 +1,12 @@
 package com.mercadopago.android.px.internal.core
 
 import android.content.Context
-import android.content.SharedPreferences
 
-open class ApplicationModule(val applicationContext: Context) : PreferenceComponent {
+abstract class ApplicationModule(context: Context) {
 
-    override fun getSharedPreferences(): SharedPreferences {
-        return applicationContext.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
-    }
-
-    val fileManager: FileManager
-        get() = FileManager(applicationContext.cacheDir)
+    val applicationContext = context.applicationContext!!
+    val sharedPreferences = applicationContext.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)!!
+    val fileManager by lazy { FileManager(applicationContext.cacheDir) }
 
     companion object {
         private const val SHARED_PREFERENCE_NAME = "com.mercadopago.checkout.store"
