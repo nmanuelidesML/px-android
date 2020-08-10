@@ -6,7 +6,9 @@ import com.mercadopago.android.px.internal.features.payment_congrats.model.Payme
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-public class PaymentCongratsMock {
+public final class PaymentCongratsMock {
+
+    private PaymentCongratsMock() { }
 
     public static PaymentCongratsModel getMock() {
 
