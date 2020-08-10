@@ -11,14 +11,8 @@ import com.mercadopago.android.px.core.MercadoPagoCheckout;
 import com.mercadopago.android.px.feature.custom_initialize.CustomInitializationActivity;
 import com.mercadopago.android.px.internal.features.payment_congrats.PaymentCongrats;
 import com.mercadopago.android.px.internal.features.payment_congrats.PaymentCongratsMock;
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
-import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
 import com.mercadopago.android.px.utils.ExamplesUtils;
 import com.mercadopago.example.R;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import static com.mercadopago.android.px.utils.ExamplesUtils.resolveCheckoutResult;
 
