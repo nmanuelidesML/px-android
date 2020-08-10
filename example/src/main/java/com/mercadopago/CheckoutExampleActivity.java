@@ -10,7 +10,9 @@ import com.mercadopago.android.px.core.CheckoutLazyInit;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
 import com.mercadopago.android.px.feature.custom_initialize.CustomInitializationActivity;
 import com.mercadopago.android.px.internal.features.payment_congrats.PaymentCongrats;
+import com.mercadopago.android.px.internal.features.payment_congrats.PaymentCongratsMock;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
 import com.mercadopago.android.px.utils.ExamplesUtils;
@@ -75,7 +77,7 @@ public class CheckoutExampleActivity extends ExampleBaseActivity {
         paymentCongratsButton = findViewById(R.id.payment_congrats_button);
 
         paymentCongratsButton.setOnClickListener(
-            v -> startPaymentCongrats()
+            v -> PaymentCongrats.show(PaymentCongratsMock.getMock(), this, 13)
         );
     }
 
@@ -93,44 +95,5 @@ public class CheckoutExampleActivity extends ExampleBaseActivity {
 
     private void showRegularLayout() {
         mRegularLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void startPaymentCongrats() {
-
-        ArrayList<PaymentInfo> paymentList = new ArrayList();
-        paymentList.add(
-            new PaymentInfo.Builder()
-                .withPaymentMethodId("account_money")
-                .withPaymentMethodName("Money in Mercado Pago")
-                .withPaymentMethodType(PaymentInfo.PaymentMethodType.ACCOUNT_MONEY)
-                .withAmountPaid("$100")
-                .withDiscountData("50% OFF", "$200")
-                .withDescription(new PaymentCongratsText("Dinero disponible en Mercadopago","","",""))
-                .build()
-        );
-        paymentList.add(
-            new PaymentInfo.Builder()
-                .withPaymentMethodId("master")
-                .withPaymentMethodName("Visa")
-                .withPaymentMethodType(PaymentInfo.PaymentMethodType.CREDIT_CARD)
-                .withLastFourDigits("8020")
-                .withAmountPaid( "$100")
-                .withInstallmentsData(3, "$39,90", "$119,70", BigDecimal.valueOf(19.71))
-                .build()
-        );
-
-
-        PaymentCongratsModel congrats = new PaymentCongratsModel.Builder()
-            .withCongratsType(PaymentCongratsModel.CongratsType.APPROVED)
-            .withTitle("Congrats de la mechi")
-            .withImageUrl("https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg")
-            .withExitActionSecondary("Dale mechi!", 13)
-            .withPaymentsInfo(paymentList)
-            .withShouldPaymentMethod(true)
-            .withShouldShowReceipt(true)
-            .withReceiptId("12312312")
-            .build();
-
-        PaymentCongrats.show(congrats, this, 13);
     }
 }
