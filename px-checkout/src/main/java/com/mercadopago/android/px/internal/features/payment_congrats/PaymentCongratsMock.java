@@ -60,7 +60,7 @@ public final class PaymentCongratsMock {
             .withImageUrl("https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg")
             .withExitActionSecondary("Continuar", 13)
             .withPaymentsInfo(paymentList)
-            .withShouldPaymentMethod(true)
+            .withShouldShowPaymentMethod(true)
             .withShouldShowReceipt(true)
             .withReceiptId("12312312")
             .withDiscount(discount)

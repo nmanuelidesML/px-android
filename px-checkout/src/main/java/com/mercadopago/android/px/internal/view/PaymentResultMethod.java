@@ -104,7 +104,7 @@ public class PaymentResultMethod extends ConstraintLayout {
         @Nullable /* default */ final String lastFourDigits;
         @Nullable /* default */ final String statement;
         @Nullable /* default */ final PaymentResultInfo info;
-
+      
         /* default */ Model(@NonNull final Builder builder) {
             paymentMethodId = builder.paymentMethodId;
             paymentMethodName = builder.paymentMethodName;
