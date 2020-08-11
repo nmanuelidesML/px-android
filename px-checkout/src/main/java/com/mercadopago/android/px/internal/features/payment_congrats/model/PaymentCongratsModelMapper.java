@@ -1,7 +1,6 @@
 package com.mercadopago.android.px.internal.features.payment_congrats.model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.mercadopago.android.px.internal.features.business_result.CongratsResponseMapper;
 import com.mercadopago.android.px.internal.util.CurrenciesUtil;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
@@ -9,12 +8,9 @@ import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.PaymentData;
-import com.mercadopago.android.px.model.internal.Action;
-import com.mercadopago.android.px.model.internal.CongratsResponse;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 public class PaymentCongratsModelMapper {
 
