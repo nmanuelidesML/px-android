@@ -2,22 +2,20 @@ package com.mercadopago.android.px.internal.features.business_result;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import com.mercadolibre.android.mlbusinesscomponents.components.touchpoint.tracking.print.MLBusinessTouchpointListener;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.addons.BehaviourProvider;
 import com.mercadopago.android.px.internal.base.PXActivity;
-import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModelMapper;
 import com.mercadopago.android.px.internal.util.Logger;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.internal.view.PaymentResultBody;
@@ -34,32 +32,13 @@ public class BusinessPaymentResultActivity extends PXActivity<BusinessPaymentRes
     implements BusinessPaymentResultContract.View {
 
     private static final String TAG = BusinessPaymentResultActivity.class.getSimpleName();
-    private static final String EXTRA_BUSINESS_PAYMENT_MODEL = "extra_business_payment_model";
     private static final String PAYMENT_CONGRATS = "payment_congrats";
 
     public static void startWithForwardResult(@NonNull final Activity activity, @NonNull final BusinessPaymentModel model) {
         final Intent intent = new Intent(activity, BusinessPaymentResultActivity.class);
-        intent.putExtra(EXTRA_BUSINESS_PAYMENT_MODEL, model);
+        intent.putExtra(PAYMENT_CONGRATS, new PaymentCongratsModelMapper().map(model));
         intent.setFlags(FLAG_ACTIVITY_FORWARD_RESULT);
         activity.startActivity(intent);
-    }
-
-    public static void start(@NonNull final Fragment fragment, final int requestCode,
-        @NonNull final BusinessPaymentModel model) {
-        final Activity activity = fragment.getActivity();
-        if (activity instanceof PXActivity) {
-            ((PXActivity) activity).overrideTransitionIn();
-        }
-        final Intent intent = new Intent(fragment.getContext(), BusinessPaymentResultActivity.class);
-        intent.putExtra(EXTRA_BUSINESS_PAYMENT_MODEL, model);
-        fragment.startActivityForResult(intent, requestCode);
-    }
-
-    public static Intent getIntent(@NonNull final Context context,
-        @NonNull final BusinessPaymentModel model) {
-        final Intent intent = new Intent(context, BusinessPaymentResultActivity.class);
-        intent.putExtra(EXTRA_BUSINESS_PAYMENT_MODEL, model);
-        return intent;
     }
 
     @Override
