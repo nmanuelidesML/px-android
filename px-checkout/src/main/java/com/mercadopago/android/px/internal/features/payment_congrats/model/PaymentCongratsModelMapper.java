@@ -42,7 +42,8 @@ public class PaymentCongratsModelMapper {
             .withShouldShowReceipt(businessPayment.shouldShowReceipt())
             .withIconId(businessPayment.getIcon())
             .withPaymentsInfo(getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList(),
-                businessPaymentModel.getCurrency()));
+                businessPaymentModel.getCurrency()))
+            .withCustomOrder(businessPaymentModel.getCongratsResponse().hasCustomOrder());
 
         if (businessPayment.getPrimaryAction() != null && businessPayment.getPrimaryAction().getName() != null) {
             builder.withExitActionPrimary(businessPayment.getPrimaryAction().getName(),
