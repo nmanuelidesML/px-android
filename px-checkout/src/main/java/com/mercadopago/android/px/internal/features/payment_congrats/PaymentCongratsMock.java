@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public final class PaymentCongratsMock {
 
+    public static final long PAYMENT_ID = 12312312L;
+
     private PaymentCongratsMock() { }
 
     public static PaymentCongratsModel getMock() {
@@ -60,9 +62,9 @@ public final class PaymentCongratsMock {
             .withImageUrl("https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg")
             .withExitActionSecondary("Continuar", 13)
             .withPaymentsInfo(paymentList)
-            .withShouldPaymentMethod(true)
+            .withShouldShowPaymentMethod(true)
             .withShouldShowReceipt(true)
-            .withReceiptId("12312312")
+            .withPaymentId(PAYMENT_ID)
             .withDiscount(discount)
             .withScore(score)
             .build();

@@ -1,7 +1,7 @@
 package com.mercadopago.android.px.internal.features.payment_congrats.model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.business_result.CongratsResponseMapper;
 import com.mercadopago.android.px.internal.util.CurrenciesUtil;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
@@ -9,12 +9,10 @@ import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.PaymentData;
-import com.mercadopago.android.px.model.internal.Action;
-import com.mercadopago.android.px.model.internal.CongratsResponse;
+import com.mercadopago.android.px.model.PaymentResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 public class PaymentCongratsModelMapper {
 
@@ -29,6 +27,13 @@ public class PaymentCongratsModelMapper {
             new CongratsResponseMapper().map(businessPaymentModel.getCongratsResponse());
         final BusinessPayment businessPayment = businessPaymentModel.getPayment();
         final PaymentCongratsModel.Builder builder = new PaymentCongratsModel.Builder()
+            .withTotalAmount(Session.getInstance().getConfigurationModule().getPaymentSettings().getCheckoutPreference()
+                .getTotalAmount())
+            .withCampaignId(businessPaymentModel.getPaymentResult().getPaymentData().getCampaign().getId())
+            .withCurrencyId(businessPaymentModel.getCurrency().getId())
+            .withPaymentStatus(getMappedResult(businessPaymentModel.getPaymentResult()))
+            .withPaymentStatusDetail(businessPayment.getPaymentStatusDetail())
+            .withRemedies(businessPaymentModel.getRemedies())
             .withCongratsType(
                 PaymentCongratsModel.CongratsType.fromName(businessPayment.getPaymentStatus()))
             .withCrossSelling(paymentCongratsResponse.getCrossSellings())
@@ -71,8 +76,8 @@ public class PaymentCongratsModelMapper {
         if (paymentCongratsResponse.getScore() != null) {
             builder.withScore(paymentCongratsResponse.getScore());
         }
-        if (businessPayment.getReceipt() != null) {
-            builder.withReceiptId(businessPayment.getReceipt());
+        if (businessPaymentModel.getPaymentResult().getPaymentId() != null) {
+            builder.withPaymentId(businessPaymentModel.getPaymentResult().getPaymentId());
         }
         if (businessPayment.getStatementDescription() != null) {
             builder.withStatementDescription(businessPayment.getStatementDescription());
@@ -114,5 +119,19 @@ public class PaymentCongratsModelMapper {
 
     private String getPrettyAmount(@NonNull final Currency currency, @NonNull final BigDecimal amount) {
         return CurrenciesUtil.getLocalizedAmountWithoutZeroDecimals(currency, amount);
+    }
+
+    private String getMappedResult(final PaymentResult paymentResult) {
+        final String status;
+        if (paymentResult.isApproved() || paymentResult.isInstructions()) {
+            status = PaymentCongratsModel.SUCCESS;
+        } else if (paymentResult.isRejected()) {
+            status = PaymentCongratsModel.ERROR;
+        } else if (paymentResult.isPending()) {
+            status = PaymentCongratsModel.PENDING;
+        } else {
+            status = PaymentCongratsModel.UNKNOWN;
+        }
+        return status;
     }
 }

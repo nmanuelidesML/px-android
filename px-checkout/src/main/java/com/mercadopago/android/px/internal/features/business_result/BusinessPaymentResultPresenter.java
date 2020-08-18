@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.mercadopago.android.px.addons.FlowBehaviour;
 import com.mercadopago.android.px.internal.base.BasePresenter;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModelMapper;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.TextUtil;
@@ -29,6 +30,7 @@ import com.mercadopago.android.px.tracking.internal.events.SecondaryActionEvent;
 import com.mercadopago.android.px.tracking.internal.events.SeeAllDiscountsEvent;
 import com.mercadopago.android.px.tracking.internal.events.ViewReceiptEvent;
 import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
+import java.math.BigDecimal;
 
 /* default */ class BusinessPaymentResultPresenter extends BasePresenter<BusinessPaymentResultContract.View>
     implements ActionDispatcher, BusinessPaymentResultContract.Presenter, PaymentResultBody.Listener {
@@ -42,7 +44,7 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
         @NonNull final FlowBehaviour flowBehaviour, final boolean isMP) {
         this.model = model;
         this.flowBehaviour = flowBehaviour;
-//        viewTracker = new ResultViewTrack(model, paymentSettings, isMP);
+        viewTracker = new ResultViewTrack(model, isMP);
     }
 
     @Override

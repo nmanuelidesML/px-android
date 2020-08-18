@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.ExitAction;
 import com.mercadopago.android.px.model.ExternalFragment;
+import com.mercadopago.android.px.model.internal.remedies.RemediesResponse;
+import java.math.BigDecimal;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +27,12 @@ public class PaymentCongratsModel implements Parcelable {
                 return new PaymentCongratsModel[size];
             }
         };
+
+    public static final String SUCCESS = "success";
+    public static final String PENDING = "further_action_needed";
+    public static final String ERROR = "error";
+    public static final String UNKNOWN = "unknown";
+
     //Basic data
     @NonNull private final CongratsType congratsType;
     @NonNull private final String title;
@@ -35,8 +43,9 @@ public class PaymentCongratsModel implements Parcelable {
     @Nullable private final String statementDescription;
     private final boolean shouldShowPaymentMethod;
     @NonNull private final List<PaymentInfo> paymentsInfo;
+
     //Receipt data
-    @Nullable private final String receiptId;
+    @Nullable private final Long paymentId;
     private final boolean shouldShowReceipt;
     // Exit Buttons
     @Nullable private final ExitAction exitActionPrimary;
@@ -46,6 +55,14 @@ public class PaymentCongratsModel implements Parcelable {
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
     @Nullable private final PaymentCongratsResponse paymentCongratsResponse;
+    @Nullable private final BigDecimal totalAmount;
+    @NonNull private final String currencyId;
+    //Tracking data
+    @Nullable private String campaignId;
+    @NonNull private String flow;
+    @NonNull private String paymentStatus;
+    @NonNull private String paymentStatusDetail;
+    @NonNull private RemediesResponse remedies;
 
     /* default */ PaymentCongratsModel(final Builder builder) {
         congratsType = builder.congratsType;
@@ -54,17 +71,24 @@ public class PaymentCongratsModel implements Parcelable {
         imageUrl = builder.imageUrl;
         help = builder.help;
         iconId = builder.iconId;
-        receiptId = builder.receiptId;
+        paymentId = builder.paymentId;
         exitActionPrimary = builder.exitActionPrimary;
         exitActionSecondary = builder.exitActionSecondary;
         statementDescription = builder.statementDescription;
         shouldShowPaymentMethod = builder.shouldShowPaymentMethod;
         paymentsInfo = builder.paymentsInfo;
+        totalAmount = builder.totalAmount;
         shouldShowReceipt = builder.shouldShowReceipt;
         topFragment = builder.topFragment;
         bottomFragment = builder.bottomFragment;
         importantFragment = builder.importantFragment;
         paymentCongratsResponse = builder.paymentCongratsResponse;
+        campaignId = builder.campaignId;
+        flow = builder.flow;
+        currencyId = builder.currencyId;
+        paymentStatus = builder.paymentStatus;
+        paymentStatusDetail = builder.paymentStatusDetail;
+        remedies = builder.remedies;
     }
 
     protected PaymentCongratsModel(final Parcel in) {
@@ -74,17 +98,28 @@ public class PaymentCongratsModel implements Parcelable {
         imageUrl = in.readString();
         help = in.readString();
         iconId = in.readInt();
-        receiptId = in.readString();
+        paymentId = in.readLong();
         exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
         exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
         statementDescription = in.readString();
         shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
         paymentsInfo = in.createTypedArrayList(PaymentInfo.CREATOR);
+        if (in.readByte() == 0) {
+            totalAmount = null;
+        } else {
+            totalAmount = new BigDecimal(in.readString());
+        }
         shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
         topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         paymentCongratsResponse = in.readParcelable(PaymentCongratsResponse.class.getClassLoader());
+        campaignId = in.readString();
+        flow = in.readString();
+        currencyId = in.readString();
+        paymentStatus = in.readString();
+        paymentStatusDetail = in.readString();
+        remedies = in.readParcelable(RemediesResponse.class.getClassLoader());
     }
 
     @Override
@@ -100,17 +135,29 @@ public class PaymentCongratsModel implements Parcelable {
         dest.writeString(imageUrl);
         dest.writeString(help);
         dest.writeInt(iconId);
-        dest.writeString(receiptId);
+        dest.writeLong(paymentId);
         dest.writeParcelable(exitActionPrimary, flags);
         dest.writeParcelable(exitActionSecondary, flags);
         dest.writeString(statementDescription);
         dest.writeValue(shouldShowPaymentMethod);
         dest.writeTypedList(paymentsInfo);
+        if (totalAmount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeString(totalAmount.toString());
+        }
         dest.writeValue(shouldShowReceipt);
         dest.writeParcelable(topFragment, flags);
         dest.writeParcelable(bottomFragment, flags);
         dest.writeParcelable(importantFragment, flags);
         dest.writeParcelable(paymentCongratsResponse, flags);
+        dest.writeString(campaignId);
+        dest.writeString(flow);
+        dest.writeString(currencyId);
+        dest.writeString(paymentStatus);
+        dest.writeString(paymentStatusDetail);
+        dest.writeParcelable(remedies, flags);
     }
 
     @NotNull
@@ -138,8 +185,8 @@ public class PaymentCongratsModel implements Parcelable {
     }
 
     @org.jetbrains.annotations.Nullable
-    public String getReceiptId() {
-        return receiptId;
+    public Long getPaymentId() {
+        return paymentId;
     }
 
     @Nullable
@@ -165,6 +212,11 @@ public class PaymentCongratsModel implements Parcelable {
     @NonNull
     public List<PaymentInfo> getPaymentsInfo() {
         return paymentsInfo;
+    }
+
+    @Nullable
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
     @Nullable
@@ -213,6 +265,36 @@ public class PaymentCongratsModel implements Parcelable {
         return paymentCongratsResponse;
     }
 
+    @Nullable
+    public String getCampaignId() {
+        return campaignId;
+    }
+
+    @NonNull
+    public String getFlow() {
+        return flow;
+    }
+
+    @NonNull
+    public String getCurrencyId() {
+        return currencyId;
+    }
+
+    @NonNull
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    @NonNull
+    public String getPaymentStatusDetail() {
+        return paymentStatusDetail;
+    }
+
+    @NonNull
+    public RemediesResponse getRemedies() {
+        return remedies;
+    }
+
     public enum CongratsType {
         APPROVED,
         REJECTED,
@@ -237,8 +319,10 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ String help;
         /* default */ int iconId;
         /* default */ List<PaymentInfo> paymentsInfo;
+        /* default */ BigDecimal totalAmount;
+        /* default */ String currencyId;
 
-        /* default */ String receiptId;
+        /* default */ Long paymentId;
 
         // Exit Buttons
         /* default */ ExitAction exitActionPrimary;
@@ -264,12 +348,30 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ PaymentCongratsResponse.Action viewReceipt;
         /* default */ boolean customOrder = false;
 
+        //Tracking data
+        /* default */ String campaignId;
+        /* default */ String flow;
+        /* default */ String paymentStatus;
+        /* default */ String paymentStatusDetail;
+        /* default */ RemediesResponse remedies;
+
         public Builder() {
         }
 
         public PaymentCongratsModel build() {
             if (exitActionPrimary == null && exitActionSecondary == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
+            }
+            switch (congratsType) {
+            case APPROVED:
+                paymentStatus = SUCCESS;
+                break;
+            case PENDING:
+                paymentStatus = PENDING;
+                break;
+            case REJECTED:
+                paymentStatus = ERROR;
+                break;
             }
             paymentCongratsResponse =
                 new PaymentCongratsResponse(score, discount, moneySplit, crossSelling, viewReceipt,
@@ -323,13 +425,13 @@ public class PaymentCongratsModel implements Parcelable {
         }
 
         /**
-         * If value is set, then receipt view will appear.
+         * If value is set, then paymentId view will appear.
          *
-         * @param receiptId the receipt id to be shown.
+         * @param paymentId the id of the payment to be shown.
          * @return builder
          */
-        public Builder withReceiptId(final String receiptId) {
-            this.receiptId = receiptId;
+        public Builder withPaymentId(final Long paymentId) {
+            this.paymentId = paymentId;
             return this;
         }
 
@@ -359,6 +461,15 @@ public class PaymentCongratsModel implements Parcelable {
          */
         public Builder withPaymentsInfo(final List<PaymentInfo> paymentsInfo) {
             this.paymentsInfo = paymentsInfo;
+            return this;
+        }
+
+        /**
+         * @param totalAmount the total amount of the payment
+         * @return builder
+         */
+        /* default */ Builder withTotalAmount(@Nullable final BigDecimal totalAmount) {
+            this.totalAmount = totalAmount;
             return this;
         }
 
@@ -549,6 +660,60 @@ public class PaymentCongratsModel implements Parcelable {
          */
         /* default */ Builder withCustomOrder(final boolean customOrder) {
             this.customOrder = customOrder;
+            return this;
+        }
+
+        /**
+         * @param campaignId the id of the campaign for the payment
+         * @return builder with the added String
+         */
+        /* default */ Builder withCampaignId(@Nullable final String campaignId) {
+            this.campaignId = campaignId;
+            return this;
+        }
+
+        /**
+         * @param flow the name of the flow building the congrats (e.g "buyer_qr")
+         * @return builder with the added String
+         */
+        /* default */ Builder withFlow(final String flow) {
+            this.flow = flow;
+            return this;
+        }
+
+        /**
+         * @param currencyId the id of the currency being used to pay
+         * @return builder with the added String
+         */
+        /* default */ Builder withCurrencyId(final String currencyId) {
+            this.currencyId = currencyId;
+            return this;
+        }
+
+        /**
+         * @param paymentStatus the status of the payment
+         * @return builder with the added String
+         */
+        /* default */ Builder withPaymentStatus(final String paymentStatus) {
+            this.paymentStatus = paymentStatus;
+            return this;
+        }
+
+        /**
+         * @param paymentStatusDetail a description for the payment status
+         * @return builder with the added String
+         */
+        /* default */ Builder withPaymentStatusDetail(final String paymentStatusDetail) {
+            this.paymentStatusDetail = paymentStatusDetail;
+            return this;
+        }
+
+        /**
+         * @param remedies the remedies
+         * @return builder with the added remediesResponse
+         */
+        /* default */ Builder withRemedies(final RemediesResponse remedies) {
+            this.remedies = remedies;
             return this;
         }
     }
