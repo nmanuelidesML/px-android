@@ -48,13 +48,16 @@ public class PaymentCongratsModel implements Parcelable {
     private final boolean shouldShowReceipt;
 
     // Exit Buttons
-    @Nullable private final ExitAction exitActionPrimary;
-    @Nullable private final ExitAction exitActionSecondary;
+    @Nullable private final ExitAction footerMainAction;
+    @Nullable private final ExitAction footerSecondaryAction;
     // custom views for integrators
     @Nullable private final ExternalFragment topFragment;
     @Nullable private final ExternalFragment bottomFragment;
     @Nullable private final ExternalFragment importantFragment;
     @Nullable private final PaymentCongratsResponse paymentCongratsResponse;
+
+    //Internal PX data
+    @Nullable private final String autoReturn;
 
     //Internal PX Tracking data
     @Nullable private final Long paymentId;
@@ -72,8 +75,8 @@ public class PaymentCongratsModel implements Parcelable {
         help = builder.help;
         iconId = builder.iconId;
         paymentId = builder.paymentId;
-        exitActionPrimary = builder.exitActionPrimary;
-        exitActionSecondary = builder.exitActionSecondary;
+        footerMainAction = builder.footerMainAction;
+        footerSecondaryAction = builder.footerSecondaryAction;
         statementDescription = builder.statementDescription;
         shouldShowPaymentMethod = builder.shouldShowPaymentMethod;
         paymentsInfo = builder.paymentsInfo;
@@ -87,6 +90,7 @@ public class PaymentCongratsModel implements Parcelable {
         paymentData = builder.paymentData;
         discountCouponsAmount = builder.discountCouponsAmount;
         pxPaymentCongratsTracking = builder.pxPaymentCongratsTracking;
+        autoReturn = builder.autoReturn;
     }
 
     protected PaymentCongratsModel(final Parcel in) {
@@ -102,8 +106,8 @@ public class PaymentCongratsModel implements Parcelable {
             paymentId = in.readLong();
         }
         shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
-        exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
+        footerMainAction = in.readParcelable(ExitAction.class.getClassLoader());
+        footerSecondaryAction = in.readParcelable(ExitAction.class.getClassLoader());
         statementDescription = in.readString();
         shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
         paymentsInfo = in.createTypedArrayList(PaymentInfo.CREATOR);
@@ -120,6 +124,7 @@ public class PaymentCongratsModel implements Parcelable {
             discountCouponsAmount = new BigDecimal(in.readString());
         }
         pxPaymentCongratsTracking = in.readParcelable(PXPaymentCongratsTracking.class.getClassLoader());
+        autoReturn = in.readString();
     }
 
     @Override
@@ -142,8 +147,8 @@ public class PaymentCongratsModel implements Parcelable {
             dest.writeLong(paymentId);
         }
         dest.writeValue(shouldShowReceipt);
-        dest.writeParcelable(exitActionPrimary, flags);
-        dest.writeParcelable(exitActionSecondary, flags);
+        dest.writeParcelable(footerMainAction, flags);
+        dest.writeParcelable(footerSecondaryAction, flags);
         dest.writeString(statementDescription);
         dest.writeValue(shouldShowPaymentMethod);
         dest.writeTypedList(paymentsInfo);
@@ -161,6 +166,7 @@ public class PaymentCongratsModel implements Parcelable {
             dest.writeString(discountCouponsAmount.toString());
         }
         dest.writeParcelable(pxPaymentCongratsTracking, flags);
+        dest.writeString(autoReturn);
     }
 
     @NonNull
@@ -193,13 +199,13 @@ public class PaymentCongratsModel implements Parcelable {
     }
 
     @Nullable
-    public ExitAction getExitActionPrimary() {
-        return exitActionPrimary;
+    public ExitAction getFooterMainAction() {
+        return footerMainAction;
     }
 
     @Nullable
-    public ExitAction getExitActionSecondary() {
-        return exitActionSecondary;
+    public ExitAction getFooterSecondaryAction() {
+        return footerSecondaryAction;
     }
 
     @Nullable
@@ -259,6 +265,11 @@ public class PaymentCongratsModel implements Parcelable {
     }
 
     @Nullable
+    public String getAutoReturn() {
+        return autoReturn;
+    }
+
+    @Nullable
     public PaymentCongratsResponse getPaymentCongratsResponse() {
         return paymentCongratsResponse;
     }
@@ -289,9 +300,15 @@ public class PaymentCongratsModel implements Parcelable {
     }
 
     public enum CongratsType {
-        APPROVED,
-        REJECTED,
-        PENDING;
+        APPROVED("approved"),
+        REJECTED("rejected"),
+        PENDING("pending");
+
+        public final String name;
+
+        CongratsType(final String name) {
+            this.name = name;
+        }
 
         public static CongratsType fromName(final String text) {
             for (final CongratsType congratsType : CongratsType.values()) {
@@ -317,8 +334,8 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ String currencyId;
 
         // Exit Buttons
-        /* default */ ExitAction exitActionPrimary;
-        /* default */ ExitAction exitActionSecondary;
+        /* default */ ExitAction footerMainAction;
+        /* default */ ExitAction footerSecondaryAction;
 
         /* default */ String statementDescription;
 
@@ -339,6 +356,9 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ PaymentCongratsResponse.Action receiptAction;
         /* default */ boolean customSorting = false;
 
+        //Internal PX data
+        /* default */ String autoReturn;
+
         //Internal PX Tracking data
         /* default */ Long paymentId;
         /* default */ PXPaymentCongratsTracking pxPaymentCongratsTracking;
@@ -347,11 +367,12 @@ public class PaymentCongratsModel implements Parcelable {
         /* default */ PaymentData paymentData;
         /* default */ BigDecimal discountCouponsAmount;
 
+
         public Builder() {
         }
 
         public PaymentCongratsModel build() {
-            if (exitActionPrimary == null && exitActionSecondary == null) {
+            if (footerMainAction == null && footerSecondaryAction == null) {
                 throw new IllegalStateException("At least one button should be provided for PaymentCongrats");
             }
             switch (congratsType) {
@@ -470,7 +491,7 @@ public class PaymentCongratsModel implements Parcelable {
          * @return builder
          */
         public Builder withFooterMainAction(final String label, final int resCode) {
-            this.exitActionPrimary = new ExitAction(label, resCode);
+            this.footerMainAction = new ExitAction(label, resCode);
             return this;
         }
 
@@ -483,7 +504,7 @@ public class PaymentCongratsModel implements Parcelable {
          * @return builder
          */
         public Builder withFooterSecondaryAction(final String label, final int resCode) {
-            this.exitActionSecondary = new ExitAction(label, resCode);
+            this.footerSecondaryAction = new ExitAction(label, resCode);
             return this;
         }
 
@@ -517,7 +538,6 @@ public class PaymentCongratsModel implements Parcelable {
          * @param externalFragment a fragment to be displayed
          * @return builder
          */
-
         /* default */ Builder withTopFragment(@NonNull final ExternalFragment externalFragment) {
             this.topFragment = externalFragment;
             return this;
@@ -541,7 +561,6 @@ public class PaymentCongratsModel implements Parcelable {
          * @param externalFragment a fragment to be displayed
          * @return builder
          */
-
         /* default */ Builder withBottomFragment(@NonNull final ExternalFragment externalFragment) {
             this.bottomFragment = externalFragment;
             return this;
@@ -566,7 +585,6 @@ public class PaymentCongratsModel implements Parcelable {
          * @param externalFragment a fragment to be displayed
          * @return builder
          */
-
         /* default */ Builder withImportantFragment(@NonNull final ExternalFragment externalFragment) {
             this.importantFragment = externalFragment;
             return this;
@@ -669,6 +687,15 @@ public class PaymentCongratsModel implements Parcelable {
          */
         /* default */ Builder withDiscountCouponsAmount(final BigDecimal discountCouponsAmount) {
             this.discountCouponsAmount = discountCouponsAmount;
+            return this;
+        }
+
+        /**
+         * @param autoReturn autoReturn data
+         * @return builder with the added String
+         */
+        /* default */ Builder withAutoReturn(final String autoReturn) {
+            this.autoReturn = autoReturn;
             return this;
         }
     }

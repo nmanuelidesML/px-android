@@ -8,6 +8,6 @@ internal data class BusinessPaymentResultViewModel(
     @JvmField val headerModel: PaymentResultHeader.Model,
     @JvmField val bodyModel: PaymentResultBody.Model,
     @JvmField val primaryAction: ExitAction?,
-    @JvmField val secondaryAction: ExitAction?/*,
-    @JvmField val shouldAutoReturn: Boolean*/
+    @JvmField val secondaryAction: ExitAction?,
+    @JvmField val shouldAutoReturn: Boolean
 )
