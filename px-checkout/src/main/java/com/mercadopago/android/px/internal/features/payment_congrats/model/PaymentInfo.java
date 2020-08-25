@@ -8,6 +8,7 @@ import com.mercadopago.android.px.model.display_info.ResultInfo;
 import java.math.BigDecimal;
 
 public class PaymentInfo implements Parcelable {
+
     public static final Creator<PaymentInfo> CREATOR = new Creator<PaymentInfo>() {
         @Override
         public PaymentInfo createFromParcel(final Parcel in) {
@@ -107,6 +108,7 @@ public class PaymentInfo implements Parcelable {
         ACCOUNT_MONEY("account_money"),
         PLUGIN("payment_method_plugin"),
         CONSUMER_CREDITS("consumer_credits");
+
         public final String value;
 
         PaymentMethodType(final String value) {
