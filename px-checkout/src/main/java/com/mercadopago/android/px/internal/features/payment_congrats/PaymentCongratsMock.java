@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public final class PaymentCongratsMock {
 
+    public static final long PAYMENT_ID = 12312312L;
+
     private PaymentCongratsMock() { }
 
     public static PaymentCongratsModel getMock() {
@@ -61,7 +63,7 @@ public final class PaymentCongratsMock {
             .withPaymentMethodInfo(paymentList.get(0))
             .withSplitPaymentMethod(paymentList.get(1))
             .withShouldShowPaymentMethod(true)
-            .withReceipt("12312312",true,null)
+            .withReceipt(PAYMENT_ID,true,null)
             .withDiscounts(discount)
             .withLoyalty(loyalty)
             .build();
