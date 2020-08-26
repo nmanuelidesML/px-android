@@ -96,7 +96,11 @@ public class PaymentCongratsModel implements Parcelable {
         imageUrl = in.readString();
         help = in.readString();
         iconId = in.readInt();
-        paymentId = in.readLong();
+        if (in.readByte() == 0) {
+            paymentId = null;
+        } else {
+            paymentId = in.readLong();
+        }
         shouldShowReceipt = (Boolean) in.readValue(Boolean.class.getClassLoader());
         exitActionPrimary = in.readParcelable(ExitAction.class.getClassLoader());
         exitActionSecondary = in.readParcelable(ExitAction.class.getClassLoader());
@@ -131,7 +135,12 @@ public class PaymentCongratsModel implements Parcelable {
         dest.writeString(imageUrl);
         dest.writeString(help);
         dest.writeInt(iconId);
-        dest.writeLong(paymentId);
+        if (paymentId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(paymentId);
+        }
         dest.writeValue(shouldShowReceipt);
         dest.writeParcelable(exitActionPrimary, flags);
         dest.writeParcelable(exitActionSecondary, flags);
