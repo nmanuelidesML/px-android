@@ -60,7 +60,7 @@ public final class PaymentCongratsMock {
             "",
             "ARS",
             "paymentStatusDetail",
-            12313133,
+            12313133l,
             BigDecimal.valueOf(15.2)
         );
 
@@ -75,6 +75,7 @@ public final class PaymentCongratsMock {
             .withReceipt(PAYMENT_ID,true,null)
             .withDiscounts(discount)
             .withLoyalty(loyalty)
+            .withTracking(tracking)
             .build();
 
         return congrats;

@@ -9,6 +9,6 @@ data class PXPaymentCongratsTracking(
         val campaignId: String,
         val currencyId: String,
         val paymentStatusDetail: String,
-        val paymentId: Long,
+        val paymentId: Long?,
         val totalAmount: BigDecimal
 ) : Parcelable
