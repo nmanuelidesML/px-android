@@ -1,9 +1,7 @@
 package com.mercadopago.android.px.internal.features.business_result;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.features.dummy_result.RedirectHelper;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponseMapper;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
@@ -47,8 +45,8 @@ public class BusinessPaymentResultMapper extends Mapper<PaymentCongratsModel, Bu
             .setMethodModels(methodModels)
             .setCongratsViewModel(new PaymentCongratsResponseMapper(new BusinessPaymentResultTracker())
                 .map(model.getPaymentCongratsResponse()))
-            .setReceiptId((type == PaymentCongratsModel.CongratsType.APPROVED && model.getShouldShowReceipt()) ? model
-                .getReceiptId() : null)
+            .setReceiptId((type == PaymentCongratsModel.CongratsType.APPROVED && model.getShouldShowReceipt()) ? String
+                .valueOf(model.getPaymentId()) : null)
             .setHelp(model.getHelp())
             .setStatement(model.getStatementDescription())
             .setTopFragment(model.getTopFragment())

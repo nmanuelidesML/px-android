@@ -48,14 +48,13 @@ public class PaymentCongratsResponseMapper extends Mapper<PaymentCongratsRespons
         return new CongratsViewModel(getLoyaltyData(paymentCongratsResponse.getLoyalty()),
             getDiscountBoxData(discount), getShowAllDiscount(discount),
             getDownloadAppData(discount),
-            getMoneySplitData(paymentCongratsResponse.getExpenseSplit()),
+            getExpenseSplitData(paymentCongratsResponse.getExpenseSplit()),
             getCrossSellingBoxData(paymentCongratsResponse.getCrossSellings()),
             paymentCongratsResponse.getViewReceipt(), paymentCongratsResponse.hasCustomOrder());
     }
 
     @Nullable
-    private MLBusinessLoyaltyRingData getLoyaltyData(
-        @javax.annotation.Nullable final PaymentCongratsResponse.Loyalty loyalty) {
+    private MLBusinessLoyaltyRingData getLoyaltyData(@Nullable final PaymentCongratsResponse.Loyalty loyalty) {
 
         if (loyalty == null) {
             return null;
@@ -231,8 +230,7 @@ public class PaymentCongratsResponseMapper extends Mapper<PaymentCongratsRespons
     }
 
     @Nullable
-    private PaymentCongratsResponse.Action getShowAllDiscount(
-        @Nullable final PaymentCongratsResponse.Discount discount) {
+    private PaymentCongratsResponse.Action getShowAllDiscount(@Nullable final PaymentCongratsResponse.Discount discount) {
         final PaymentCongratsResponse.Action showAllDiscount;
         if (discount == null || (showAllDiscount = discount.getAction()) == null) {
             return null;
@@ -317,8 +315,7 @@ public class PaymentCongratsResponseMapper extends Mapper<PaymentCongratsRespons
     }
 
     @Nullable
-    private MLBusinessActionCardViewData getMoneySplitData(
-        @Nullable final PaymentCongratsResponse.ExpenseSplit moneySplit) {
+    private MLBusinessActionCardViewData getExpenseSplitData(@Nullable final PaymentCongratsResponse.ExpenseSplit moneySplit) {
         return MLBusinessMapper.map(moneySplit);
     }
 }

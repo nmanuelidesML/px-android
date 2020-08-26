@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.internal.features.payment_congrats.model;
 
 import androidx.annotation.NonNull;
+import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.business_result.CongratsResponseMapper;
 import com.mercadopago.android.px.internal.util.CurrenciesUtil;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
@@ -8,6 +9,7 @@ import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.PaymentData;
+import com.mercadopago.android.px.model.PaymentResult;
 import java.math.BigDecimal;
 
 public class PaymentCongratsModelMapper {
@@ -22,21 +24,35 @@ public class PaymentCongratsModelMapper {
         final PaymentCongratsResponse paymentCongratsResponse =
             new CongratsResponseMapper().map(businessPaymentModel.getCongratsResponse());
         final BusinessPayment businessPayment = businessPaymentModel.getPayment();
+        final PXPaymentCongratsTracking tracking = new PXPaymentCongratsTracking(
+            businessPaymentModel.getPaymentResult().getPaymentData().getCampaign() != null ? businessPaymentModel.getPaymentResult().getPaymentData().getCampaign().getId() : "",
+            businessPaymentModel.getCurrency().getId(),
+            businessPayment.getPaymentStatusDetail(),
+            businessPaymentModel.getPaymentResult().getPaymentId(),
+            Session.getInstance().getConfigurationModule().getPaymentSettings().getCheckoutPreference()
+                .getTotalAmount());
         final PaymentCongratsModel.Builder builder = new PaymentCongratsModel.Builder()
+            .withTracking(tracking)
+            .withPaymentStatus(getMappedResult(businessPaymentModel.getPaymentResult()))
+            .withDiscountCouponsAmount(
+                PaymentDataHelper.getTotalDiscountAmount(businessPaymentModel.getPaymentResult().getPaymentDataList()))
             .withCongratsType(
                 PaymentCongratsModel.CongratsType.fromName(businessPayment.getPaymentStatus()))
             .withCrossSelling(paymentCongratsResponse.getCrossSellings())
-            .withHeader(businessPayment.getTitle(),businessPayment.getImageUrl())
+            .withHeader(businessPayment.getTitle(), businessPayment.getImageUrl())
             .withShouldShowPaymentMethod(businessPayment.shouldShowPaymentMethod())
-            .withIconId(businessPayment.getIcon());
+            .withIconId(businessPayment.getIcon())
+            .withPaymentData(businessPaymentModel.getPaymentResult().getPaymentData());
 
         if (!businessPaymentModel.getPaymentResult().getPaymentDataList().isEmpty()) {
-            builder.withPaymentMethodInfo(getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList().get(0),
-                businessPaymentModel.getCurrency()));
+            builder.withPaymentMethodInfo(
+                getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList().get(0),
+                    businessPaymentModel.getCurrency()));
         }
         if (businessPaymentModel.getPaymentResult().getPaymentDataList().size() > 1) {
-            builder.withPaymentMethodInfo(getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList().get(1),
-                businessPaymentModel.getCurrency()));
+            builder.withPaymentMethodInfo(
+                getPaymentsInfo(businessPaymentModel.getPaymentResult().getPaymentDataList().get(1),
+                    businessPaymentModel.getCurrency()));
         }
         if (businessPayment.getPrimaryAction() != null && businessPayment.getPrimaryAction().getName() != null) {
             builder.withFooterMainAction(businessPayment.getPrimaryAction().getName(),
@@ -67,8 +83,8 @@ public class PaymentCongratsModelMapper {
         if (paymentCongratsResponse.getLoyalty() != null) {
             builder.withLoyalty(paymentCongratsResponse.getLoyalty());
         }
-        if (businessPayment.getReceipt() != null) {
-            builder.withReceipt(businessPayment.getReceipt(),
+        if (businessPaymentModel.getPaymentResult().getPaymentId() != null) {
+            builder.withReceipt(businessPaymentModel.getPaymentResult().getPaymentId(),
                 businessPayment.shouldShowReceipt(),
                 paymentCongratsResponse.getViewReceipt());
         }
@@ -83,28 +99,42 @@ public class PaymentCongratsModelMapper {
     }
 
     private PaymentInfo getPaymentsInfo(final PaymentData paymentData, final Currency currency) {
-            final PaymentInfo.Builder paymentInfo = new PaymentInfo.Builder()
-                .withPaymentMethodType(
-                    PaymentInfo.PaymentMethodType.fromName(paymentData.getPaymentMethod().getPaymentTypeId()))
-                .withPaymentMethodId(paymentData.getPaymentMethod().getId())
-                .withPaymentMethodName(paymentData.getPaymentMethod().getName())
-                .withPaidAmount(getPrettyAmount(currency,
-                    PaymentDataHelper.getPrettyAmountToPay(paymentData)));
-            if (paymentData.getToken() != null && paymentData.getToken().getLastFourDigits() != null) {
-                paymentInfo.withLastFourDigits(paymentData.getToken().getLastFourDigits());
-            }
-            if (paymentData.getPayerCost() != null) {
-                paymentInfo.withInstallmentsData(
-                    paymentData.getPayerCost().getInstallments(),
-                    getPrettyAmount(currency, paymentData.getPayerCost().getInstallmentAmount()),
-                    getPrettyAmount(currency, paymentData.getPayerCost().getTotalAmount()),
-                    paymentData.getPayerCost().getInstallmentRate());
-            }
+        final PaymentInfo.Builder paymentInfo = new PaymentInfo.Builder()
+            .withPaymentMethodType(
+                PaymentInfo.PaymentMethodType.fromName(paymentData.getPaymentMethod().getPaymentTypeId()))
+            .withPaymentMethodId(paymentData.getPaymentMethod().getId())
+            .withPaymentMethodName(paymentData.getPaymentMethod().getName())
+            .withPaidAmount(getPrettyAmount(currency,
+                PaymentDataHelper.getPrettyAmountToPay(paymentData)));
+        if (paymentData.getToken() != null && paymentData.getToken().getLastFourDigits() != null) {
+            paymentInfo.withLastFourDigits(paymentData.getToken().getLastFourDigits());
+        }
+        if (paymentData.getPayerCost() != null) {
+            paymentInfo.withInstallmentsData(
+                paymentData.getPayerCost().getInstallments(),
+                getPrettyAmount(currency, paymentData.getPayerCost().getInstallmentAmount()),
+                getPrettyAmount(currency, paymentData.getPayerCost().getTotalAmount()),
+                paymentData.getPayerCost().getInstallmentRate());
+        }
 
-            return paymentInfo.build();
+        return paymentInfo.build();
     }
 
     private String getPrettyAmount(@NonNull final Currency currency, @NonNull final BigDecimal amount) {
         return CurrenciesUtil.getLocalizedAmountWithoutZeroDecimals(currency, amount);
+    }
+
+    private String getMappedResult(final PaymentResult paymentResult) {
+        final String status;
+        if (paymentResult.isApproved() || paymentResult.isInstructions()) {
+            status = PaymentCongratsModel.SUCCESS;
+        } else if (paymentResult.isRejected()) {
+            status = PaymentCongratsModel.ERROR;
+        } else if (paymentResult.isPending()) {
+            status = PaymentCongratsModel.PENDING;
+        } else {
+            status = PaymentCongratsModel.UNKNOWN;
+        }
+        return status;
     }
 }

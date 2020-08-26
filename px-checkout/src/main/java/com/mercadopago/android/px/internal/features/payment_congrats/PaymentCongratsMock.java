@@ -1,5 +1,6 @@
 package com.mercadopago.android.px.internal.features.payment_congrats;
 
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PXPaymentCongratsTracking;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
@@ -7,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public final class PaymentCongratsMock {
+
+    public static final long PAYMENT_ID = 12312312L;
 
     private PaymentCongratsMock() { }
 
@@ -53,6 +56,14 @@ public final class PaymentCongratsMock {
                 .build()
         );
 
+        PXPaymentCongratsTracking tracking = new PXPaymentCongratsTracking(
+            "",
+            "ARS",
+            "paymentStatusDetail",
+            12313133,
+            BigDecimal.valueOf(15.2)
+        );
+
         //Congrats
         PaymentCongratsModel congrats = new PaymentCongratsModel.Builder()
             .withCongratsType(PaymentCongratsModel.CongratsType.APPROVED)
@@ -61,7 +72,7 @@ public final class PaymentCongratsMock {
             .withPaymentMethodInfo(paymentList.get(0))
             .withSplitPaymentMethod(paymentList.get(1))
             .withShouldShowPaymentMethod(true)
-            .withReceipt("12312312",true,null)
+            .withReceipt(PAYMENT_ID,true,null)
             .withDiscounts(discount)
             .withLoyalty(loyalty)
             .build();
