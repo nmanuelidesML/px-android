@@ -1,5 +1,6 @@
 package com.mercadopago.android.px.internal.features.payment_congrats;
 
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PXPaymentCongratsTracking;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
@@ -53,6 +54,14 @@ public final class PaymentCongratsMock {
                 .withPaidAmount( "$100")
                 .withInstallmentsData(3, "$39,90", "$119,70", BigDecimal.valueOf(19.71))
                 .build()
+        );
+
+        PXPaymentCongratsTracking tracking = new PXPaymentCongratsTracking(
+            "",
+            "ARS",
+            "paymentStatusDetail",
+            12313133,
+            BigDecimal.valueOf(15.2)
         );
 
         //Congrats
