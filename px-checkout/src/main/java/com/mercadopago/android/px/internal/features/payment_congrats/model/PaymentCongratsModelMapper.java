@@ -48,7 +48,8 @@ public class PaymentCongratsModelMapper {
             .withIconId(businessPayment.getIcon())
             .withPaymentData(businessPaymentModel.getPaymentResult().getPaymentData())
             .withIconId(businessPayment.getIcon())
-            .withAutoReturn(paymentSettings.getCheckoutPreference().getAutoReturn());
+            .withAutoReturn(paymentSettings.getCheckoutPreference().getAutoReturn())
+            .withCustomSorting(businessPaymentModel.getCongratsResponse().hasCustomOrder());
 
         if (!businessPaymentModel.getPaymentResult().getPaymentDataList().isEmpty()) {
             builder.withPaymentMethodInfo(
