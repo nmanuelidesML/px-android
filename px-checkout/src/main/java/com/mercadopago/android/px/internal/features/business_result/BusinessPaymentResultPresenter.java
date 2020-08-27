@@ -115,10 +115,10 @@ import org.jetbrains.annotations.NotNull;
 
     private void mapPaymentModel() {
         final BusinessPaymentResultViewModel viewModel = new BusinessPaymentResultMapper(
-            /*paymentSettings.getCheckoutPreference().getAutoReturn()*/).map(model);
+            model.getAutoReturn()).map(model);
         getView().configureViews(viewModel, this);
         getView().setStatusBarColor(viewModel.headerModel.getBackgroundColor());
-        //initAutoReturn(viewModel.shouldAutoReturn);
+        initAutoReturn(viewModel.shouldAutoReturn);
     }
 
     private void initAutoReturn(final boolean shouldAutoReturn) {

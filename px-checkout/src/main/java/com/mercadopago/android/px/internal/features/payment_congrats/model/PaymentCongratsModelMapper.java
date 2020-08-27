@@ -3,6 +3,7 @@ package com.mercadopago.android.px.internal.features.payment_congrats.model;
 import androidx.annotation.NonNull;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.business_result.CongratsResponseMapper;
+import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.CurrenciesUtil;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
 import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
@@ -21,6 +22,9 @@ public class PaymentCongratsModelMapper {
      * @return a paymentCongratsModel built from a businessPaymentModel
      */
     public PaymentCongratsModel map(final BusinessPaymentModel businessPaymentModel) {
+
+        final PaymentSettingRepository paymentSettings = Session.getInstance().getConfigurationModule().getPaymentSettings();
+
         final PaymentCongratsResponse paymentCongratsResponse =
             new CongratsResponseMapper().map(businessPaymentModel.getCongratsResponse());
         final BusinessPayment businessPayment = businessPaymentModel.getPayment();
@@ -42,7 +46,9 @@ public class PaymentCongratsModelMapper {
             .withHeader(businessPayment.getTitle(), businessPayment.getImageUrl())
             .withShouldShowPaymentMethod(businessPayment.shouldShowPaymentMethod())
             .withIconId(businessPayment.getIcon())
-            .withPaymentData(businessPaymentModel.getPaymentResult().getPaymentData());
+            .withPaymentData(businessPaymentModel.getPaymentResult().getPaymentData())
+            .withIconId(businessPayment.getIcon())
+            .withAutoReturn(paymentSettings.getCheckoutPreference().getAutoReturn());
 
         if (!businessPaymentModel.getPaymentResult().getPaymentDataList().isEmpty()) {
             builder.withPaymentMethodInfo(
